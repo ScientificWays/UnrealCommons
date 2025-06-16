@@ -59,7 +59,7 @@ void UScWASC_Character::OnRegister() // UActorComponent
 	GravityScaleChangedDelegateHandle = GetGameplayAttributeValueChangeDelegate(CharacterAS->GetGravityScaleAttribute()).AddUObject(this, &ThisClass::OnGravityScaleChanged);
 	AirControlChangedDelegateHandle = GetGameplayAttributeValueChangeDelegate(CharacterAS->GetAirControlAttribute()).AddUObject(this, &ThisClass::OnAirControlChanged);
 
-	RegisterGameplayTagEvent(FATAGameplayTags::MovementMode, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ThisClass::OnMovementModeTagChanged);
+	RegisterGameplayTagEvent(FScWGameplayTags::MovementMode, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ThisClass::OnMovementModeTagChanged);
 }
 //~ End Initialize
 
@@ -121,39 +121,39 @@ void UScWASC_Character::OnMovementModeTagChanged(const FGameplayTag InCallbackTa
 
 void UScWASC_Character::UpdateCharacterMovementModeFromTags()
 {
-	if (HasMatchingGameplayTag(FATAGameplayTags::MovementMode_None))
+	if (HasMatchingGameplayTag(FScWGameplayTags::MovementMode_None))
 	{
 		OwnerCMC->SetMovementMode(EMovementMode::MOVE_None);
 	}
-	else if (HasMatchingGameplayTag(FATAGameplayTags::MovementMode_Walking))
+	else if (HasMatchingGameplayTag(FScWGameplayTags::MovementMode_Walking))
 	{
 		OwnerCMC->SetMovementMode(EMovementMode::MOVE_Walking);
 	}
-	else if (HasMatchingGameplayTag(FATAGameplayTags::MovementMode_NavWalking))
+	else if (HasMatchingGameplayTag(FScWGameplayTags::MovementMode_NavWalking))
 	{
 		OwnerCMC->SetMovementMode(EMovementMode::MOVE_NavWalking);
 	}
-	else if (HasMatchingGameplayTag(FATAGameplayTags::MovementMode_Falling))
+	else if (HasMatchingGameplayTag(FScWGameplayTags::MovementMode_Falling))
 	{
 		OwnerCMC->SetMovementMode(EMovementMode::MOVE_Falling);
 	}
-	else if (HasMatchingGameplayTag(FATAGameplayTags::MovementMode_Swimming))
+	else if (HasMatchingGameplayTag(FScWGameplayTags::MovementMode_Swimming))
 	{
 		OwnerCMC->SetMovementMode(EMovementMode::MOVE_Swimming);
 	}
-	else if (HasMatchingGameplayTag(FATAGameplayTags::MovementMode_Flying))
+	else if (HasMatchingGameplayTag(FScWGameplayTags::MovementMode_Flying))
 	{
 		OwnerCMC->SetMovementMode(EMovementMode::MOVE_Flying);
 	}
-	/*else if (HasMatchingGameplayTag(FATAGameplayTags::MovementMode_Custom_Ladder))
+	/*else if (HasMatchingGameplayTag(FScWGameplayTags::MovementMode_Custom_Ladder))
 	{
 		OwnerCMC->SetMovementMode(EMovementMode::MOVE_Custom, static_cast<uint8>(EIDCustomMovementMode::Ladder));
 	}
-	else if (HasMatchingGameplayTag(FATAGameplayTags::MovementMode_Custom_Cling))
+	else if (HasMatchingGameplayTag(FScWGameplayTags::MovementMode_Custom_Cling))
 	{
 		OwnerCMC->SetMovementMode(EMovementMode::MOVE_Custom, static_cast<uint8>(EIDCustomMovementMode::Cling));
 	}
-	else if (HasMatchingGameplayTag(FATAGameplayTags::MovementMode_Custom_InVehicle))
+	else if (HasMatchingGameplayTag(FScWGameplayTags::MovementMode_Custom_InVehicle))
 	{
 		OwnerCMC->SetMovementMode(EMovementMode::MOVE_Custom, static_cast<uint8>(EIDCustomMovementMode::InVehicle));
 	}*/

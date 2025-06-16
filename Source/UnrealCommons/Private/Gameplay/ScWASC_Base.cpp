@@ -192,9 +192,9 @@ FActiveGameplayEffectHandle UScWASC_Base::TryApplyGameplayEffectByClass(TSubclas
 
 	if (InDuration > 0.0f)
 	{
-		EffectSpecHandle.Data->SetSetByCallerMagnitude(FATAGameplayTags::SetByCaller_Duration, InDuration);
+		EffectSpecHandle.Data->SetSetByCallerMagnitude(FScWGameplayTags::SetByCaller_Duration, InDuration);
 	}
-	EffectSpecHandle.Data->SetSetByCallerMagnitude(FATAGameplayTags::SetByCaller_Magnitude, InMagnitude);
+	EffectSpecHandle.Data->SetSetByCallerMagnitude(FScWGameplayTags::SetByCaller_Magnitude, InMagnitude);
 	return ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data);
 }
 
@@ -224,6 +224,67 @@ void UScWASC_Base::ApplySpawnEffect()
 //~ End Effects
 
 //~ Begin Damage
+void UScWASC_Base::AccumulateIgnoredDamage(float InDamage, bool bInAutoResolveNextTick)
+{
+	AccumulatedIgnoredDamage += InDamage;
+	RequestResolveAccumulatedDamageNextTick();
+}
+
+void UScWASC_Base::AccumulateBlockedDamage(float InDamage, bool bInAutoResolveNextTick)
+{
+	AccumulatedBlockedDamage += InDamage;
+	RequestResolveAccumulatedDamageNextTick();
+}
+
+void UScWASC_Base::AccumulateEvadedDamage(float InDamage, bool bInAutoResolveNextTick)
+{
+	AccumulatedEvadedDamage += InDamage;
+	RequestResolveAccumulatedDamageNextTick();
+}
+
+void UScWASC_Base::AccumulateAppliedDamage(float InDamage, bool bInAutoResolveNextTick)
+{
+	AccumulatedAppliedDamage += InDamage;
+	RequestResolveAccumulatedDamageNextTick();
+}
+
+void UScWASC_Base::RequestResolveAccumulatedDamageNextTick()
+{
+	if (!AccumulatedDamageTimerHandle.IsValid())
+	{
+		if (UWorld* World = GetWorld())
+		{
+			FTimerManager& WorldTimerManager = World->GetTimerManager();
+			check(!WorldTimerManager.TimerExists(AccumulatedDamageTimerHandle));
+			AccumulatedDamageTimerHandle = WorldTimerManager.SetTimerForNextTick(this, &UScWASC_Base::ResolveAccumulatedDamage);
+		}
+	}
+}
+
+void UScWASC_Base::ResolveAccumulatedDamage()
+{
+	if (UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().ClearTimer(AccumulatedDamageTimerHandle);
+	}
+	if (AccumulatedIgnoredDamage != 0.0f)
+	{
+		OnAccumulatedIgnoredDamageResolved.Broadcast(AccumulatedIgnoredDamage);
+	}
+	if (AccumulatedBlockedDamage != 0.0f)
+	{
+		OnAccumulatedBlockedDamageResolved.Broadcast(AccumulatedBlockedDamage);
+	}
+	if (AccumulatedEvadedDamage != 0.0f)
+	{
+		OnAccumulatedEvadedDamageResolved.Broadcast(AccumulatedEvadedDamage);
+	}
+	if (AccumulatedAppliedDamage != 0.0f)
+	{
+		OnAccumulatedAppliedDamageResolved.Broadcast(AccumulatedAppliedDamage);
+	}
+}
+
 void UScWASC_Base::OnAvatarTakePointDamage(AActor* InDamagedActor, float InDamage, AController* InInstigator, FVector InHitLocation, UPrimitiveComponent* InHitComponent, FName InBoneName, FVector InHitDirection, const UDamageType* InDamageType, AActor* InDamageCauser)
 {
 	HandleTryReceiveDamage(InDamage, { FHitResult(InDamagedActor, InHitComponent, InHitLocation, -InHitDirection), InDamageType, InDamageCauser, InInstigator });
@@ -242,6 +303,8 @@ bool UScWASC_Base::HandleTryReceiveDamage(float InDamage, const FReceiveDamageDa
 
 	if (TryIgnoreDamage(InDamage, InData))
 	{
+		OnDamageIgnored.Broadcast(InDamage, InData);
+		PostIgnoreDamage(InDamage, InData);
 		return false;
 	}
 	else if (TryBlockDamage(InDamage, InData))
@@ -307,34 +370,52 @@ bool UScWASC_Base::TryIgnoreDamage(float& InOutAdjustedDamage, const FReceiveDam
 {
 	check(IsOwnerActorAuthoritative());
 
+	bool bIsIgnored = false;
 	/*if (HasMatchingGameplayTag(FIDGameplayTags::Effect_IgnoreAttack_Bullet) && InData.DamageTypeClass->IsChildOf(UIDDamageType_Bullet::StaticClass()))
 	{
-		return true;
+		bIsIgnored = true;
 	}
 	else if (HasMatchingGameplayTag(FIDGameplayTags::Effect_IgnoreAttack_Melee) && InData.DamageTypeClass->IsChildOf(UIDDamageType_Melee::StaticClass()))
 	{
-		return true;
+		bIsIgnored = true;
 	}
 	else */if (ShouldIgnoreAnyAttackFrom(InData.Instigator))
 	{
+		bIsIgnored = true;
+	}
+	if (bIsIgnored)
+	{
+		AccumulateIgnoredDamage(InOutAdjustedDamage);
 		return true;
 	}
-	return false;
+	else
+	{
+		return false;
+	}
 }
 
 bool UScWASC_Base::TryBlockDamage(float& InOutAdjustedDamage, const FReceiveDamageData& InData)
 {
 	check(IsOwnerActorAuthoritative());
 
+	bool bIsBlocked = false;
 	/*if (HasMatchingGameplayTag(FIDGameplayTags::Effect_BlockAttack_Bullet) && InData.DamageTypeClass->IsChildOf(UIDDamageType_Bullet::StaticClass()))
 	{
-		return true;
+		bIsBlocked = true;
 	}
 	else if (HasMatchingGameplayTag(FIDGameplayTags::Effect_BlockAttack_Melee) && InData.DamageTypeClass->IsChildOf(UIDDamageType_Melee::StaticClass()))
 	{
-		return true;
+		bIsBlocked = true;
 	}*/
-	return false;
+	if (bIsBlocked)
+	{
+		AccumulateBlockedDamage(InOutAdjustedDamage);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 bool UScWASC_Base::TryEvadeDamage(float& InOutAdjustedDamage, const FReceiveDamageData& InData)
@@ -354,7 +435,15 @@ bool UScWASC_Base::TryEvadeDamage(float& InOutAdjustedDamage, const FReceiveDama
 	{
 		EvasionChance = AttributeSet->GetMeleeDamageEvasionChance();
 	}*/
-	return FMath::FRand() <= EvasionChance;
+	if (FMath::FRand() <= EvasionChance)
+	{
+		AccumulateEvadedDamage(InOutAdjustedDamage);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 bool UScWASC_Base::TryApplyDamage(float InDamage, const FReceiveDamageData& InData)
@@ -386,6 +475,8 @@ bool UScWASC_Base::TryApplyDamage(float InDamage, const FReceiveDamageData& InDa
 
 	if (ApplyDamageGameplayEffectClass)
 	{
+		AccumulateAppliedDamage(InDamage);
+
 		FGameplayEffectContextHandle DamageEffectContext = MakeEffectContext();
 		DamageEffectContext.AddSourceObject(this);
 		DamageEffectContext.AddInstigator(InData.Instigator, InData.Source);
@@ -393,7 +484,7 @@ bool UScWASC_Base::TryApplyDamage(float InDamage, const FReceiveDamageData& InDa
 		float PrevHealth = GetHealth();
 
 		FGameplayEffectSpecHandle DamageEffectHandle = MakeOutgoingSpec(ApplyDamageGameplayEffectClass, 1.0f, DamageEffectContext);
-		DamageEffectHandle.Data->SetSetByCallerMagnitude(FATAGameplayTags::SetByCaller_Magnitude, -InDamage);
+		DamageEffectHandle.Data->SetSetByCallerMagnitude(FScWGameplayTags::SetByCaller_Magnitude, -InDamage);
 		FActiveGameplayEffectHandle EffectHandle = ApplyGameplayEffectSpecToSelf(*DamageEffectHandle.Data.Get());
 
 		if (EffectHandle.WasSuccessfullyApplied())

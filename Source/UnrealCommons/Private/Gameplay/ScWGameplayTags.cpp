@@ -2,7 +2,7 @@
 
 #include "Gameplay/ScWGameplayTags.h"
 
-namespace FATAGameplayTags
+namespace FScWGameplayTags
 {
 	/*UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Sprint, "Ability.Sprint", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Cling, "Ability.Cling", "[Native] TODO: Add description");

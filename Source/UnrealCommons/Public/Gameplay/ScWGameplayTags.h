@@ -6,7 +6,7 @@
 
 #include "NativeGameplayTags.h"
 
-namespace FATAGameplayTags
+namespace FScWGameplayTags
 {
 	//UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Sprint);
 	//UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Cling);

@@ -45,7 +45,6 @@ public:
 	UPROPERTY(ReplicatedUsing = "OnRep_MaxHealth", BlueprintReadOnly)
 	FGameplayAttributeData MaxHealth;
 	ATTRIBUTE_ACCESSORS(ThisClass, MaxHealth)
-
 //~ End Attributes
 
 //~ Begin Replication
@@ -56,6 +55,5 @@ protected:
 
 	UFUNCTION()
 	virtual void OnRep_MaxHealth(const FGameplayAttributeData& InPrevValue);
-
 //~ End Replication
 };
