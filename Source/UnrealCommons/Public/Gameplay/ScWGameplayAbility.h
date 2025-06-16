@@ -1,0 +1,43 @@
+// Scientific Ways
+
+#pragma once
+
+#include "UnrealCommons.h"
+
+#include "ScWGameplayAbility.generated.h"
+
+/**
+ * 
+ */
+UCLASS()
+class UNREALCOMMONS_API UScWGameplayAbility : public UGameplayAbility
+{
+
+	GENERATED_BODY()
+	
+//~ Begin Initialize
+protected:
+	virtual void SetCurrentActorInfo(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo) const override; // UGameplayAbility
+//~ End Initialize
+	
+//~ Begin Events
+protected:
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo, const FGameplayAbilityActivationInfo InActivationInfo, const FGameplayEventData* InTriggerEventData) override; // UGameplayAbility
+	virtual void CancelAbility(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo, const FGameplayAbilityActivationInfo InActivationInfo, bool bInReplicateCancelAbility) override; // UGameplayAbility
+	virtual void EndAbility(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo, const FGameplayAbilityActivationInfo InActivationInfo, bool bInReplicateEndAbility, bool bInWasCancelled) override; // UGameplayAbility
+//~ End Events
+	
+
+//~ Begin Owner
+public:
+	
+	UPROPERTY(Category = "Owner", BlueprintReadOnly)
+	TObjectPtr<class AScWCharacter> OwnerCharacter;
+
+	UPROPERTY(Category = "Owner", BlueprintReadOnly)
+	TObjectPtr<class UScWASC_Base> OwnerASC;
+	
+	UPROPERTY(Category = "Owner", BlueprintReadOnly)
+	TObjectPtr<class AScWPlayerController> OwnerPlayerController;
+//~ End Owner
+};

@@ -1,0 +1,28 @@
+// Scientific Ways
+
+#include "Framework/ScWGameMode.h"
+
+AScWGameMode::AScWGameMode()
+{
+	
+}
+
+AScWGameMode* AScWGameMode::TryGetScWGameMode(const UObject* InWCO)
+{
+	if (!InWCO)
+	{
+		UE_LOG(LogScWGameplay, Error, TEXT("AScWGameMode::TryGetScWGameMode() World context is not valid!"));
+	}
+
+	UWorld* World = InWCO->GetWorld();
+	if (!World)
+	{
+		UE_LOG(LogScWGameplay, Error, TEXT("AScWGameMode::TryGetScWGameMode() World from context %s is not valid!"), *InWCO->GetName());
+	}
+	if (AScWGameMode* OutGameMode = World->GetAuthGameMode<AScWGameMode>())
+	{
+		return OutGameMode;
+	}
+	UE_LOG(LogScWGameplay, Error, TEXT("AScWGameMode::TryGetScWGameMode() GameMode from World %s is not of class AScWGameMode!"), *World->GetName());
+	return nullptr;
+}
