@@ -11,7 +11,7 @@ UScWBTD_CheckVelocity::UScWBTD_CheckVelocity()
 	TargetKey.AllowNoneAsValue(false);
 	TargetKey.AddVectorFilter(this, GET_MEMBER_NAME_CHECKED(ThisClass, TargetKey));
 	TargetKey.AddObjectFilter(this, GET_MEMBER_NAME_CHECKED(ThisClass, TargetKey), AActor::StaticClass());
-	TargetKey.SelectedKeyName = FATABlackboard::KeyTargetActor;
+	TargetKey.SelectedKeyName = FScWBlackboard::KeyTargetActor;
 
 	MinVelocity = 500.0f;
 

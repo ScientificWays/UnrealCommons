@@ -28,14 +28,14 @@ protected:
 	virtual FString GetStaticDescription() const override; // UBTNode
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& InOwnerTree, uint8* InNodeMemory) override; // UBTTaskNode
 public:
-	static EBTNodeResult::Type Common_SetFocalPoint(UBTNode& InNode, UBehaviorTreeComponent& InOwnerTree, uint8* InNodeMemory, const FBlackboardKeySelector& InBlackboardKey, const EATAAIFocusPriority InFocusPriority, const FRotator& InOffset, const bool bInLookAtPawnViewLocation, const bool bInDrawDebug = false);
+	static EBTNodeResult::Type Common_SetFocalPoint(UBTNode& InNode, UBehaviorTreeComponent& InOwnerTree, uint8* InNodeMemory, const FBlackboardKeySelector& InBlackboardKey, const EScWAIFocusPriority InFocusPriority, const FRotator& InOffset, const bool bInLookAtPawnViewLocation, const bool bInDrawDebug = false);
 //~ End Task
 
 //~ Begin Settings
 protected:
 
 	UPROPERTY(Category = "Settings", EditAnywhere)
-	EATAAIFocusPriority FocusPriority;
+	EScWAIFocusPriority FocusPriority;
 
 	UPROPERTY(Category = "Settings", EditAnywhere, meta = (EditCondition = "!bFocusOnActor"))
 	FRotator Offset;

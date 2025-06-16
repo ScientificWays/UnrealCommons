@@ -15,6 +15,7 @@ UScWASC_Base::UScWASC_Base()
 {
 	AttributeSetClass = UScWAS_Base::StaticClass();
 
+	AccumulatedAppliedDamageResetTime = 1.5f;
 	bShouldDieOnZeroHealth = true;
 }
 
@@ -42,6 +43,13 @@ void UScWASC_Base::InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarAc
 
 	//OwnerPlayerController = Cast<AIDPlayerController>(InOwnerActor);
 	//check(OwnerController);
+}
+
+void UScWASC_Base::DestroyActiveState() // UAbilitySystemComponent
+{
+	ResolveAccumulatedAppliedDamage();
+
+	Super::DestroyActiveState();
 }
 
 void UScWASC_Base::OnRegister() // UActorComponent
@@ -224,66 +232,50 @@ void UScWASC_Base::ApplySpawnEffect()
 //~ End Effects
 
 //~ Begin Damage
-void UScWASC_Base::AccumulateIgnoredDamage(float InDamage, bool bInAutoResolveNextTick)
-{
-	AccumulatedIgnoredDamage += InDamage;
-	RequestResolveAccumulatedDamageNextTick();
+#define ACCUMULATED_DAMAGE_DECLARE_METHODS(InRoute) \
+void UScWASC_Base::Accumulate##InRoute##Damage(float InDamage, bool bInAutoResolveNextTick) \
+{ \
+	Accumulated##InRoute##Damage += InDamage; \
+	RequestResolveAccumulated##InRoute##DamageNextTick(); \
+} \
+void UScWASC_Base::RequestResolveAccumulated##InRoute##DamageNextTick() \
+{ \
+	if (!Accumulated##InRoute##DamageTimerHandle.IsValid()) \
+	{ \
+		if (UWorld* World = GetWorld()) \
+		{ \
+			FTimerManager& WorldTimerManager = World->GetTimerManager(); \
+			check(!WorldTimerManager.TimerExists(Accumulated##InRoute##DamageTimerHandle)); \
+			Accumulated##InRoute##DamageTimerHandle = WorldTimerManager.SetTimerForNextTick(this, &UScWASC_Base::ResolveAccumulated##InRoute##DamageFromNextTickTimer); \
+			if (Accumulated##InRoute##DamageResetTime > 0.0f) \
+				WorldTimerManager.SetTimer(Accumulated##InRoute##DamageResetTimerHandle, this, &UScWASC_Base::ResetAccumulated##InRoute##Damage, Accumulated##InRoute##DamageResetTime); \
+		} \
+	} \
+} \
+void UScWASC_Base::ResolveAccumulated##InRoute##DamageFromNextTickTimer() \
+{ \
+	ResolveAccumulated##InRoute##Damage(); \
+	if (Accumulated##InRoute##DamageResetTime <= 0.0f) \
+		ResetAccumulated##InRoute##Damage(); \
+} \
+void UScWASC_Base::ResolveAccumulated##InRoute##Damage() \
+{ \
+	if (UWorld* World = GetWorld()) \
+		World->GetTimerManager().ClearTimer(Accumulated##InRoute##DamageTimerHandle); \
+	if (Accumulated##InRoute##Damage != 0.0f) \
+		OnAccumulated##InRoute##DamageResolved.Broadcast(Accumulated##InRoute##Damage); \
+} \
+void UScWASC_Base::ResetAccumulated##InRoute##Damage() \
+{ \
+	Accumulated##InRoute##Damage = 0.0f; \
 }
 
-void UScWASC_Base::AccumulateBlockedDamage(float InDamage, bool bInAutoResolveNextTick)
-{
-	AccumulatedBlockedDamage += InDamage;
-	RequestResolveAccumulatedDamageNextTick();
-}
+//ACCUMULATED_DAMAGE_DECLARE_METHODS(Ignored)
+//ACCUMULATED_DAMAGE_DECLARE_METHODS(Blocked)
+//ACCUMULATED_DAMAGE_DECLARE_METHODS(Evaded)
+ACCUMULATED_DAMAGE_DECLARE_METHODS(Applied)
 
-void UScWASC_Base::AccumulateEvadedDamage(float InDamage, bool bInAutoResolveNextTick)
-{
-	AccumulatedEvadedDamage += InDamage;
-	RequestResolveAccumulatedDamageNextTick();
-}
-
-void UScWASC_Base::AccumulateAppliedDamage(float InDamage, bool bInAutoResolveNextTick)
-{
-	AccumulatedAppliedDamage += InDamage;
-	RequestResolveAccumulatedDamageNextTick();
-}
-
-void UScWASC_Base::RequestResolveAccumulatedDamageNextTick()
-{
-	if (!AccumulatedDamageTimerHandle.IsValid())
-	{
-		if (UWorld* World = GetWorld())
-		{
-			FTimerManager& WorldTimerManager = World->GetTimerManager();
-			check(!WorldTimerManager.TimerExists(AccumulatedDamageTimerHandle));
-			AccumulatedDamageTimerHandle = WorldTimerManager.SetTimerForNextTick(this, &UScWASC_Base::ResolveAccumulatedDamage);
-		}
-	}
-}
-
-void UScWASC_Base::ResolveAccumulatedDamage()
-{
-	if (UWorld* World = GetWorld())
-	{
-		World->GetTimerManager().ClearTimer(AccumulatedDamageTimerHandle);
-	}
-	if (AccumulatedIgnoredDamage != 0.0f)
-	{
-		OnAccumulatedIgnoredDamageResolved.Broadcast(AccumulatedIgnoredDamage);
-	}
-	if (AccumulatedBlockedDamage != 0.0f)
-	{
-		OnAccumulatedBlockedDamageResolved.Broadcast(AccumulatedBlockedDamage);
-	}
-	if (AccumulatedEvadedDamage != 0.0f)
-	{
-		OnAccumulatedEvadedDamageResolved.Broadcast(AccumulatedEvadedDamage);
-	}
-	if (AccumulatedAppliedDamage != 0.0f)
-	{
-		OnAccumulatedAppliedDamageResolved.Broadcast(AccumulatedAppliedDamage);
-	}
-}
+#undef ACCUMULATED_DAMAGE_DECLARE_METHODS
 
 void UScWASC_Base::OnAvatarTakePointDamage(AActor* InDamagedActor, float InDamage, AController* InInstigator, FVector InHitLocation, UPrimitiveComponent* InHitComponent, FName InBoneName, FVector InHitDirection, const UDamageType* InDamageType, AActor* InDamageCauser)
 {
@@ -385,7 +377,7 @@ bool UScWASC_Base::TryIgnoreDamage(float& InOutAdjustedDamage, const FReceiveDam
 	}
 	if (bIsIgnored)
 	{
-		AccumulateIgnoredDamage(InOutAdjustedDamage);
+		//AccumulateIgnoredDamage(InOutAdjustedDamage);
 		return true;
 	}
 	else
@@ -409,7 +401,7 @@ bool UScWASC_Base::TryBlockDamage(float& InOutAdjustedDamage, const FReceiveDama
 	}*/
 	if (bIsBlocked)
 	{
-		AccumulateBlockedDamage(InOutAdjustedDamage);
+		//AccumulateBlockedDamage(InOutAdjustedDamage);
 		return true;
 	}
 	else
@@ -437,7 +429,7 @@ bool UScWASC_Base::TryEvadeDamage(float& InOutAdjustedDamage, const FReceiveDama
 	}*/
 	if (FMath::FRand() <= EvasionChance)
 	{
-		AccumulateEvadedDamage(InOutAdjustedDamage);
+		//AccumulateEvadedDamage(InOutAdjustedDamage);
 		return true;
 	}
 	else

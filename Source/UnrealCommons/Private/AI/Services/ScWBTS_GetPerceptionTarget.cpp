@@ -27,7 +27,7 @@ UScWBTS_GetPerceptionTarget::UScWBTS_GetPerceptionTarget()
 	OutRelevantTargetKey.AllowNoneAsValue(false);
 	OutRelevantTargetKey.AddVectorFilter(this, GET_MEMBER_NAME_CHECKED(ThisClass, OutRelevantTargetKey));
 	OutRelevantTargetKey.AddObjectFilter(this, GET_MEMBER_NAME_CHECKED(ThisClass, OutRelevantTargetKey), AActor::StaticClass());
-	OutRelevantTargetKey.SelectedKeyName = FATABlackboard::KeyTargetActor;
+	OutRelevantTargetKey.SelectedKeyName = FScWBlackboard::KeyTargetActor;
 }
 
 //~ Begin Editor

@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS(Abstract)
+UCLASS(Abstract, meta = (DisplayName = "ScW Game Mode"))
 class UNREALCOMMONS_API AScWGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
@@ -17,8 +17,11 @@ class UNREALCOMMONS_API AScWGameMode : public AGameModeBase
 public:
 
 	AScWGameMode();
+	
+//~ Begin Statics
+public:
 
-	UFUNCTION(Category = "Damage", BlueprintCallable, BlueprintPure, meta = (WorldContext = "InWCO"))
+	UFUNCTION(Category = "Statics", BlueprintCallable, BlueprintPure, meta = (WorldContext = "InWCO"))
 	static AScWGameMode* TryGetScWGameMode(const UObject* InWCO);
-
+//~ End Statics
 };

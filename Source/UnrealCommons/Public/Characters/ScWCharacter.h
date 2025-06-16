@@ -11,7 +11,7 @@
 /**
  *
  */
-UCLASS(Abstract, Blueprintable)
+UCLASS(Abstract, Blueprintable, meta = (DisplayName = "ScW Character"))
 class UNREALCOMMONS_API AScWCharacter : public ACharacter, public IGenericTeamAgentInterface, public IAbilitySystemInterface, public IGameplayTagAssetInterface, public IGameplayCueInterface
 {
 	GENERATED_BODY()
@@ -24,19 +24,26 @@ public:
 public:
 
 	UFUNCTION(Category = "Statics", BlueprintCallable, meta = (WorldContext = "InWCO"))
-	static AScWCharacter* SpawnCharacter(const UObject* InWCO, UScWCharacterData* InData, FTransform InTransform);
+	static AScWCharacter* SpawnCharacter(const UObject* InWCO, class UScWCharacterData* InData, FTransform InTransform);
 //~ End Statics
 
 //~ Begin Initialize
 public:
 
+	UFUNCTION(Category = "Initialize", BlueprintCallable)
+	bool IsPlayerCharacter() const { return bIsPlayerCharacter; }
+
 	UFUNCTION(Category = "Initialize", BlueprintCallable, meta = (KeyWords = "GetCharacterDataAsset"))
 	const class UScWCharacterData* GetDataAsset() const { return DataAsset; }
 
 protected:
+	virtual void PostInitializeComponents() override; // AActor
 	virtual void OnConstruction(const FTransform& InTransform) override; // AActor
 	virtual void BeginPlay() override; // AActor
 	virtual void EndPlay(const EEndPlayReason::Type InReason) override; // AActor
+
+	UPROPERTY(Category = "Initialize", EditAnywhere, BlueprintReadOnly)
+	bool bIsPlayerCharacter;
 
 	UPROPERTY(Category = "Initialize", EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<const class UScWCharacterData> DataAsset;
@@ -64,6 +71,7 @@ protected:
 
 //~ Begin Controller
 protected:
+	virtual void SpawnDefaultController() override; // APawn
 	virtual void PossessedBy(AController* InController) override; // APawn
 //~ End Controller
 

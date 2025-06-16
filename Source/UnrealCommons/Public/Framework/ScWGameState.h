@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS(Abstract)
+UCLASS(Abstract, meta = (DisplayName = "ScW Game State"))
 class UNREALCOMMONS_API AScWGameState : public AGameStateBase
 {
 	GENERATED_BODY()
@@ -28,8 +28,9 @@ public:
 //~ Begin DataAssets
 public:
 
+	// Default implementation tries to get data from ScW Level Script Actor first
 	UFUNCTION(Category = "DataAssets", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "GetDataAssetForNewCharacter"))
-	const UScWCharacterData* K2_GetDataAssetForNewCharacter(const class AScWCharacter* InCharacter) const;
+	const class UScWCharacterData* K2_GetDataAssetForNewCharacter(const class AScWCharacter* InCharacter) const;
 
 	UPROPERTY(Category = "DataAssets", EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<const class UScWCharacterData> DefaultPlayerCharacterDataAsset;

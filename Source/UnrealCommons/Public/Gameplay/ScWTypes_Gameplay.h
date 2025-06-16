@@ -7,7 +7,7 @@
 //#include "ScWTypes_Gameplay.generated.h"
 
 /*USTRUCT(BlueprintType)
-struct FATAGameplayAbilityActorInfo : public FGameplayAbilityActorInfo
+struct FAtaGameplayAbilityActorInfo : public FGameplayAbilityActorInfo
 {
 	GENERATED_BODY()
 

@@ -9,7 +9,7 @@
 /**
  *
  */
-UCLASS(const, Abstract, Blueprintable, BlueprintType)
+UCLASS(const, Abstract, Blueprintable, BlueprintType, meta = (DisplayName = "ScW Character Data"))
 class UNREALCOMMONS_API UScWCharacterData : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
@@ -18,8 +18,11 @@ public:
 
 	UScWCharacterData();
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "UpdateCharacterFromDataAsset"))
-	void K2_UpdateCharacterFromDataAsset(class AScWCharacter* InCharacter) const;
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "InitializeCharacterComponents"))
+	void K2_InitializeCharacterComponents(class AScWCharacter* InCharacter) const;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "InitializeCharacterController"))
+	void K2_InitializeCharacterController(class AScWCharacter* InCharacter) const;
 
 //~ Begin UI
 public:
@@ -33,6 +36,9 @@ public:
 
 	UPROPERTY(Category = "Class", EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<class AScWCharacter> CharacterClass;
+
+	UPROPERTY(Category = "Class", EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<class AScWAIController> AIControllerClass;
 //~ End Class
 
 //~ Begin Team

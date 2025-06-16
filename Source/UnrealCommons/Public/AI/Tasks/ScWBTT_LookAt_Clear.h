@@ -31,7 +31,7 @@ protected:
 protected:
 
 	UPROPERTY(Category = "Settings", EditAnywhere, meta = (EditCondition = "!bClearAllFocuses"))
-	EATAAIFocusPriority FocusPriorityToClear;
+	EScWAIFocusPriority FocusPriorityToClear;
 
 	UPROPERTY(Category = "Settings", EditAnywhere)
 	bool bClearAllFocuses;

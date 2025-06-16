@@ -4,6 +4,8 @@
 
 #include "Characters/ScWCharacter.h"
 
+#include "Framework/ScWLevelScriptActor.h"
+
 const FName AScWGameState::InvalidTeam = TEXT("InvalidTeam");
 
 AScWGameState::AScWGameState()
@@ -34,7 +36,7 @@ AScWGameState* AScWGameState::TryGetScWGameState(const UObject* InWCO)
 	{
 		return OutGameState;
 	}
-	UE_LOG(LogScWGameplay, Error, TEXT("AScWGameState::TryGetScWGameState() GameState from World %s is not of class AScWGameState!"), *World->GetName());
+	UE_LOG(LogScWGameplay, Error, TEXT("AScWGameState::TryGetScWGameState() GameState from %s is not of class AScWGameState!"), *World->GetName());
 	return nullptr;
 }
 //~ End Statics
@@ -42,27 +44,37 @@ AScWGameState* AScWGameState::TryGetScWGameState(const UObject* InWCO)
 //~ Begin DataAssets
 const UScWCharacterData* AScWGameState::K2_GetDataAssetForNewCharacter_Implementation(const AScWCharacter* InCharacter) const
 {
-	if (!InCharacter)
+	if (UWorld* World = GetWorld())
 	{
-		return nullptr;
-	}
-	if (InCharacter->IsPlayerControlled())
-	{
-		if (!InCharacter->GetDataAsset() || (bForceDefaultPlayerCharacterDataAsset && DefaultPlayerCharacterDataAsset))
+		if (AScWLevelScriptActor* LevelScriptActor = Cast<AScWLevelScriptActor>(World->GetLevelScriptActor()))
 		{
-			return DefaultPlayerCharacterDataAsset;
+			if (const UScWCharacterData* OutCharacterData = LevelScriptActor->K2_GetDataAssetForNewCharacter(InCharacter))
+			{
+				return OutCharacterData;
+			}
 		}
 	}
-	return InCharacter->GetDataAsset();
+	if (InCharacter)
+	{
+		if (InCharacter->IsPlayerCharacter())
+		{
+			if (!InCharacter->GetDataAsset() || (bForceDefaultPlayerCharacterDataAsset && DefaultPlayerCharacterDataAsset))
+			{
+				return DefaultPlayerCharacterDataAsset;
+			}
+		}
+		return InCharacter->GetDataAsset();
+	}
+	return nullptr;
 }
 //~ End DataAssets
 
 //~ Begin Teams
 FGenericTeamId AScWGameState::GetTeamId(const FName& InTeamName) const
 {
-	if (const FGenericTeamId* OutId = TeamMap.Find(InTeamName))
+	if (const FGenericTeamId* OutTeamIdPtr = TeamMap.Find(InTeamName))
 	{
-		return *OutId;
+		return *OutTeamIdPtr;
 	}
 	return FGenericTeamId::NoTeam;
 }

@@ -20,7 +20,7 @@ UScWBTD_CheckOcclusion::UScWBTD_CheckOcclusion()
 	ToTargetKey.AllowNoneAsValue(true);
 	ToTargetKey.AddVectorFilter(this, GET_MEMBER_NAME_CHECKED(ThisClass, FromTargetKey));
 	ToTargetKey.AddObjectFilter(this, GET_MEMBER_NAME_CHECKED(ThisClass, FromTargetKey), AActor::StaticClass());
-	ToTargetKey.SelectedKeyName = FATABlackboard::KeyTargetActor;
+	ToTargetKey.SelectedKeyName = FScWBlackboard::KeyTargetActor;
 
 	bCheckToPawnViewLocation = true;
 

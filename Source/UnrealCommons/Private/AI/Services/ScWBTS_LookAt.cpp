@@ -16,9 +16,9 @@ UScWBTS_LookAt::UScWBTS_LookAt()
 	BlackboardKey.AllowNoneAsValue(false);
 	BlackboardKey.AddVectorFilter(this, GET_MEMBER_NAME_CHECKED(ThisClass, BlackboardKey));
 	BlackboardKey.AddObjectFilter(this, GET_MEMBER_NAME_CHECKED(ThisClass, BlackboardKey), AActor::StaticClass());
-	BlackboardKey.SelectedKeyName = FATABlackboard::KeyTargetActor;
+	BlackboardKey.SelectedKeyName = FScWBlackboard::KeyTargetActor;
 
-	FocusPriority = EATAAIFocusPriority::Gameplay3;
+	FocusPriority = EScWAIFocusPriority::Gameplay3;
 	bClearFocusOnCeaseRelevant = true;
 	Offset = FRotator::ZeroRotator;
 	bLookAtPawnViewLocation = true;
@@ -55,7 +55,7 @@ FString UScWBTS_LookAt::GetStaticDescription() const // UBTNode
 	FString TargetDescription = BlackboardKey.IsSet() ? BlackboardKey.SelectedKeyName.ToString() : TEXT("invalid target");
 	FString OffsetDescription = (bFocusOnActor || Offset.IsNearlyZero()) ? TEXT("") : FString::Printf(TEXT(" (with offset [P: %.1f, Y: %.1f, R: %.1f])"), Offset.Pitch, Offset.Yaw, Offset.Roll);
 
-	static const UEnum* FocusPriorityEnum = StaticEnum<EATAAIFocusPriority>();
+	static const UEnum* FocusPriorityEnum = StaticEnum<EScWAIFocusPriority>();
 	FString FocusPriorityName = FocusPriorityEnum->GetNameStringByIndex(static_cast<int32>(FocusPriority));
 
 	return FString::Printf(TEXT("Update: %s\nLook at: %s%s\nPriority: %s"), *TickDescription, *TargetDescription, *OffsetDescription, *FocusPriorityName);

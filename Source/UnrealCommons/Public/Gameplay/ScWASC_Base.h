@@ -70,9 +70,9 @@ public:
 //~ End Statics
 
 //~ Begin Initialize
-public:
-	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override; // UAbilitySystemComponent
 protected:
+	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override; // UAbilitySystemComponent
+	virtual void DestroyActiveState() override; // UAbilitySystemComponent
 	virtual void OnRegister() override; // UActorComponent
 	virtual void BeginPlay() override; // UActorComponent
 //~ End Initialize
@@ -175,60 +175,39 @@ public:
 	FDamageEventSignature OnDamageIgnored;
 
 	UPROPERTY(Category = "Damage", BlueprintAssignable)
-	FDamageEventSignature OnDamageApplied;
-
-	UPROPERTY(Category = "Damage", BlueprintAssignable)
 	FDamageEventSignature OnDamageBlocked;
 
 	UPROPERTY(Category = "Damage", BlueprintAssignable)
 	FDamageEventSignature OnDamageEvaded;
 
-	UFUNCTION(Category = "Damage | Accumulated", BlueprintCallable)
-	void AccumulateIgnoredDamage(float InDamage, bool bInAutoResolveNextTick = true);
+	UPROPERTY(Category = "Damage", BlueprintAssignable)
+	FDamageEventSignature OnDamageApplied;
 
-	UFUNCTION(Category = "Damage | Accumulated", BlueprintCallable)
-	void AccumulateBlockedDamage(float InDamage, bool bInAutoResolveNextTick = true);
-
-	UFUNCTION(Category = "Damage | Accumulated", BlueprintCallable)
-	void AccumulateEvadedDamage(float InDamage, bool bInAutoResolveNextTick = true);
-
-	UFUNCTION(Category = "Damage | Accumulated", BlueprintCallable)
+	UFUNCTION(Category = "Damage | Accumulated | Applied", BlueprintCallable)
 	void AccumulateAppliedDamage(float InDamage, bool bInAutoResolveNextTick = true);
 
-protected:
-
-	UPROPERTY(Category = "Damage | Accumulated", BlueprintReadOnly)
-	float AccumulatedIgnoredDamage;
-
-	UPROPERTY(Category = "Damage | Accumulated", BlueprintReadOnly)
-	float AccumulatedBlockedDamage;
-
-	UPROPERTY(Category = "Damage | Accumulated", BlueprintReadOnly)
-	float AccumulatedEvadedDamage;
-
-	UPROPERTY(Category = "Damage | Accumulated", BlueprintReadOnly)
+	UPROPERTY(Category = "Damage | Accumulated | Applied", BlueprintReadOnly)
 	float AccumulatedAppliedDamage;
 
-	UPROPERTY()
-	FTimerHandle AccumulatedDamageTimerHandle;
+	UFUNCTION(Category = "Damage | Accumulated | Applied", BlueprintCallable)
+	void RequestResolveAccumulatedAppliedDamageNextTick();
+	void ResolveAccumulatedAppliedDamageFromNextTickTimer();
+	FTimerHandle AccumulatedAppliedDamageTimerHandle;
 
-	UPROPERTY(Category = "Damage | Accumulated", BlueprintAssignable)
-	FAccumulatedDamageResolveEventSignature OnAccumulatedIgnoredDamageResolved;
+	UFUNCTION(Category = "Damage | Accumulated | Applied", BlueprintCallable)
+	void ResolveAccumulatedAppliedDamage();
 
-	UPROPERTY(Category = "Damage | Accumulated", BlueprintAssignable)
-	FAccumulatedDamageResolveEventSignature OnAccumulatedBlockedDamageResolved;
-
-	UPROPERTY(Category = "Damage | Accumulated", BlueprintAssignable)
-	FAccumulatedDamageResolveEventSignature OnAccumulatedEvadedDamageResolved;
-
-	UPROPERTY(Category = "Damage | Accumulated", BlueprintAssignable)
+	UPROPERTY(Category = "Damage | Accumulated | Applied", BlueprintAssignable)
 	FAccumulatedDamageResolveEventSignature OnAccumulatedAppliedDamageResolved;
 
-	UFUNCTION(Category = "Damage | Accumulated", BlueprintCallable)
-	void RequestResolveAccumulatedDamageNextTick();
+	UPROPERTY(Category = "Damage | Accumulated | Applied", BlueprintReadWrite, EditAnywhere)
+	float AccumulatedAppliedDamageResetTime;
 
-	UFUNCTION(Category = "Damage | Accumulated", BlueprintCallable)
-	void ResolveAccumulatedDamage();
+	UFUNCTION(Category = "Damage | Accumulated | Applied", BlueprintCallable)
+	void ResetAccumulatedAppliedDamage();
+	FTimerHandle AccumulatedAppliedDamageResetTimerHandle;
+
+protected:
 
 	UFUNCTION()
 	void OnAvatarTakePointDamage(AActor* InDamagedActor, float InDamage, AController* InInstigator, FVector InHitLocation, UPrimitiveComponent* InHitComponent, FName InBoneName, FVector InHitDirection, const UDamageType* InDamageType, AActor* InDamageCauser);
@@ -248,8 +227,6 @@ protected:
 	virtual void PostBlockDamage(float InDamage, const FReceiveDamageData& InData) {}
 	virtual void PostEvadeDamage(float InDamage, const FReceiveDamageData& InData) {}
 	virtual void PostApplyDamage(float InDamage, const FReceiveDamageData& InData) {}
-
-	//virtual float AdjustIncomingDamage(float InDamage, const struct FReceiveDamageData& InData) const;
 
 	UPROPERTY(Category = "Damage", BlueprintReadOnly)
 	TObjectPtr<const UDamageType> LastReceivedDamageType;

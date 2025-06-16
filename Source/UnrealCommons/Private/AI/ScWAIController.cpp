@@ -6,12 +6,15 @@
 #include "AI/ScWAIPC_Base.h"
 
 AScWAIController::AScWAIController(const FObjectInitializer& InObjectInitializer)
-	: Super(InObjectInitializer.SetDefaultSubobjectClass<UScWPFC_Base>(TEXT("PathFollowingComponent")))
+//	: Super(InObjectInitializer.SetDefaultSubobjectClass<UScWPFC_Base>(TEXT("PathFollowingComponent")))
+	: Super(InObjectInitializer.DoNotCreateDefaultSubobject(TEXT("PathFollowingComponent")))
 {
-	BasePFC = Cast<UScWPFC_Base>(GetPathFollowingComponent());
+	//BasePFC = Cast<UScWPFC_Base>(GetPathFollowingComponent());
+	BasePFC = CreateDefaultSubobject<UScWPFC_Base>(TEXT("BasePFC"));
 	BasePFC->SetCrowdAvoidanceQuality(ECrowdAvoidanceQuality::Good);
+	SetPathFollowingComponent(BasePFC);
 
-	BaseAIPC = CreateDefaultSubobject<UScWAIPC_Base>("ATAAIPerceptionComponent");
+	BaseAIPC = CreateDefaultSubobject<UScWAIPC_Base>("BaseAIPC");
 	SetPerceptionComponent(*BaseAIPC);
 }
 

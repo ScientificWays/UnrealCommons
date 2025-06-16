@@ -51,29 +51,47 @@ AScWCharacter* AScWCharacter::SpawnCharacter(const UObject* InWCO, UScWCharacter
 //~ End Statics
 
 //~ Begin Initialize
+void AScWCharacter::PostInitializeComponents() // AActor
+{
+	UWorld* World = GetWorld();
+	if (World && World->IsGameWorld())
+	{
+		if (const AScWGameState* GameState = AScWGameState::TryGetScWGameState(this))
+		{
+			DataAsset = GameState->K2_GetDataAssetForNewCharacter(this);
+		}
+		if (DataAsset)
+		{
+			DataAsset->K2_InitializeCharacterController(this);
+		}
+	}
+	Super::PostInitializeComponents();
+
+	if (World && World->IsGameWorld() && DataAsset)
+	{
+		DataAsset->K2_InitializeCharacterComponents(this);
+	}
+}
+
 void AScWCharacter::OnConstruction(const FTransform& InTransform) // AActor
 {
 	Super::OnConstruction(InTransform);
 
+	if (!bIsPlayerCharacter && GetName().Contains("Player"))
+	{
+		UKismetSystemLibrary::PrintString(this, GetName() + " has bIsPlayerCharacter == false!", true, true, FLinearColor::Red, 30.0f);
+	}
 	if (UWorld* World = GetWorld())
 	{
-		if (World->IsEditorWorld() && DataAsset)
+		if (!World->IsGameWorld() && DataAsset)
 		{
-			DataAsset->K2_UpdateCharacterFromDataAsset(this);
+			DataAsset->K2_InitializeCharacterComponents(this);
 		}
 	}
 }
 
 void AScWCharacter::BeginPlay() // AActor
 {
-	if (const AScWGameState* GameState = AScWGameState::TryGetScWGameState(this))
-	{
-		DataAsset = GameState->K2_GetDataAssetForNewCharacter(this);
-	}
-	if (DataAsset)
-	{
-		DataAsset->K2_UpdateCharacterFromDataAsset(this);
-	}
 	Super::BeginPlay();
 
 	GiveWeapon(DataAsset->DefaultWeaponData);
@@ -115,13 +133,20 @@ UAbilitySystemComponent* AScWCharacter::GetAbilitySystemComponent() const // IAb
 //~ End Components
 
 //~ Begin Controller
+void AScWCharacter::SpawnDefaultController() // APawn
+{
+	Super::SpawnDefaultController();
+
+
+}
+
 void AScWCharacter::PossessedBy(AController* InController) // APawn
 {
 	Super::PossessedBy(InController);
 
 	if (DataAsset)
 	{
-		DataAsset->K2_UpdateCharacterFromDataAsset(this);
+		DataAsset->K2_InitializeCharacterController(this);
 	}
 }
 //~ End Controller

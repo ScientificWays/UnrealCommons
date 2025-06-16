@@ -9,7 +9,7 @@
 /**
 * 
 */
-UCLASS()
+UCLASS(meta = (DisplayName = "ScW AI Function Library"))
 class UNREALCOMMONS_API UScWAIFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()

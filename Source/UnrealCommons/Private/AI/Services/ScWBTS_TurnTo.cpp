@@ -19,7 +19,7 @@ UScWBTS_TurnTo::UScWBTS_TurnTo()
 	BlackboardKey.AddVectorFilter(this, GET_MEMBER_NAME_CHECKED(ThisClass, BlackboardKey));
 	BlackboardKey.AddRotatorFilter(this, GET_MEMBER_NAME_CHECKED(ThisClass, BlackboardKey));
 	BlackboardKey.AddObjectFilter(this, GET_MEMBER_NAME_CHECKED(ThisClass, BlackboardKey), AActor::StaticClass());
-	BlackboardKey.SelectedKeyName = FATABlackboard::KeyTargetActor;
+	BlackboardKey.SelectedKeyName = FScWBlackboard::KeyTargetActor;
 
 	Offset = FRotator::ZeroRotator;
 	ConstantSpeed = -1.0f;

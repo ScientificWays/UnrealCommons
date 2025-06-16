@@ -22,7 +22,7 @@ UScWBTT_GetRandomReachablePointInRadius::UScWBTT_GetRandomReachablePointInRadius
 
 	OutLocationKey.AllowNoneAsValue(false);
 	OutLocationKey.AddVectorFilter(this, GET_MEMBER_NAME_CHECKED(ThisClass, OutLocationKey));
-	OutLocationKey.SelectedKeyName = FATABlackboard::KeyTargetLocation;
+	OutLocationKey.SelectedKeyName = FScWBlackboard::KeyTargetLocation;
 }
 
 //~ Begin Task

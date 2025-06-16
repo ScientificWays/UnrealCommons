@@ -9,14 +9,14 @@ UScWBTT_LookAt_Clear::UScWBTT_LookAt_Clear()
 {
 	NodeName = "Clear look at";
 
-	FocusPriorityToClear = EATAAIFocusPriority::Gameplay3;
+	FocusPriorityToClear = EScWAIFocusPriority::Gameplay3;
 	bClearAllFocuses = false;
 }
 
 //~ Begin Task
 FString UScWBTT_LookAt_Clear::GetStaticDescription() const // UBTNode
 {
-	static const UEnum* FocusPriorityEnum = StaticEnum<EATAAIFocusPriority>();
+	static const UEnum* FocusPriorityEnum = StaticEnum<EScWAIFocusPriority>();
 	FString FocusPriorityName = FocusPriorityEnum->GetNameStringByIndex(static_cast<int32>(FocusPriorityToClear));
 	return bClearAllFocuses ? TEXT("Clear all focuses") : FString::Printf(TEXT("Clear %s focus"), *FocusPriorityName);
 }

@@ -13,9 +13,9 @@ UScWBTT_LookAt::UScWBTT_LookAt()
 	BlackboardKey.AllowNoneAsValue(false);
 	BlackboardKey.AddVectorFilter(this, GET_MEMBER_NAME_CHECKED(ThisClass, BlackboardKey));
 	BlackboardKey.AddObjectFilter(this, GET_MEMBER_NAME_CHECKED(ThisClass, BlackboardKey), AActor::StaticClass());
-	BlackboardKey.SelectedKeyName = FATABlackboard::KeyTargetActor;
+	BlackboardKey.SelectedKeyName = FScWBlackboard::KeyTargetActor;
 
-	FocusPriority = EATAAIFocusPriority::Gameplay3;
+	FocusPriority = EScWAIFocusPriority::Gameplay3;
 	Offset = FRotator::ZeroRotator;
 	bLookAtPawnViewLocation = false;
 
@@ -30,7 +30,7 @@ FString UScWBTT_LookAt::GetStaticDescription() const // UBTNode
 	FString TargetDescription = BlackboardKey.IsSet() ? BlackboardKey.SelectedKeyName.ToString() : TEXT("invalid target");
 	FString OffsetDescription = (bFocusOnActor || Offset.IsNearlyZero()) ? TEXT("") : FString::Printf(TEXT(" (with offset [P: %.1f, Y: %.1f, R: %.1f])"), Offset.Pitch, Offset.Yaw, Offset.Roll);
 
-	static const UEnum* FocusPriorityEnum = StaticEnum<EATAAIFocusPriority>();
+	static const UEnum* FocusPriorityEnum = StaticEnum<EScWAIFocusPriority>();
 	FString FocusPriorityName = FocusPriorityEnum->GetNameStringByIndex(static_cast<int32>(FocusPriority));
 
 	return FString::Printf(TEXT("Look at: %s%s\nPriority: %s"), *TargetDescription, *OffsetDescription, *FocusPriorityName);
@@ -65,7 +65,7 @@ EBTNodeResult::Type UScWBTT_LookAt::ExecuteTask(UBehaviorTreeComponent& InOwnerT
 
 //UE_DISABLE_OPTIMIZATION
 
-EBTNodeResult::Type UScWBTT_LookAt::Common_SetFocalPoint(UBTNode& InNode, UBehaviorTreeComponent& InOwnerTree, uint8* InNodeMemory, const FBlackboardKeySelector& InBlackboardKey, const EATAAIFocusPriority InFocusPriority, const FRotator& InOffset, const bool bInLookAtPawnViewLocation, const bool bInDrawDebug)
+EBTNodeResult::Type UScWBTT_LookAt::Common_SetFocalPoint(UBTNode& InNode, UBehaviorTreeComponent& InOwnerTree, uint8* InNodeMemory, const FBlackboardKeySelector& InBlackboardKey, const EScWAIFocusPriority InFocusPriority, const FRotator& InOffset, const bool bInLookAtPawnViewLocation, const bool bInDrawDebug)
 {
 	AAIController* OwnerController = InOwnerTree.GetAIOwner();
 	UBlackboardComponent* BlackboardComponent = InOwnerTree.GetBlackboardComponent();

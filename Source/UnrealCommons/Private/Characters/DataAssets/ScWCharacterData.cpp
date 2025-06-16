@@ -2,6 +2,8 @@
 
 #include "Characters/DataAssets/ScWCharacterData.h"
 
+#include "AI/ScWAIController.h"
+
 #include "Characters/ScWCharacter.h"
 
 #include "Framework/ScWGameState.h"
@@ -18,7 +20,7 @@ UScWCharacterData::UScWCharacterData()
 	CapsuleRadiusHeight = FVector2D(34.0f, 90.0f);
 }
 
-void UScWCharacterData::K2_UpdateCharacterFromDataAsset_Implementation(AScWCharacter* InCharacter) const
+void UScWCharacterData::K2_InitializeCharacterComponents_Implementation(AScWCharacter* InCharacter) const
 {
 	if (!InCharacter)
 	{
@@ -39,8 +41,20 @@ void UScWCharacterData::K2_UpdateCharacterFromDataAsset_Implementation(AScWChara
 	{
 		CharacterCapsule->SetCapsuleSize(CapsuleRadiusHeight.X, CapsuleRadiusHeight.Y);
 	}
+}
+
+void UScWCharacterData::K2_InitializeCharacterController_Implementation(AScWCharacter* InCharacter) const
+{
+	if (!InCharacter)
+	{
+		return;
+	}
 	InCharacter->SetGenericTeamId(GetDefaultTeamId(InCharacter));
 
+	if (AIControllerClass)
+	{
+		InCharacter->AIControllerClass = AIControllerClass;
+	}
 	if (AAIController* CharacterAIController = InCharacter->GetController<AAIController>())
 	{
 		CharacterAIController->RunBehaviorTree(DefaultBehaviorTree);

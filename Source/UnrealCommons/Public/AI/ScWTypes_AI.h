@@ -6,8 +6,8 @@
 
 #include "ScWTypes_AI.generated.h"
 
-UENUM(BlueprintType)
-enum class EATAAIFocusPriority : uint8
+UENUM(BlueprintType, meta = (DisplayName = "ScW AI Focus Priority"))
+enum class EScWAIFocusPriority : uint8
 {
 	Default = 0u,
 	Move = 1u,
@@ -16,7 +16,7 @@ enum class EATAAIFocusPriority : uint8
 	Gameplay3 = 4u
 };
 
-namespace FATABlackboard
+namespace FScWBlackboard
 {
 	const FName KeyTargetActor = TEXT("TargetActor");
 	const FName KeyTargetLocation = TEXT("TargetLocation");

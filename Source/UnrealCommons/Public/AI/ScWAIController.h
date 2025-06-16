@@ -9,7 +9,7 @@
 /**
  *
  */
-UCLASS()
+UCLASS(Abstract, meta = (DisplayName = "ScW AI Controller"))
 class UNREALCOMMONS_API AScWAIController : public AAIController
 {
 	GENERATED_BODY()
@@ -43,7 +43,7 @@ protected:
 //~ Begin Navigation
 protected:
 
-	UPROPERTY(Category = "Navigation", BlueprintReadOnly, VisibleAnywhere)
+	UPROPERTY(Category = "Navigation", VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<class UScWPFC_Base> BasePFC;
 //~ End Navigation
 	

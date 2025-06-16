@@ -43,7 +43,7 @@ protected:
 protected:
 
 	UPROPERTY(Category = "Settings", EditAnywhere)
-	EATAAIFocusPriority FocusPriority;
+	EScWAIFocusPriority FocusPriority;
 
 	UPROPERTY(Category = "Settings", EditAnywhere)
 	bool bClearFocusOnCeaseRelevant;

@@ -19,7 +19,7 @@ UScWBTD_CheckDistance::UScWBTD_CheckDistance()
 	ToTargetKey.AllowNoneAsValue(false);
 	ToTargetKey.AddVectorFilter(this, GET_MEMBER_NAME_CHECKED(ThisClass, ToTargetKey));
 	ToTargetKey.AddObjectFilter(this, GET_MEMBER_NAME_CHECKED(ThisClass, ToTargetKey), AActor::StaticClass());
-	ToTargetKey.SelectedKeyName = FATABlackboard::KeyTargetActor;
+	ToTargetKey.SelectedKeyName = FScWBlackboard::KeyTargetActor;
 
 	PassIfLessThanDistance = 500.0f;
 	PassIfLessThanDistanceKey.AllowNoneAsValue(true);

@@ -3,11 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Delegates/IDelegateInstance.h"
+#include "Delegates/DelegateCombinations.h"
 #include "EngineUtils.h"
 #include "Engine/World.h"
 #include "Engine/DamageEvents.h"
-#include "Delegates/IDelegateInstance.h"
-#include "Delegates/DelegateCombinations.h"
+#include "Engine/LevelScriptActor.h"
 
 #include "Net/UnrealNetwork.h"
 
@@ -18,6 +19,7 @@
 #include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 
@@ -36,12 +38,12 @@
 #include "Perception/AIPerceptionComponent.h"
 
 #include "AttributeSet.h"
-#include "GameplayCueInterface.h"
 #include "AbilitySystemGlobals.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemInterface.h"
 #include "Abilities/GameplayAbility.h"
 #include "Abilities/Tasks/AbilityTask.h"
+#include "GameplayCueInterface.h"
 
 #include "EnhancedInputSubsystems.h"
 
