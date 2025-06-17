@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS(meta = (KeyWords = "FindRandomPointInRadius, FindRandomReachanblePointInRadius"))
+UCLASS(meta = (DisplayName = "[ScW] BTT_GetRandomReachablePointInRadius", KeyWords = "FindRandomPointInRadius, FindRandomReachanblePointInRadius"))
 class UNREALCOMMONS_API UScWBTT_GetRandomReachablePointInRadius : public UBTTaskNode
 {
 	GENERATED_BODY()

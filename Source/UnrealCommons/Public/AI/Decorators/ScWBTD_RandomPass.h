@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(meta = (DisplayName = "[ScW] BTD_RandomPasss"))
 class UNREALCOMMONS_API UScWBTD_RandomPass : public UBTDecorator
 {
 	GENERATED_BODY()

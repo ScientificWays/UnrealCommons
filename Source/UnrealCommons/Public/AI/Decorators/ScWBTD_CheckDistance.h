@@ -12,7 +12,7 @@
  *	Check distance between two Targets and pass if less than (obviously) PassIfLessThanDistance.
  *	If either Target is not set, first key (likely SelfActor) is used.
  */
-UCLASS()
+UCLASS(meta = (DisplayName = "[ScW] BTD_CheckDistance"))
 class UNREALCOMMONS_API UScWBTD_CheckDistance : public UScWBTD_Tickable
 {
 	GENERATED_BODY()

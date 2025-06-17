@@ -9,7 +9,7 @@
 /**
  *
  */
-UCLASS(const, Blueprintable, BlueprintType)
+UCLASS(const, Blueprintable, BlueprintType, meta = (DisplayName = "[ScW] Combo Move Data"))
 class UNREALCOMMONS_API UScWComboMoveData : public UPrimaryDataAsset
 {
 	GENERATED_BODY()

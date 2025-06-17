@@ -13,7 +13,7 @@ DECLARE_DYNAMIC_DELEGATE_TwoParams(FGameplayTagNumChangedEvent, const FGameplayT
 /**
  * 
  */
-UCLASS()
+UCLASS(meta = (DisplayName = "[ScW] Gameplay Function Library"))
 class UNREALCOMMONS_API UScWGameplayFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()

@@ -11,7 +11,7 @@
 /**
  *
  */
-UCLASS(Abstract, Blueprintable)
+UCLASS(Abstract, Blueprintable, meta = (DisplayName = "[ScW] Weapon Melee"))
 class UNREALCOMMONS_API AScWWeapon_Melee : public AScWWeapon_Base
 {
 	GENERATED_BODY()

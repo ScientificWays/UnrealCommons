@@ -9,7 +9,7 @@
 /**
  *
  */
-UCLASS()
+UCLASS(meta = (DisplayName = "[ScW] AT_WaitComboMoveEvent"))
 class UNREALCOMMONS_API UScWAT_WaitComboMoveEvent : public UAbilityTask
 {
 	GENERATED_BODY()

@@ -11,7 +11,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(meta = (DisplayName = "[ScW] BTT_ClearBlackboardKey"))
 class UNREALCOMMONS_API UScWBTT_ClearBlackboardKey : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()

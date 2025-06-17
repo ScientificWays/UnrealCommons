@@ -11,7 +11,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(meta = (DisplayName = "[ScW] BTS_TurnTo"))
 class UNREALCOMMONS_API UScWBTS_TurnTo : public UBTService_BlackboardBase
 {
 	GENERATED_BODY()

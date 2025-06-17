@@ -26,7 +26,7 @@ struct FPerceptionTargetServiceData
 /**
  *
  */
-UCLASS(meta = (DisplayName = "ScW AI PC Base"))
+UCLASS(meta = (DisplayName = "[ScW] AI PC Base"))
 class UNREALCOMMONS_API UScWAIPC_Base : public UAIPerceptionComponent
 {
 	GENERATED_BODY()

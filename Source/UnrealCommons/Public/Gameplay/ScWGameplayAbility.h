@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(meta = (DisplayName = "[ScW] Gameplay Ability"))
 class UNREALCOMMONS_API UScWGameplayAbility : public UGameplayAbility
 {
 

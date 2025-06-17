@@ -53,7 +53,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FComboMoveEventSignature, class UScW
 /**
  * 
  */
-UCLASS(Abstract, Blueprintable)
+UCLASS(Abstract, Blueprintable, meta = (DisplayName = "[ScW] ASC Base"))
 class UNREALCOMMONS_API UScWASC_Base : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
@@ -182,6 +182,9 @@ public:
 
 	UPROPERTY(Category = "Damage", BlueprintAssignable)
 	FDamageEventSignature OnDamageApplied;
+
+	UPROPERTY(Category = "Damage | Accumulated | Applied", BlueprintReadOnly)
+	bool bEnableAccumulatedAppliedDamage;
 
 	UFUNCTION(Category = "Damage | Accumulated | Applied", BlueprintCallable)
 	void AccumulateAppliedDamage(float InDamage, bool bInAutoResolveNextTick = true);

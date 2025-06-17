@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS(Abstract, meta = (DisplayName = "ScW Game State"))
+UCLASS(Abstract, meta = (DisplayName = "[ScW] Game State"))
 class UNREALCOMMONS_API AScWGameState : public AGameStateBase
 {
 	GENERATED_BODY()

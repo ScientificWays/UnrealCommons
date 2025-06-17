@@ -11,7 +11,7 @@
 /**
  *
  */
-UCLASS(Abstract, Blueprintable, meta = (DisplayName = "ScW Character"))
+UCLASS(Abstract, Blueprintable, meta = (DisplayName = "[ScW] Character"))
 class UNREALCOMMONS_API AScWCharacter : public ACharacter, public IGenericTeamAgentInterface, public IAbilitySystemInterface, public IGameplayTagAssetInterface, public IGameplayCueInterface
 {
 	GENERATED_BODY()

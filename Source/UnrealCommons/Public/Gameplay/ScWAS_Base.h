@@ -15,7 +15,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(meta = (DisplayName = "[ScW] AS Base"))
 class UNREALCOMMONS_API UScWAS_Base : public UAttributeSet
 {
 	GENERATED_BODY()

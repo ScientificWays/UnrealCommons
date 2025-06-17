@@ -12,7 +12,7 @@
  *	Set focal point of Owner from BlackboardKey and optional rotation offset.
  *	If key is not set, distance of 1000 cm is used.
  */
-UCLASS(meta = (DisplayName = "Clear LookAt (Focus)", KeyWords = "ClearAllFocuses"))
+UCLASS(meta = (DisplayName = "[ScW] BTT_LookAt(Focus)_Clear", KeyWords = "ClearAllFocuses"))
 class UNREALCOMMONS_API UScWBTT_LookAt_Clear : public UBTTaskNode
 {
 	GENERATED_BODY()

@@ -14,7 +14,7 @@
  *	Set focal point of Owner from BlackboardKey and optional rotation offset.
  *	If key is not set, distance of 1000 cm is used.
  */
-UCLASS()
+UCLASS(meta = (DisplayName = "[ScW] BTS_LookAt"))
 class UNREALCOMMONS_API UScWBTS_LookAt : public UBTService_BlackboardBase
 {
 	GENERATED_BODY()

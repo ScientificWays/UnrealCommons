@@ -13,7 +13,7 @@
 /**
  *	Turn [To] or [Relative To] selected BlackboardKey Target or Owner if not set
  */
-UCLASS()
+UCLASS(meta = (DisplayName = "[ScW] BTT_TurnTo"))
 class UNREALCOMMONS_API UScWBTT_TurnTo : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()

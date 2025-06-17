@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS(Abstract)
+UCLASS(Abstract, meta = (DisplayName = "[ScW] BTD_Tickable"))
 class UNREALCOMMONS_API UScWBTD_Tickable : public UBTDecorator
 {
 	GENERATED_BODY()

@@ -11,7 +11,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(meta = (DisplayName = "[ScW] BTD_CheckOcclusion"))
 class UNREALCOMMONS_API UScWBTD_CheckOcclusion : public UScWBTD_Tickable
 {
 	GENERATED_BODY()

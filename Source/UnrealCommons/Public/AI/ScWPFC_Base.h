@@ -9,7 +9,7 @@
 /**
  *
  */
-UCLASS(meta = (DisplayName = "ScW AI PFC Base"))
+UCLASS(meta = (DisplayName = "[ScW] AI PFC Base"))
 class UNREALCOMMONS_API UScWPFC_Base : public UCrowdFollowingComponent
 {
 	GENERATED_BODY()

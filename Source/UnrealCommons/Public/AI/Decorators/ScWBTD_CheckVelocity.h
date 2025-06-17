@@ -12,7 +12,7 @@
  *	Check velocity of Target and pass if it more than MinVelocity.
  *	If Target is not set, first key (likely SelfActor) is used.
  */
-UCLASS()
+UCLASS(meta = (DisplayName = "[ScW] BTD_CheckVelocity"))
 class UNREALCOMMONS_API UScWBTD_CheckVelocity : public UScWBTD_Tickable
 {
 	GENERATED_BODY()

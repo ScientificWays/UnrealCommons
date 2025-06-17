@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS(Abstract)
+UCLASS(Abstract, meta = (DisplayName = "[ScW] User Widget"))
 class UNREALCOMMONS_API UScWUserWidget : public UUserWidget
 {
 

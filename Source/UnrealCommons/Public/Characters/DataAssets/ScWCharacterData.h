@@ -9,7 +9,7 @@
 /**
  *
  */
-UCLASS(const, Abstract, Blueprintable, BlueprintType, meta = (DisplayName = "ScW Character Data"))
+UCLASS(const, Abstract, Blueprintable, BlueprintType, meta = (DisplayName = "[ScW] Character Data"))
 class UNREALCOMMONS_API UScWCharacterData : public UPrimaryDataAsset
 {
 	GENERATED_BODY()

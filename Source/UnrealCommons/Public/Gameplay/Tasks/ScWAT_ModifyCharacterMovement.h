@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(meta = (DisplayName = "[ScW] AT_ModifyCharacterMovement"))
 class UNREALCOMMONS_API UScWAT_ModifyCharacterMovement : public UAbilityTask
 {
 	GENERATED_BODY()

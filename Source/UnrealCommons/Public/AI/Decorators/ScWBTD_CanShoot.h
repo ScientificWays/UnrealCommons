@@ -11,7 +11,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(meta = (DisplayName = "[ScW] BTD_CanShoot"))
 class UNREALCOMMONS_API UScWBTD_CanShoot : public UScWBTD_Tickable
 {
 	GENERATED_BODY()

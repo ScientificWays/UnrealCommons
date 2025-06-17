@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS(meta = (DisplayName = "ScW Level Script Actor"))
+UCLASS(meta = (DisplayName = "[ScW] Level Script Actor"))
 class UNREALCOMMONS_API AScWLevelScriptActor : public ALevelScriptActor
 {
 	GENERATED_BODY()

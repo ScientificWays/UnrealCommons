@@ -16,7 +16,7 @@ enum class ERelevantEnemy_FilterRule : uint8
 /**
  * 
  */
-UCLASS()
+UCLASS(meta = (DisplayName = "[ScW] BTS_GetPerceptionTarget"))
 class UNREALCOMMONS_API UScWBTS_GetPerceptionTarget : public UBTService
 {
 	GENERATED_BODY()

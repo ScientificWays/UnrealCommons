@@ -11,7 +11,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract, meta = (DisplayName = "[ScW] Player Controller"))
 class UNREALCOMMONS_API AScWPlayerController : public APlayerController, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()

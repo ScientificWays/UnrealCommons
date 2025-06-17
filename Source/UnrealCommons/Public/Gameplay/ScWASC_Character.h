@@ -11,7 +11,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(meta = (DisplayName = "[ScW] ASC Character"))
 class UNREALCOMMONS_API UScWASC_Character : public UScWASC_Base
 {
 	GENERATED_BODY()

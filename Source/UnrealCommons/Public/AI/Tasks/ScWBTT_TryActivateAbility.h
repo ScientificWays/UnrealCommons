@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS(meta = (KeyWords = "TryUseAbility, ActivateAbility"))
+UCLASS(meta = (DisplayName = "[ScW] BTT_TryActivateAbility", KeyWords = "TryUseAbility, ActivateAbility"))
 class UNREALCOMMONS_API UScWBTT_TryActivateAbility : public UBTTaskNode
 {
 	GENERATED_BODY()

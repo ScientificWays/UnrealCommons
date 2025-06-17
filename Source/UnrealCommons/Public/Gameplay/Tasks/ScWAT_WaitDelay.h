@@ -9,7 +9,7 @@
 /**
  *	Same as default AbilityTask_WaitDelay, but checks if provided time less or equals zero, and if it is, finishes immediately
  */
-UCLASS()
+UCLASS(meta = (DisplayName = "[ScW] AT_WaitDelay"))
 class UNREALCOMMONS_API UScWAT_WaitDelay : public UAbilityTask
 {
 	GENERATED_BODY()

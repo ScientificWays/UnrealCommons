@@ -9,7 +9,7 @@
 /**
  *
  */
-UCLASS(Abstract, meta = (DisplayName = "ScW AI Controller"))
+UCLASS(Abstract, meta = (DisplayName = "[ScW] AI Controller"))
 class UNREALCOMMONS_API AScWAIController : public AAIController
 {
 	GENERATED_BODY()

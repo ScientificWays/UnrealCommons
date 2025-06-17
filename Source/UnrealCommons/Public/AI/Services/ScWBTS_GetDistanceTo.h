@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(meta = (DisplayName = "[ScW] BTS_GetDistanceTo"))
 class UNREALCOMMONS_API UScWBTS_GetDistanceTo : public UBTService
 {
 	GENERATED_BODY()

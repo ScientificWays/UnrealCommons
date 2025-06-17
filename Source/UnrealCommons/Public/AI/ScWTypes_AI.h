@@ -6,7 +6,7 @@
 
 #include "ScWTypes_AI.generated.h"
 
-UENUM(BlueprintType, meta = (DisplayName = "ScW AI Focus Priority"))
+UENUM(BlueprintType, meta = (DisplayName = "[ScW] AI Focus Priority"))
 enum class EScWAIFocusPriority : uint8
 {
 	Default = 0u,

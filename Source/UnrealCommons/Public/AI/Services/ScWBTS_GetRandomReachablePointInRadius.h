@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(meta = (DisplayName = "[ScW] BTS_GetRandomReachablePointInRadius"))
 class UNREALCOMMONS_API UScWBTS_GetRandomReachablePointInRadius : public UBTService
 {
 	GENERATED_BODY()

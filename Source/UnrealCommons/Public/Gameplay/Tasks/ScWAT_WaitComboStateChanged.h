@@ -9,7 +9,7 @@
 /**
  *
  */
-UCLASS()
+UCLASS(meta = (DisplayName = "[ScW] AT_WaitComboStateChanged"))
 class UNREALCOMMONS_API UScWAT_WaitComboStateChanged : public UAbilityTask
 {
 	GENERATED_BODY()

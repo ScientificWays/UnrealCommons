@@ -9,7 +9,7 @@
 /**
  *
  */
-UCLASS(Abstract, Blueprintable)
+UCLASS(Abstract, Blueprintable, meta = (DisplayName = "[ScW] Weapon Base"))
 class AScWWeapon_Base : public AActor
 {
 	GENERATED_BODY()

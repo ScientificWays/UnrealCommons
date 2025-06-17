@@ -9,7 +9,7 @@
 /**
  *
  */
-UCLASS(const, Blueprintable, BlueprintType)
+UCLASS(const, Blueprintable, BlueprintType, meta = (DisplayName = "[ScW] Damage Type"))
 class UNREALCOMMONS_API UScWDamageType : public UDamageType
 {
 	GENERATED_BODY()

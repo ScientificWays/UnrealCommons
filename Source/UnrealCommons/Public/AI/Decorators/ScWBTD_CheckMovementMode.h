@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(meta = (DisplayName = "[ScW] BTD_CheckMovementMode"))
 class UNREALCOMMONS_API UScWBTD_CheckMovementMode : public UBTDecorator
 {
 	GENERATED_BODY()

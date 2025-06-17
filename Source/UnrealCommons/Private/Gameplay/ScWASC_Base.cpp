@@ -15,6 +15,7 @@ UScWASC_Base::UScWASC_Base()
 {
 	AttributeSetClass = UScWAS_Base::StaticClass();
 
+	bEnableAccumulatedAppliedDamage = true;
 	AccumulatedAppliedDamageResetTime = 1.5f;
 	bShouldDieOnZeroHealth = true;
 }
@@ -235,8 +236,11 @@ void UScWASC_Base::ApplySpawnEffect()
 #define ACCUMULATED_DAMAGE_DECLARE_METHODS(InRoute) \
 void UScWASC_Base::Accumulate##InRoute##Damage(float InDamage, bool bInAutoResolveNextTick) \
 { \
-	Accumulated##InRoute##Damage += InDamage; \
-	RequestResolveAccumulated##InRoute##DamageNextTick(); \
+	if (bEnableAccumulated##InRoute##Damage) \
+	{ \
+		Accumulated##InRoute##Damage += InDamage; \
+		RequestResolveAccumulated##InRoute##DamageNextTick(); \
+	} \
 } \
 void UScWASC_Base::RequestResolveAccumulated##InRoute##DamageNextTick() \
 { \
