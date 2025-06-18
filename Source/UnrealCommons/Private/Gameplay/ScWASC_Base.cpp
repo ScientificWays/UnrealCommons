@@ -653,7 +653,14 @@ bool UScWASC_Base::UpdateRelevantComboFromCurrentMoves(bool InResetIfNoRelevantC
 	}
 	if (InResetIfNoRelevantCombo && !OutSuccess)
 	{
-		SetComboState(EComboState::Reset, false);
+		if (CurrentComboState != EComboState::Reset)
+		{
+			SetComboState(EComboState::Reset, false);
+		}
+		else
+		{
+			CurrentComboMoves.Empty();
+		}
 	}
 	return OutSuccess;
 }
