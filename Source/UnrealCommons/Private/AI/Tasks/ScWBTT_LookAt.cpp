@@ -8,7 +8,7 @@
 
 UScWBTT_LookAt::UScWBTT_LookAt()
 {
-	NodeName = "Look at";
+	NodeName = "Look At";
 
 	BlackboardKey.AllowNoneAsValue(false);
 	BlackboardKey.AddVectorFilter(this, GET_MEMBER_NAME_CHECKED(ThisClass, BlackboardKey));

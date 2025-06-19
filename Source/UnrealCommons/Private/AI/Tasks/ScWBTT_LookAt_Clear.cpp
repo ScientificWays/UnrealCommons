@@ -7,7 +7,7 @@
 
 UScWBTT_LookAt_Clear::UScWBTT_LookAt_Clear()
 {
-	NodeName = "Clear look at";
+	NodeName = "Clear Look At";
 
 	FocusPriorityToClear = EScWAIFocusPriority::Gameplay3;
 	bClearAllFocuses = false;

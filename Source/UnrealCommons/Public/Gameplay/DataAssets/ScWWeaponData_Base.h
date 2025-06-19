@@ -4,6 +4,8 @@
 
 #include "UnrealCommons.h"
 
+#include "Gameplay/ScWTypes_Gameplay.h"
+
 #include "ScWWeaponData_Base.generated.h"
 
 /**
@@ -53,6 +55,6 @@ public:
 public:
 
 	UPROPERTY(Category = "Abilities", EditDefaultsOnly, BlueprintReadOnly)
-	TMap<TSubclassOf<UGameplayAbility>, int32> WeaponAbilities;
+	TArray<FScWGameplayGiveAbilityData> WeaponAbilitiesGiveData;
 //~ End Abilities
 };

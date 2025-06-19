@@ -11,6 +11,8 @@
 
 #include "Gameplay/ScWWeapon_Base.h"
 #include "Gameplay/ScWASC_Character.h"
+#include "Gameplay/ScWTypes_Gameplay.h"
+#include "Gameplay/ScWGameplayFunctionLibrary.h"
 #include "Gameplay/DataAssets/ScWWeaponData_Base.h"
 
 AScWCharacter::AScWCharacter(const FObjectInitializer& InObjectInitializer)
@@ -94,7 +96,14 @@ void AScWCharacter::BeginPlay() // AActor
 {
 	Super::BeginPlay();
 
-	GiveWeapon(DataAsset->DefaultWeaponData);
+	if (DataAsset)
+	{
+		GiveWeapon(DataAsset->DefaultWeaponData);
+	}
+	else
+	{
+		UKismetSystemLibrary::PrintString(this, GetName() + " has invalid DataAsset on BeginPlay()!", true, true, FLinearColor::Red, 30.0f);
+	}
 }
 
 void AScWCharacter::EndPlay(const EEndPlayReason::Type InReason) // AActor
@@ -148,8 +157,286 @@ void AScWCharacter::PossessedBy(AController* InController) // APawn
 	{
 		DataAsset->K2_InitializeCharacterController(this);
 	}
+	if (APlayerController* OwnerPlayerController = Cast<APlayerController>(InController))
+	{
+		UScWGameplayFunctionLibrary::AddEnhancedInputMappingContextTo(OwnerPlayerController, DefaultInputMappingContext, DefaultInputMappingContextPriority, DefaultInputMappingContextOptions);
+	}
+}
+
+void AScWCharacter::UnPossessed() // APawn
+{
+	if (APlayerController* OwnerPlayerController = GetController<APlayerController>())
+	{
+		UScWGameplayFunctionLibrary::RemoveEnhancedInputMappingContextFrom(OwnerPlayerController, DefaultInputMappingContext, DefaultInputMappingContextOptions);
+	}
+	Super::UnPossessed();
 }
 //~ End Controller
+
+//~ Begin Input
+void AScWCharacter::SetupPlayerInputComponent(UInputComponent* InInputComponent) // APawn
+{
+	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InInputComponent);
+	ensure(EnhancedInputComponent);
+	if (!EnhancedInputComponent)
+	{
+		return;
+	}
+	ensure(HorizontalMovementAction);
+	if (HorizontalMovementAction)
+	{
+		EnhancedInputComponent->BindAction(HorizontalMovementAction, ETriggerEvent::Triggered, this, &AScWCharacter::InputHorizontalMovement);
+		EnhancedInputComponent->BindAction(HorizontalMovementAction, ETriggerEvent::Completed, this, &AScWCharacter::InputHorizontalMovement);
+	}
+	if (UsePrimaryAction)
+	{
+		EnhancedInputComponent->BindAction(UsePrimaryAction, ETriggerEvent::Started, this, &AScWCharacter::InputUsePrimaryPressed);
+		EnhancedInputComponent->BindAction(UsePrimaryAction, ETriggerEvent::Completed, this, &AScWCharacter::InputUsePrimaryReleased);
+	}
+	if (UseSecondaryAction)
+	{
+		EnhancedInputComponent->BindAction(UseSecondaryAction, ETriggerEvent::Started, this, &AScWCharacter::InputUseSecondaryPressed);
+		EnhancedInputComponent->BindAction(UseSecondaryAction, ETriggerEvent::Completed, this, &AScWCharacter::InputUseSecondaryReleased);
+	}
+	if (JumpAction)
+	{
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AScWCharacter::InputJumpPressed);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AScWCharacter::InputJumpReleased);
+	}
+	if (CrouchAction)
+	{
+		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &AScWCharacter::InputCrouchPressed);
+		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Completed, this, &AScWCharacter::InputCrouchReleased);
+	}
+	if (InteractAction)
+	{
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AScWCharacter::InputInteractPressed);
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Completed, this, &AScWCharacter::InputInteractReleased);
+	}
+	if (ReloadAction)
+	{
+		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Started, this, &AScWCharacter::InputReloadPressed);
+		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Completed, this, &AScWCharacter::InputReloadReleased);
+	}
+	if (SprintAction)
+	{
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &AScWCharacter::InputSprintPressed);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AScWCharacter::InputSprintReleased);
+	}
+	if (WalkAction)
+	{
+		EnhancedInputComponent->BindAction(WalkAction, ETriggerEvent::Started, this, &ThisClass::InputWalkPressed);
+		EnhancedInputComponent->BindAction(WalkAction, ETriggerEvent::Completed, this, &AScWCharacter::InputWalkReleased);
+	}
+	if (ShoveAction)
+	{
+		EnhancedInputComponent->BindAction(ShoveAction, ETriggerEvent::Started, this, &AScWCharacter::InputShovePressed);
+		EnhancedInputComponent->BindAction(ShoveAction, ETriggerEvent::Completed, this, &AScWCharacter::InputShoveReleased);
+	}
+	if (DropAction)
+	{
+		EnhancedInputComponent->BindAction(DropAction, ETriggerEvent::Started, this, &AScWCharacter::InputDropPressed);
+		EnhancedInputComponent->BindAction(DropAction, ETriggerEvent::Completed, this, &AScWCharacter::InputDropReleased);
+	}
+	if (FlashlightAction)
+	{
+		EnhancedInputComponent->BindAction(FlashlightAction, ETriggerEvent::Started, this, &AScWCharacter::InputFlashlightPressed);
+		EnhancedInputComponent->BindAction(FlashlightAction, ETriggerEvent::Completed, this, &AScWCharacter::InputFlashlightReleased);
+	}
+	if (SpecialAction)
+	{
+		EnhancedInputComponent->BindAction(SpecialAction, ETriggerEvent::Started, this, &AScWCharacter::InputSpecialPressed);
+		EnhancedInputComponent->BindAction(SpecialAction, ETriggerEvent::Completed, this, &AScWCharacter::InputSpecialReleased);
+	}
+	if (WeaponSwitchScrollAction)
+	{
+		EnhancedInputComponent->BindAction(WeaponSwitchScrollAction, ETriggerEvent::Started, this, &AScWCharacter::InputWeaponSwitchScrollPressed);
+		EnhancedInputComponent->BindAction(WeaponSwitchScrollAction, ETriggerEvent::Completed, this, &AScWCharacter::InputWeaponSwitchScrollPressed);
+	}
+	if (WeaponSwitchDirectAction)
+	{
+		EnhancedInputComponent->BindAction(WeaponSwitchDirectAction, ETriggerEvent::Started, this, &AScWCharacter::InputWeaponSwitchDirectPressed);
+		EnhancedInputComponent->BindAction(WeaponSwitchDirectAction, ETriggerEvent::Completed, this, &AScWCharacter::InputWeaponSwitchDirectPressed);
+	}
+}
+
+void AScWCharacter::InputHorizontalMovement(const FInputActionInstance& InActionInstance)
+{
+	FVector2D InputValue = InActionInstance.GetValue().Get<FVector2D>();
+
+	float MoveForwardValue = InputValue.Y;
+	float MoveRightValue = InputValue.X;
+
+	AddMovementInput(GetActorForwardVector() * MoveForwardValue + GetActorRightVector() * MoveRightValue);
+	
+	if (MoveForwardValue > 0.0f)
+	{
+		OnForwardInputTriggeredDelegate.Broadcast();
+	}
+	else if (MoveForwardValue < 0.0f)
+	{
+		OnBackwardInputTriggeredDelegate.Broadcast();
+	}
+	if (MoveRightValue > 0.0f)
+	{
+		OnRightInputTriggeredDelegate.Broadcast();
+	}
+	else if (MoveRightValue < 0.0f)
+	{
+		OnLeftInputTriggeredDelegate.Broadcast();
+	}
+}
+
+void AScWCharacter::InputAbilityConfirmPressed()
+{
+	CharacterASC->InputConfirm();
+}
+
+void AScWCharacter::InputAbilityCancelPressed()
+{
+	CharacterASC->InputCancel();
+}
+
+void AScWCharacter::InputUsePrimaryPressed()
+{
+	CharacterASC->PressInputID(static_cast<int32>(EScWAbilityInputID::UsePrimary));
+}
+
+void AScWCharacter::InputUsePrimaryReleased()
+{
+	CharacterASC->ReleaseInputID(static_cast<int32>(EScWAbilityInputID::UsePrimary));
+}
+
+void AScWCharacter::InputUseSecondaryPressed()
+{
+	CharacterASC->PressInputID(static_cast<int32>(EScWAbilityInputID::UseSecondary));
+}
+
+void AScWCharacter::InputUseSecondaryReleased()
+{
+	CharacterASC->ReleaseInputID(static_cast<int32>(EScWAbilityInputID::UseSecondary));
+}
+
+void AScWCharacter::InputJumpPressed()
+{
+	CharacterASC->PressInputID(static_cast<int32>(EScWAbilityInputID::Jump));
+}
+
+void AScWCharacter::InputJumpReleased()
+{
+	CharacterASC->ReleaseInputID(static_cast<int32>(EScWAbilityInputID::Jump));
+}
+
+void AScWCharacter::InputCrouchPressed()
+{
+	CharacterASC->PressInputID(static_cast<int32>(EScWAbilityInputID::Crouch));
+}
+
+void AScWCharacter::InputCrouchReleased()
+{
+	CharacterASC->ReleaseInputID(static_cast<int32>(EScWAbilityInputID::Crouch));
+}
+
+void AScWCharacter::InputInteractPressed()
+{
+	CharacterASC->PressInputID(static_cast<int32>(EScWAbilityInputID::Interact));
+}
+
+void AScWCharacter::InputInteractReleased()
+{
+	CharacterASC->ReleaseInputID(static_cast<int32>(EScWAbilityInputID::Interact));
+}
+
+void AScWCharacter::InputReloadPressed()
+{
+	CharacterASC->PressInputID(static_cast<int32>(EScWAbilityInputID::Reload));
+}
+
+void AScWCharacter::InputReloadReleased()
+{
+	CharacterASC->ReleaseInputID(static_cast<int32>(EScWAbilityInputID::Reload));
+}
+
+void AScWCharacter::InputSprintPressed()
+{
+	CharacterASC->PressInputID(static_cast<int32>(EScWAbilityInputID::Sprint));
+}
+
+void AScWCharacter::InputSprintReleased()
+{
+	CharacterASC->ReleaseInputID(static_cast<int32>(EScWAbilityInputID::Sprint));
+}
+
+void AScWCharacter::InputWalkPressed()
+{
+	CharacterASC->PressInputID(static_cast<int32>(EScWAbilityInputID::Walk));
+}
+
+void AScWCharacter::InputWalkReleased()
+{
+	CharacterASC->ReleaseInputID(static_cast<int32>(EScWAbilityInputID::Walk));
+}
+
+void AScWCharacter::InputShovePressed()
+{
+	CharacterASC->PressInputID(static_cast<int32>(EScWAbilityInputID::Shove));
+}
+
+void AScWCharacter::InputShoveReleased()
+{
+	CharacterASC->ReleaseInputID(static_cast<int32>(EScWAbilityInputID::Shove));
+}
+
+void AScWCharacter::InputDropPressed()
+{
+	CharacterASC->PressInputID(static_cast<int32>(EScWAbilityInputID::Drop));
+}
+
+void AScWCharacter::InputDropReleased()
+{
+	CharacterASC->ReleaseInputID(static_cast<int32>(EScWAbilityInputID::Drop));
+}
+
+void AScWCharacter::InputFlashlightPressed()
+{
+	CharacterASC->PressInputID(static_cast<int32>(EScWAbilityInputID::Flashlight));
+}
+
+void AScWCharacter::InputFlashlightReleased()
+{
+	CharacterASC->ReleaseInputID(static_cast<int32>(EScWAbilityInputID::Flashlight));
+}
+
+void AScWCharacter::InputSpecialPressed()
+{
+	CharacterASC->PressInputID(static_cast<int32>(EScWAbilityInputID::Special));
+}
+
+void AScWCharacter::InputSpecialReleased()
+{
+	CharacterASC->ReleaseInputID(static_cast<int32>(EScWAbilityInputID::Special));
+}
+
+void AScWCharacter::InputWeaponSwitchScrollPressed()
+{
+	
+}
+
+void AScWCharacter::InputWeaponSwitchScrollReleased()
+{
+	
+}
+
+void AScWCharacter::InputWeaponSwitchDirectPressed()
+{
+	
+}
+
+void AScWCharacter::InputWeaponSwitchDirectReleased()
+{
+	
+}
+//~ End Input
 
 //~ Begin Team
 FGenericTeamId AScWCharacter::GetGenericTeamId() const // IGenericTeamAgentInterface
@@ -219,7 +506,7 @@ AScWWeapon_Base* AScWCharacter::GiveWeapon(UScWWeaponData_Base* InWeaponData)
 
 		if (Weapon)
 		{
-			CharacterASC->GiveAbilitiesWithLevels(InWeaponData->WeaponAbilities, WeaponAbilitiesHandleArray);
+			CharacterASC->GiveAbilitiesFromGiveData(InWeaponData->WeaponAbilitiesGiveData, WeaponAbilitiesHandleArray);
 		}
 	}
 	else

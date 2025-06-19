@@ -29,7 +29,7 @@ void UScWCharacterData::K2_InitializeCharacterComponents_Implementation(AScWChar
 	if (UScWASC_Character* CharacterASC = InCharacter->GetCharacterASC())
 	{
 		CharacterASC->SpawnEffectClass = SpawnEffectClass;
-		CharacterASC->SpawnAbilities = DefaultAbilities;
+		CharacterASC->SpawnAbilitiesGiveData = DefaultAbilitiesGiveData;
 	}
 	if (USkeletalMeshComponent* CharacterMesh = InCharacter->GetMesh())
 	{

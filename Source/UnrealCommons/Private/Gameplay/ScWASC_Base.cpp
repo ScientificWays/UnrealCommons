@@ -164,14 +164,19 @@ void UScWASC_Base::HandleDied()
 void UScWASC_Base::GiveSpawnAbilities()
 {
 	ensure(SpawnAbilitiesSpecsHandles.IsEmpty());
-	GiveAbilitiesWithLevels(SpawnAbilities, SpawnAbilitiesSpecsHandles);
+	GiveAbilitiesFromGiveData(SpawnAbilitiesGiveData, SpawnAbilitiesSpecsHandles);
 }
 
-void UScWASC_Base::GiveAbilitiesWithLevels(TMap<TSubclassOf<UGameplayAbility>, int32> InAbilitiesWithLevels, TArray<FGameplayAbilitySpecHandle>& OutHandleArray)
+void UScWASC_Base::GiveAbilitiesFromGiveData(TArray<FScWGameplayGiveAbilityData> InAbilitiesGiveData, TArray<FGameplayAbilitySpecHandle>& OutHandleArray)
 {
-	for (auto SampleClassWithLevel : InAbilitiesWithLevels)
+	for (const FScWGameplayGiveAbilityData& SampleGiveData : InAbilitiesGiveData)
 	{
-		auto SampleHandle = FGameplayAbilitySpec(SampleClassWithLevel.Key, SampleClassWithLevel.Value);
+		FGameplayAbilitySpec SampleHandle = FGameplayAbilitySpec(SampleGiveData.Class, SampleGiveData.Level);
+
+		if (SampleGiveData.bAssignInputID)
+		{
+			SampleHandle.InputID = static_cast<int32>(SampleGiveData.InputID);
+		}
 		OutHandleArray.Add(GiveAbility(SampleHandle));
 	}
 }
@@ -185,6 +190,64 @@ void UScWASC_Base::ClearAbilities(TArray<FGameplayAbilitySpecHandle>& InHandleAr
 	if (bInResetArray)
 	{
 		InHandleArray.Empty();
+	}
+}
+
+void UScWASC_Base::GetAbilitiesByInput(EScWAbilityInputID InInputID, TArray<UGameplayAbility*>& OutAbilityArray) const
+{
+	OutAbilityArray.Empty();
+
+	for (const FGameplayAbilitySpec& SampleSpec : GetActivatableAbilities())
+	{
+		if (SampleSpec.InputID != static_cast<int32>(InInputID))
+		{
+			continue;
+		}
+		AppendAbilityInstancesOrCDO(SampleSpec, OutAbilityArray);
+	}
+}
+
+void UScWASC_Base::SetInputAbilities(const EScWAbilityInputID InInputID, const TArray<TSubclassOf<UGameplayAbility>>& InClassArray)
+{
+	ClearAllAbilitiesWithInputID(static_cast<int32>(InInputID));
+
+	for (const TSubclassOf<UGameplayAbility>& SampleClass : InClassArray)
+	{
+		AddInputAbility(InInputID, SampleClass);
+	}
+}
+
+FGameplayAbilitySpecHandle UScWASC_Base::AddInputAbility(const EScWAbilityInputID InInputID, const TSubclassOf<UGameplayAbility> InClass)
+{
+	if (InClass)
+	{
+		FGameplayAbilitySpec AbilitySpec = BuildAbilitySpecFromClass(InClass, 1, static_cast<int32>(InInputID));
+		return GiveAbility(AbilitySpec);
+	}
+	return FGameplayAbilitySpecHandle();
+}
+
+template<class T>
+void UScWASC_Base::AppendAbilityInstancesOrCDO(const FGameplayAbilitySpec& InSpec, TArray<T*>& OutArray) const
+{
+	TArray<UGameplayAbility*> SampleInstanceArray = InSpec.GetAbilityInstances();
+
+	if (SampleInstanceArray.Num())
+	{
+		for (UGameplayAbility* SampleInstance : SampleInstanceArray)
+		{
+			if (T* SampleAbility = Cast<T>(SampleInstance))
+			{
+				OutArray.Add(SampleAbility);
+			}
+		}
+	}
+	else
+	{
+		if (T* SampleAbilityCDO = Cast<T>(InSpec.Ability))
+		{
+			OutArray.Add(SampleAbilityCDO);
+		}
 	}
 }
 //~ End Abilities
@@ -506,7 +569,7 @@ bool UScWASC_Base::TryApplyDamage(float InDamage, const FReceiveDamageData& InDa
 	}
 }
 
-/*float UIDASC_Base::AdjustIncomingDamage(float InDamage, const FReceiveDamageData& InData) const
+/*float UScWASC_Base::AdjustIncomingDamage(float InDamage, const FReceiveDamageData& InData) const
 {
 	bool bApplyBoneDamageMul = true;
 	bool bApplyTeamDamageMul = true;
@@ -534,6 +597,88 @@ bool UScWASC_Base::TryApplyDamage(float InDamage, const FReceiveDamageData& InDa
 	return IDGameState->BP_AdjustIncomingDamage(OwnerPawn, InDamage, InData);
 }*/
 //~ End Damage
+
+//~ Begin Input
+bool UScWASC_Base::IsInputPressed(int32 InInputID) const
+{
+	return PressedInputIDSet.Contains(InInputID);
+}
+
+bool UScWASC_Base::IsInputPressedByEnum(EScWAbilityInputID InInputID) const
+{
+	return PressedInputIDSet.Contains(static_cast<int32>(InInputID));
+}
+
+void UScWASC_Base::PressInputByEnum(EScWAbilityInputID InInputID)
+{
+	PressInputID(static_cast<int32>(InInputID));
+}
+
+void UScWASC_Base::ReleaseInputByEnum(EScWAbilityInputID InInputID)
+{
+	ReleaseInputID(static_cast<int32>(InInputID));
+}
+
+void UScWASC_Base::ForceReleaseAllInputs()
+{
+	ABILITYLIST_SCOPE_LOCK();
+	for (FGameplayAbilitySpec& SampleSpec : ActivatableAbilities.Items)
+	{
+		SampleSpec.InputPressed = false;
+		if (SampleSpec.Ability && SampleSpec.IsActive())
+		{
+			if (SampleSpec.Ability->bReplicateInputDirectly && IsOwnerActorAuthoritative() == false)
+			{
+				ServerSetInputReleased(SampleSpec.Handle);
+			}
+			AbilitySpecInputReleased(SampleSpec);
+
+PRAGMA_DISABLE_DEPRECATION_WARNINGS
+			// Fixing this up to use the instance activation, but this function should be deprecated as it cannot work with InstancedPerExecution
+			UE_CLOG(SampleSpec.Ability->GetInstancingPolicy() == EGameplayAbilityInstancingPolicy::InstancedPerExecution, LogScWGameplay, Warning, TEXT("%hs: %s is InstancedPerExecution. This is unreliable for Input as you may only interact with the latest spawned Instance"), __func__, *GetNameSafe(SampleSpec.Ability));
+			TArray<UGameplayAbility*> Instances = SampleSpec.GetAbilityInstances();
+			const FGameplayAbilityActivationInfo& ActivationInfo = Instances.IsEmpty() ? SampleSpec.ActivationInfo : Instances.Last()->GetCurrentActivationInfoRef();
+PRAGMA_ENABLE_DEPRECATION_WARNINGS
+
+			InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, SampleSpec.Handle, ActivationInfo.GetActivationPredictionKey());
+		}
+	}
+}
+
+bool UScWASC_Base::Server_SetInputPressedFromWaitInputTask_Validate(int32 InInputID)
+{
+	return true;
+}
+
+void UScWASC_Base::Server_SetInputPressedFromWaitInputTask_Implementation(int32 InInputID)
+{
+	AbilityLocalInputPressed(InInputID);
+}
+
+bool UScWASC_Base::Server_SetInputReleasedFromWaitInputTask_Validate(int32 InInputID)
+{
+	return true;
+}
+
+void UScWASC_Base::Server_SetInputReleasedFromWaitInputTask_Implementation(int32 InInputID)
+{
+	AbilityLocalInputReleased(InInputID);
+}
+
+void UScWASC_Base::AbilityLocalInputPressed(int32 InInputID) // UAbilitySystemComponent
+{
+	PressedInputIDSet.Add(InInputID);
+	Super::AbilityLocalInputPressed(InInputID);
+	OnInputPressedDelegate.Broadcast(InInputID);
+}
+
+void UScWASC_Base::AbilityLocalInputReleased(int32 InInputID) // UAbilitySystemComponent
+{
+	PressedInputIDSet.Remove(InInputID);
+	Super::AbilityLocalInputReleased(InInputID);
+	OnInputReleasedDelegate.Broadcast(InInputID);
+}
+//~ End Input
 
 //~ Begin Combo
 void UScWASC_Base::QueueComboMove(UScWComboMoveData* InComboMoveData)

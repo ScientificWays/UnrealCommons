@@ -4,6 +4,8 @@
 
 #include "UnrealCommons.h"
 
+#include "Gameplay/ScWTypes_Gameplay.h"
+
 #include "ScWCharacterData.generated.h"
 
 /**
@@ -85,7 +87,7 @@ public:
 	TSubclassOf<UGameplayEffect> SpawnEffectClass;
 
 	UPROPERTY(Category = "Gameplay", EditDefaultsOnly, BlueprintReadOnly)
-	TMap<TSubclassOf<UGameplayAbility>, int32> DefaultAbilities;
+	TArray<FScWGameplayGiveAbilityData> DefaultAbilitiesGiveData;
 
 	UPROPERTY(Category = "Gameplay", EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<class UScWWeaponData_Base> DefaultWeaponData;

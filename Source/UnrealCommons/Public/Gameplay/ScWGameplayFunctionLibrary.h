@@ -37,7 +37,7 @@ public:
 	static float ApplyPointDamage(AActor* InSourceActor, AActor* InTargetActor, float InDamage, const FVector& InHitFromDirection, const FHitResult& InHitResult, AController* InInstigator, TSubclassOf<UDamageType> InDamageTypeClass);
 
 	//UFUNCTION(Category = "Damage", BlueprintCallable, BlueprintAuthorityOnly)
-	//static void HandleFirearmBulletHit(UIDASC_Base* InShootingASC, const FHitResult& InHitResult, const class UFirearmDataAsset* InFirearmAsset);
+	//static void HandleFirearmBulletHit(UScWASC_Base* InShootingASC, const FHitResult& InHitResult, const class UFirearmDataAsset* InFirearmAsset);
 
 	//UFUNCTION(Category = "Damage", BlueprintCallable, BlueprintAuthorityOnly)
 	//static void HandleMeleeSwingHit(UIDASC_Character* InSwingingASC, const FHitResult& InHitResult, const UMeleeDataAsset* InMeleeAsset);
@@ -88,4 +88,17 @@ public:
 	static bool WasSuccessfullyAppliedEffectHandle(UPARAM(Ref) const FActiveGameplayEffectHandle& InHandle)
 	{ return InHandle.WasSuccessfullyApplied(); }
 //~ End GameplayEffects
+
+//~ Begin Input
+public:
+
+	UFUNCTION(Category = "Input", BlueprintCallable, BlueprintCosmetic, meta = (AutoCreateRefTerm = "InOptions", KeyWords = "AddInputMappingContextTo"))
+	static bool AddEnhancedInputMappingContextTo(APlayerController* InPlayerController, const UInputMappingContext* InMappingContext, int32 InPriority, const FModifyContextOptions& InOptions = FModifyContextOptions());
+
+	UFUNCTION(Category = "Input", BlueprintCallable, BlueprintCosmetic, meta = (AutoCreateRefTerm = "InOptions", KeyWords = "RemoveInputMappingContextFrom"))
+	static bool RemoveEnhancedInputMappingContextFrom(APlayerController* InPlayerController, const UInputMappingContext* InMappingContext, const FModifyContextOptions& InOptions = FModifyContextOptions());
+	
+	UFUNCTION(Category = "Input", BlueprintCallable, BlueprintCosmetic, BlueprintPure)
+	static bool GetActionMappedKeyDisplayName(APlayerController* InPlayerController, const UInputAction* InInputAction, const bool bInLongDisplayName, FText& OutDisplayName);
+//~ End Input
 };

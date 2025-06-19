@@ -63,7 +63,7 @@ float UScWGameplayFunctionLibrary::ApplyPointDamage(AActor* InSourceActor, AActo
 	return InTargetActor->TakeDamage(InDamage, PointDamageEvent, InInstigator, InSourceActor);
 }
 
-/*void UScWGameplayFunctionLibrary::HandleFirearmBulletHit(UIDASC_Base* InShootingASC, const FHitResult& InHitResult, const UFirearmDataAsset* InFirearmAsset)
+/*void UScWGameplayFunctionLibrary::HandleFirearmBulletHit(UScWASC_Base* InShootingASC, const FHitResult& InHitResult, const UFirearmDataAsset* InFirearmAsset)
 {
 	if (InShootingASC == nullptr)
 	{
@@ -88,7 +88,7 @@ float UScWGameplayFunctionLibrary::ApplyPointDamage(AActor* InSourceActor, AActo
 		FVector Direction = ShootingPawn->GetActorLocation() - HitActor->GetActorLocation();
 		Direction.Normalize();
 
-		if (UIDASC_Base* TargetASC = UIDAbilitySystemGlobals::GetBaseASCFromActor(HitActor))
+		if (UScWASC_Base* TargetASC = UIDAbilitySystemGlobals::GetBaseASCFromActor(HitActor))
 		{
 			if (TargetASC->ReceiveDamage(AdjustedDamage, { Direction, InHitResult, InFirearmAsset->ShootImpactDamageType.Get(), ShootingController, ShootingPawn })
 				&& InFirearmAsset->ShootTargetEffectClass.Get())
@@ -137,7 +137,7 @@ void UScWGameplayFunctionLibrary::HandleMeleeSwingHit(UIDASC_Character* InSwingi
 		FVector Direction = SwingingCharacter->GetActorLocation() - HitActor->GetActorLocation();
 		Direction.Normalize();
 
-		if (UIDASC_Base* TargetASC = UIDAbilitySystemGlobals::GetBaseASCFromActor(HitActor))
+		if (UScWASC_Base* TargetASC = UIDAbilitySystemGlobals::GetBaseASCFromActor(HitActor))
 		{
 			if (TargetASC->ReceiveDamage(AdjustedDamage, { Direction, InHitResult, InMeleeAsset->SwingImpactDamageType.Get(), SwingingController, SwingingCharacter }))
 			{
@@ -177,3 +177,60 @@ void UScWGameplayFunctionLibrary::UnRegisterGameplayTagEvent(UAbilitySystemCompo
 	InASC->RegisterGameplayTagEvent(InTag, InType).Remove(InHandleWrapper.Handle);
 }
 //~ End GameplayTags
+
+//~ Begin Input
+bool UScWGameplayFunctionLibrary::AddEnhancedInputMappingContextTo(APlayerController* InPlayerController, const UInputMappingContext* InMappingContext, int32 InPriority, const FModifyContextOptions& InOptions)
+{
+	if (InPlayerController && InMappingContext)
+	{
+		if (ULocalPlayer* LocalPlayer = InPlayerController->GetLocalPlayer())
+		{
+			if (UEnhancedInputLocalPlayerSubsystem* Subsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
+			{
+				Subsystem->AddMappingContext(InMappingContext, InPriority, InOptions);
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool UScWGameplayFunctionLibrary::RemoveEnhancedInputMappingContextFrom(APlayerController* InPlayerController, const UInputMappingContext* InMappingContext, const FModifyContextOptions& InOptions)
+{
+	if (InPlayerController && InMappingContext)
+	{
+		if (ULocalPlayer* LocalPlayer = InPlayerController->GetLocalPlayer())
+		{
+			if (UEnhancedInputLocalPlayerSubsystem* Subsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
+			{
+				Subsystem->RemoveMappingContext(InMappingContext, InOptions);
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool UScWGameplayFunctionLibrary::GetActionMappedKeyDisplayName(APlayerController* InPlayerController, const UInputAction* InInputAction, const bool bInLongDisplayName, FText& OutDisplayName)
+{
+	OutDisplayName = FText::GetEmpty();
+
+	if (InPlayerController && InInputAction)
+	{
+		if (ULocalPlayer* LocalPlayer = InPlayerController->GetLocalPlayer())
+		{
+			if (UEnhancedInputLocalPlayerSubsystem* Subsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
+			{
+				TArray<FKey> MappedKeys = Subsystem->QueryKeysMappedToAction(InInputAction);
+
+				if (MappedKeys.Num() > 0)
+				{
+					OutDisplayName = MappedKeys[0].GetDisplayName(bInLongDisplayName);
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+//~ End Input

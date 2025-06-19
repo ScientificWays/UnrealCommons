@@ -8,7 +8,7 @@
 
 UScWBTS_TurnTo::UScWBTS_TurnTo()
 {
-	NodeName = "Turn to";
+	NodeName = "Turn To";
 
 	INIT_SERVICE_NODE_NOTIFY_FLAGS();
 

@@ -6,7 +6,7 @@
 
 UScWBTD_CheckVelocity::UScWBTD_CheckVelocity()
 {
-	NodeName = TEXT("Check Target Velocity");
+	NodeName = TEXT("Check Velocity");
 
 	TargetKey.AllowNoneAsValue(false);
 	TargetKey.AddVectorFilter(this, GET_MEMBER_NAME_CHECKED(ThisClass, TargetKey));

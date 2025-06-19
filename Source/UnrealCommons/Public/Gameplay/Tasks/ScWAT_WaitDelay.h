@@ -21,7 +21,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FGenericGameplayTaskDelegate OnFinish;
 
-	UFUNCTION(BlueprintCallable, Category = "Ability | Tasks", meta = (HidePin = "InOwningAbility", DefaultToSelf = "InOwningAbility", BlueprintInternalUseOnly = "true"))
+	UFUNCTION(BlueprintCallable, Category = "Ability | Tasks", meta = (DisplayName = "[ScW] WaitDelayOrFinishImmediately", HidePin = "InOwningAbility", DefaultToSelf = "InOwningAbility", BlueprintInternalUseOnly = "true"))
 	static UScWAT_WaitDelay* WaitDelayOrFinishImmediately(UGameplayAbility* InOwningAbility, float InTime);
 	
 //~ Begin Debug

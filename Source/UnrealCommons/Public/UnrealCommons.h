@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UObject/SparseDelegate.h"
 #include "Delegates/IDelegateInstance.h"
 #include "Delegates/DelegateCombinations.h"
 #include "EngineUtils.h"
@@ -45,6 +46,7 @@
 #include "Abilities/Tasks/AbilityTask.h"
 #include "GameplayCueInterface.h"
 
+#include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
 DECLARE_LOG_CATEGORY_EXTERN(LogScWGameplay, Log, All);

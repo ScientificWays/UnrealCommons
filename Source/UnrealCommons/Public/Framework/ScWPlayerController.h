@@ -24,6 +24,7 @@ public:
 protected:
 	virtual void PostInitializeComponents() override; // AActor
 	virtual void BeginPlay() override; // AActor
+	virtual void EndPlay(const EEndPlayReason::Type InReason) override; // AActor
 //~ End Initialize
 
 //~ Begin Pawn
@@ -56,14 +57,6 @@ protected:
 	FScriptDelegate OnPawnDiedBind;
 //~ End Pawn
 
-//~ Begin Team
-public:
-	virtual FGenericTeamId GetGenericTeamId() const override { return TeamId; } // IGenericTeamAgentInterface
-	virtual void SetGenericTeamId(const FGenericTeamId& InNewTeamID) override; // IGenericTeamAgentInterface
-private:
-	FGenericTeamId TeamId;
-//~ End Team
-
 //~ Begin Input
 public:
 
@@ -94,10 +87,27 @@ public:
 	UFUNCTION(Category = "Input", BlueprintCallable, BlueprintCosmetic, meta = (DefaultToSelf = "InSource", KeyWords = "RemoveBlock, RemoveIgnore"))
 	void RemoveLookInputBlockSource(UObject* InSource) { LookInputBlockSourceSet.Remove(InSource); }
 
+	UPROPERTY(Category = "Input", BlueprintReadWrite)
+	float MouseInputScale;
+
 protected:
+	virtual void SetupInputComponent() override; // APlayerController
 	virtual bool ShouldShowMouseCursor() const { return Super::ShouldShowMouseCursor() || !ShowMouseCursorSourceSet.IsEmpty(); } // APlayerController
 	virtual bool IsMoveInputIgnored() const { return Super::IsMoveInputIgnored() || !MovementInputBlockSourceSet.IsEmpty(); } // AController
 	virtual bool IsLookInputIgnored() const { return Super::IsLookInputIgnored() || !LookInputBlockSourceSet.IsEmpty(); } // AController
+	void InputMouseLook(const FInputActionInstance& InActionInstance);
+
+	UPROPERTY(Category = "Input", BlueprintReadOnly, EditDefaultsOnly)
+	TObjectPtr<UInputMappingContext> DefaultInputMappingContext;
+
+	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
+	int32 DefaultInputMappingContextPriority;
+
+	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
+	FModifyContextOptions DefaultInputMappingContextOptions;
+
+	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UInputAction> MouseLookAction;
 
 	UPROPERTY(Transient)
 	TSet<TObjectPtr<UObject>> ShowMouseCursorSourceSet;
@@ -108,4 +118,12 @@ protected:
 	UPROPERTY(Transient)
 	TSet<TObjectPtr<UObject>> LookInputBlockSourceSet;
 //~ End Input
+	
+//~ Begin Team
+public:
+	virtual FGenericTeamId GetGenericTeamId() const override { return TeamId; } // IGenericTeamAgentInterface
+	virtual void SetGenericTeamId(const FGenericTeamId& InNewTeamID) override; // IGenericTeamAgentInterface
+private:
+	FGenericTeamId TeamId;
+//~ End Team
 };

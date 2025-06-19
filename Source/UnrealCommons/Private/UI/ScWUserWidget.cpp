@@ -4,6 +4,8 @@
 
 #include "Framework/ScWPlayerController.h"
 
+#include "Gameplay/ScWGameplayFunctionLibrary.h"
+
 UScWUserWidget::UScWUserWidget(const FObjectInitializer& InObjectInitializer) : Super(InObjectInitializer)
 {
 	InputMappingContextPriority = 1;
@@ -14,18 +16,14 @@ void UScWUserWidget::NativePreConstruct() // UUserWidget
 {
 	if (!IsDesignTime())
 	{
-		OwnerPlayerController = GetOwningPlayer<AScWPlayerController>();
+		APlayerController* OwningPlayer = GetOwningPlayer();
 
-		if (InputMappingContext)
+		if (OwningPlayer && InputMappingContext)
 		{
-			if (ULocalPlayer* LocalPlayer = GetOwningLocalPlayer())
-			{
-				if (UEnhancedInputLocalPlayerSubsystem* InputSubsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
-				{
-					InputSubsystem->AddMappingContext(InputMappingContext, InputMappingContextPriority, InputMappingContextOptions);
-				}
-			}
+			UScWGameplayFunctionLibrary::AddEnhancedInputMappingContextTo(OwningPlayer, InputMappingContext, InputMappingContextPriority, InputMappingContextOptions);
 		}
+		OwnerPlayerController = Cast<AScWPlayerController>(OwningPlayer);
+
 		if (OwnerPlayerController)
 		{
 			if (bShouldShowMouseCursor)
@@ -49,15 +47,11 @@ void UScWUserWidget::NativeDestruct() // UUserWidget
 {
 	if (!IsDesignTime())
 	{
-		if (InputMappingContext)
+		APlayerController* OwningPlayer = GetOwningPlayer();
+
+		if (OwningPlayer && InputMappingContext)
 		{
-			if (ULocalPlayer* LocalPlayer = GetOwningLocalPlayer())
-			{
-				if (UEnhancedInputLocalPlayerSubsystem* InputSubsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
-				{
-					InputSubsystem->RemoveMappingContext(InputMappingContext, InputMappingContextOptions);
-				}
-			}
+			UScWGameplayFunctionLibrary::RemoveEnhancedInputMappingContextFrom(OwningPlayer, InputMappingContext, InputMappingContextOptions);
 		}
 		if (OwnerPlayerController)
 		{

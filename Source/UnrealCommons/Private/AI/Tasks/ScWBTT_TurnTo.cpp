@@ -11,7 +11,7 @@
 
 UScWBTT_TurnTo::UScWBTT_TurnTo()
 {
-	NodeName = "Turn to";
+	NodeName = "Turn To";
 
 	INIT_TASK_NODE_NOTIFY_FLAGS();
 

@@ -16,7 +16,8 @@ public class UnrealCommons : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[] {
 
 			"Core",
-			"EngineSettings",
+            "CoreUObject",
+            "EngineSettings",
 
 			"InputCore",
 			"EnhancedInput",
@@ -35,7 +36,6 @@ public class UnrealCommons : ModuleRules
 
 		PrivateDependencyModuleNames.AddRange(new string[]
 		{
-			"CoreUObject",
 			"Engine",
 		});
 

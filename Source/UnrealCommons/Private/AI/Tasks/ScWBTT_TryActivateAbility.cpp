@@ -6,7 +6,7 @@
 
 UScWBTT_TryActivateAbility::UScWBTT_TryActivateAbility()
 {
-	NodeName = TEXT("Try activate ability");
+	NodeName = TEXT("Try Activate Ability");
 
 	AbilityClassKey.AllowNoneAsValue(true);
 

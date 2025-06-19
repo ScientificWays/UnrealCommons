@@ -4,7 +4,7 @@
 
 UScWBTD_CanActivateAbility::UScWBTD_CanActivateAbility()
 {
-	NodeName = TEXT("Can activate ability");
+	NodeName = TEXT("Can Activate Ability");
 
 	//bNotifyBecomeRelevant = true;
 

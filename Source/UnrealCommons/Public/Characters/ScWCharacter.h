@@ -8,6 +8,9 @@
 
 #include "ScWCharacter.generated.h"
 
+//UDELEGATE()
+//DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE(FScWCharacterInputTriggeredEventSignature, AScWCharacter, OnInputTriggered);
+
 /**
  *
  */
@@ -73,8 +76,119 @@ protected:
 protected:
 	virtual void SpawnDefaultController() override; // APawn
 	virtual void PossessedBy(AController* InController) override; // APawn
+	virtual void UnPossessed() override; // APawn
 //~ End Controller
+	
+//~ Begin Input
+public:
 
+	UPROPERTY(Category = "Input", BlueprintAssignable)
+	FDefaultEventSignature OnForwardInputTriggeredDelegate;
+	
+	UPROPERTY(Category = "Input", BlueprintAssignable)
+	FDefaultEventSignature OnBackwardInputTriggeredDelegate;
+	
+	UPROPERTY(Category = "Input", BlueprintAssignable)
+	FDefaultEventSignature OnRightInputTriggeredDelegate;
+	
+	UPROPERTY(Category = "Input", BlueprintAssignable)
+	FDefaultEventSignature OnLeftInputTriggeredDelegate;
+	
+protected:
+	virtual void SetupPlayerInputComponent(UInputComponent* InInputComponent) override; // APawn
+	void InputHorizontalMovement(const FInputActionInstance& InActionInstance);
+	void InputAbilityConfirmPressed();
+	void InputAbilityCancelPressed();
+	void InputUsePrimaryPressed();
+	void InputUsePrimaryReleased();
+	void InputUseSecondaryPressed();
+	void InputUseSecondaryReleased();
+	void InputJumpPressed();
+	void InputJumpReleased();
+	void InputCrouchPressed();
+	void InputCrouchReleased();
+	void InputInteractPressed();
+	void InputInteractReleased();
+	void InputReloadPressed();
+	void InputReloadReleased();
+	void InputSprintPressed();
+	void InputSprintReleased();
+	void InputWalkPressed();
+	void InputWalkReleased();
+	void InputShovePressed();
+	void InputShoveReleased();
+	void InputDropPressed();
+	void InputDropReleased();
+	void InputFlashlightPressed();
+	void InputFlashlightReleased();
+	void InputSpecialPressed();
+	void InputSpecialReleased();
+	void InputWeaponSwitchScrollPressed();
+	void InputWeaponSwitchScrollReleased();
+	void InputWeaponSwitchDirectPressed();
+	void InputWeaponSwitchDirectReleased();
+
+	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UInputMappingContext> DefaultInputMappingContext;
+
+	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
+	int32 DefaultInputMappingContextPriority;
+
+	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
+	FModifyContextOptions DefaultInputMappingContextOptions;
+
+	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UInputAction> HorizontalMovementAction;
+
+	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UInputAction> UsePrimaryAction;
+
+	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UInputAction> UseSecondaryAction;
+
+	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UInputAction> AbilityConfirmAction;
+
+	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UInputAction> AbilityCancelAction;
+
+	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UInputAction> JumpAction;
+
+	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UInputAction> CrouchAction;
+
+	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UInputAction> InteractAction;
+
+	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UInputAction> ReloadAction;
+
+	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UInputAction> SprintAction;
+
+	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UInputAction> WalkAction;
+
+	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UInputAction> ShoveAction;
+
+	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UInputAction> DropAction;
+
+	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UInputAction> FlashlightAction;
+
+	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UInputAction> SpecialAction;
+
+	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UInputAction> WeaponSwitchScrollAction;
+
+	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UInputAction> WeaponSwitchDirectAction;
+//~ End Input
+	
 //~ Begin Team
 public:
 	virtual FGenericTeamId GetGenericTeamId() const override; // IGenericTeamAgentInterface

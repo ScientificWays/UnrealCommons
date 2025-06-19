@@ -6,6 +6,8 @@
 
 #include "ScWTypes_Delegates.h"
 
+#include "Gameplay/ScWTypes_Gameplay.h"
+
 #include "ScWASC_Base.generated.h"
 
 UENUM(BlueprintType)
@@ -38,18 +40,11 @@ struct FReceiveDamageData
 		: HitResult(InHitResult), DamageType(InDamageType), Source(InSource), Instigator(InInstigator) {}
 };
 
-UDELEGATE()
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FDamageEventSignature, float, InDamage, const FReceiveDamageData&, InData);
-
-UDELEGATE()
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAccumulatedDamageResolveEventSignature, float, InDamage);
-
-UDELEGATE()
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FComboStateChangedSignature, EComboState, InNewState);
-
-UDELEGATE()
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInputEventSignature, int32, InInputID);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FComboMoveEventSignature, class UScWComboMoveData*, InComboMoveData);
-
 /**
  * 
  */
@@ -136,16 +131,30 @@ public:
 	void GiveSpawnAbilities();
 
 	UFUNCTION(Category = "Abilities", BlueprintCallable)
-	void GiveAbilitiesWithLevels(TMap<TSubclassOf<UGameplayAbility>, int32> InAbilitiesWithLevels, TArray<FGameplayAbilitySpecHandle>& OutHandleArray);
+	void GiveAbilitiesFromGiveData(TArray<FScWGameplayGiveAbilityData> InAbilitiesGiveData, TArray<FGameplayAbilitySpecHandle>& OutHandleArray);
 
 	UFUNCTION(Category = "Abilities", BlueprintCallable)
 	void ClearAbilities(UPARAM(Ref) TArray<FGameplayAbilitySpecHandle>& InHandleArray, const bool bInResetArray);
 
+	UFUNCTION(Category = "Abilities", BlueprintCallable)
+	void GetAbilitiesByInput(EScWAbilityInputID InInputID, TArray<UGameplayAbility*>& OutAbilityArray) const;
+
+	UFUNCTION(Category = "Abilities", BlueprintCallable)
+	void SetInputAbilities(const EScWAbilityInputID InInputID, const TArray<TSubclassOf<UGameplayAbility>>& InClassArray);
+
+	UFUNCTION(Category = "Abilities", BlueprintCallable)
+	FGameplayAbilitySpecHandle AddInputAbility(const EScWAbilityInputID InInputID, const TSubclassOf<UGameplayAbility> InClass);
+
 	UPROPERTY(Category = "Abilities", BlueprintReadWrite, EditAnywhere)
-	TMap<TSubclassOf<UGameplayAbility>, int32> SpawnAbilities;
+	TArray<FScWGameplayGiveAbilityData> SpawnAbilitiesGiveData;
+
+protected:
 
 	UPROPERTY(Category = "Abilities", BlueprintReadOnly)
 	TArray<FGameplayAbilitySpecHandle> SpawnAbilitiesSpecsHandles;
+
+	template<class T>
+	void AppendAbilityInstancesOrCDO(const FGameplayAbilitySpec& InSpec, TArray<T*>& OutArray) const;
 //~ End Abilities
 
 //~ Begin Effects
@@ -162,7 +171,6 @@ public:
 
 	UPROPERTY(Category = "Effects", BlueprintReadWrite, EditAnywhere)
 	TSubclassOf<UGameplayEffect> SpawnEffectClass;
-
 //~ End Effects
 
 //~ Begin Damage
@@ -237,6 +245,49 @@ protected:
 	UPROPERTY(Category = "Damage", BlueprintReadOnly, EditAnywhere)
 	float ExplosionStumbleMinDuration;
 //~ End Damage
+	
+//~ Begin Input
+public:
+	
+	UFUNCTION(Category = "Input", BlueprintCallable)
+	bool IsInputPressed(int32 InInputID) const;
+
+	UFUNCTION(Category = "Input", BlueprintCallable, meta = (DisplayName = "Is Input Pressed (Enum)"))
+	bool IsInputPressedByEnum(EScWAbilityInputID InInputID) const;
+
+	UFUNCTION(Category = "Input", BlueprintCallable, meta = (DisplayName = "Press Input (Enum)"))
+	void PressInputByEnum(EScWAbilityInputID InInputID);
+
+	UFUNCTION(Category = "Input", BlueprintCallable, meta = (DisplayName = "Release Input (Enum)"))
+	void ReleaseInputByEnum(EScWAbilityInputID InInputID);
+
+	UFUNCTION(Category = "Input", BlueprintCallable)
+	void ForceReleaseAllInputs();
+
+	/**
+	*	Direct Input state replication.
+	*	These will be called if bReplicateInputDirectly is true on the WaitInput task's owner ability
+	*	and is generally not a good thing to use. (Instead, prefer to use Generic Replicated Events).
+	*/
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_SetInputPressedFromWaitInputTask(int32 InInputID);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_SetInputReleasedFromWaitInputTask(int32 InInputID);
+
+	UPROPERTY(Category = "Input", BlueprintAssignable)
+	FInputEventSignature OnInputPressedDelegate;
+	
+	UPROPERTY(Category = "Input", BlueprintAssignable)
+	FInputEventSignature OnInputReleasedDelegate;
+
+protected:
+	virtual void AbilityLocalInputPressed(int32 InInputID) override; // UAbilitySystemComponent
+	virtual void AbilityLocalInputReleased(int32 InInputID) override; // UAbilitySystemComponent
+	
+	UPROPERTY()
+	TSet<int32> PressedInputIDSet;
+//~ End Input
 
 //~ Begin Combo
 public:

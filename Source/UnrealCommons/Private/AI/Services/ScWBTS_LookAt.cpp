@@ -9,7 +9,7 @@
 
 UScWBTS_LookAt::UScWBTS_LookAt()
 {
-	NodeName = TEXT("Look at");
+	NodeName = TEXT("Look At");
 
 	INIT_SERVICE_NODE_NOTIFY_FLAGS();
 

@@ -6,7 +6,7 @@
 
 UScWBTD_CanShoot::UScWBTD_CanShoot()
 {
-	NodeName = TEXT("Can shoot");
+	NodeName = TEXT("Can Shoot");
 
 
 }

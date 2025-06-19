@@ -4,7 +4,7 @@
 
 UScWBTD_RandomPass::UScWBTD_RandomPass()
 {
-	NodeName = TEXT("Random pass");
+	NodeName = TEXT("Random Pass");
 }
 
 //~ Begin Decorator

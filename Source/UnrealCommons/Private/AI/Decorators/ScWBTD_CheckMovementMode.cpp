@@ -4,7 +4,7 @@
 
 UScWBTD_CheckMovementMode::UScWBTD_CheckMovementMode()
 {
-	NodeName = TEXT("Check movement mode");
+	NodeName = TEXT("Check Movement Mode");
 
 	INIT_DECORATOR_NODE_NOTIFY_FLAGS();
 

@@ -6,7 +6,7 @@
 
 UScWBTS_GetDistanceTo::UScWBTS_GetDistanceTo()
 {
-	NodeName = TEXT("Get distance to");
+	NodeName = TEXT("Get Distance To");
 
 	INIT_SERVICE_NODE_NOTIFY_FLAGS();
 

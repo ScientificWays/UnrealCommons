@@ -8,7 +8,7 @@
 
 UScWBTD_CheckOcclusion::UScWBTD_CheckOcclusion()
 {
-	NodeName = TEXT("Check occlusion");
+	NodeName = TEXT("Check Occlusion");
 
 	FromTargetKey.AllowNoneAsValue(true);
 	FromTargetKey.AddVectorFilter(this, GET_MEMBER_NAME_CHECKED(ThisClass, FromTargetKey));
