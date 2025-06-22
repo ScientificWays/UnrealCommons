@@ -21,10 +21,10 @@ public:
 	UScWCharacterData();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "InitializeCharacterComponents"))
-	void K2_InitializeCharacterComponents(class AScWCharacter* InCharacter) const;
+	void BP_InitializeCharacterComponents(class AScWCharacter* InCharacter) const;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "InitializeCharacterController"))
-	void K2_InitializeCharacterController(class AScWCharacter* InCharacter) const;
+	void BP_InitializeCharacterController(class AScWCharacter* InCharacter) const;
 
 //~ Begin UI
 public:

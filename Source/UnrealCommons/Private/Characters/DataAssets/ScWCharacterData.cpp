@@ -20,7 +20,7 @@ UScWCharacterData::UScWCharacterData()
 	CapsuleRadiusHeight = FVector2D(34.0f, 90.0f);
 }
 
-void UScWCharacterData::K2_InitializeCharacterComponents_Implementation(AScWCharacter* InCharacter) const
+void UScWCharacterData::BP_InitializeCharacterComponents_Implementation(AScWCharacter* InCharacter) const
 {
 	if (!InCharacter)
 	{
@@ -43,7 +43,7 @@ void UScWCharacterData::K2_InitializeCharacterComponents_Implementation(AScWChar
 	}
 }
 
-void UScWCharacterData::K2_InitializeCharacterController_Implementation(AScWCharacter* InCharacter) const
+void UScWCharacterData::BP_InitializeCharacterController_Implementation(AScWCharacter* InCharacter) const
 {
 	if (!InCharacter)
 	{

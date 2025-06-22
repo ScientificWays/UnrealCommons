@@ -117,3 +117,27 @@ void AScWPlayerController::SetGenericTeamId(const FGenericTeamId& InNewTeamId) /
 	TeamId = InNewTeamId;
 }
 //~ End Team
+
+//~ Begin Viewport
+bool AScWPlayerController::GetHitResultUnderScreenCenter(ETraceTypeQuery InTraceChannel, bool bInTraceComplex, FHitResult& OutHitResult) const
+{
+	FVector2D ViewportSize = FVector2D::ZeroVector;
+
+	if (ULocalPlayer* LocalPlayer = GetLocalPlayer())
+	{
+		if (UGameViewportClient* ViewportClient = LocalPlayer->ViewportClient)
+		{
+			ViewportClient->GetViewportSize(ViewportSize);
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		return false;
+	}
+	return GetHitResultAtScreenPosition(ViewportSize * 0.5f, InTraceChannel, bInTraceComplex, OutHitResult);
+}
+//~ End Viewport

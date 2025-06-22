@@ -39,10 +39,10 @@ public:
 public:
 
 	UFUNCTION(Category = "Damage", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "ModifyWeaponDamage"))
-	float K2_ModifyWeaponDamage(const class UScWWeaponData_Base* InWeaponData, float InDamage) const;
+	float BP_ModifyWeaponDamage(const class UScWWeaponData_Base* InWeaponData, float InDamage) const;
 
 	UFUNCTION(Category = "Damage", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "ModifyWeaponDamageTypeClass"))
-	TSubclassOf<class UScWDamageType> K2_ModifyWeaponDamageTypeClass(const class UScWWeaponData_Base* InWeaponData, TSubclassOf<class UScWDamageType> InDamageTypeClass) const;
+	TSubclassOf<class UScWDamageType> BP_ModifyWeaponDamageTypeClass(const class UScWWeaponData_Base* InWeaponData, TSubclassOf<class UScWDamageType> InDamageTypeClass) const;
 
 	UPROPERTY(Category = "Damage", EditDefaultsOnly, BlueprintReadOnly)
 	float DamageMul;

@@ -42,13 +42,13 @@ AScWGameState* AScWGameState::TryGetScWGameState(const UObject* InWCO)
 //~ End Statics
 
 //~ Begin DataAssets
-const UScWCharacterData* AScWGameState::K2_GetDataAssetForNewCharacter_Implementation(const AScWCharacter* InCharacter) const
+const UScWCharacterData* AScWGameState::BP_GetDataAssetForNewCharacter_Implementation(const AScWCharacter* InCharacter) const
 {
 	if (UWorld* World = GetWorld())
 	{
 		if (AScWLevelScriptActor* LevelScriptActor = Cast<AScWLevelScriptActor>(World->GetLevelScriptActor()))
 		{
-			if (const UScWCharacterData* OutCharacterData = LevelScriptActor->K2_GetDataAssetForNewCharacter(InCharacter))
+			if (const UScWCharacterData* OutCharacterData = LevelScriptActor->BP_GetDataAssetForNewCharacter(InCharacter))
 			{
 				return OutCharacterData;
 			}

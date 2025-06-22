@@ -126,4 +126,11 @@ public:
 private:
 	FGenericTeamId TeamId;
 //~ End Team
+	
+//~ Begin Viewport
+public:
+
+	UFUNCTION(BlueprintCallable, Category = "Viewport")
+	bool GetHitResultUnderScreenCenter(ETraceTypeQuery InTraceChannel, bool bInTraceComplex, FHitResult& OutHitResult) const;
+//~ End Viewport
 };

@@ -14,12 +14,12 @@ UScWComboData::UScWComboData()
 }
 
 //~ Begin Damage
-float UScWComboData::K2_ModifyWeaponDamage_Implementation(const UScWWeaponData_Base* InWeaponData, float InDamage) const
+float UScWComboData::BP_ModifyWeaponDamage_Implementation(const UScWWeaponData_Base* InWeaponData, float InDamage) const
 {
 	return InDamage * DamageMul + DamageAdditive;
 }
 
-TSubclassOf<UScWDamageType> UScWComboData::K2_ModifyWeaponDamageTypeClass_Implementation(const UScWWeaponData_Base* InWeaponData, TSubclassOf<UScWDamageType> InDamageTypeClass) const
+TSubclassOf<UScWDamageType> UScWComboData::BP_ModifyWeaponDamageTypeClass_Implementation(const UScWWeaponData_Base* InWeaponData, TSubclassOf<UScWDamageType> InDamageTypeClass) const
 {
 	return OverrideDamageTypeClass ? OverrideDamageTypeClass : InDamageTypeClass;
 }

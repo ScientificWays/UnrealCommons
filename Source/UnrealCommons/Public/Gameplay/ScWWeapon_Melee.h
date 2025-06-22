@@ -22,7 +22,7 @@ public:
 	
 //~ Begin Initialize
 public:
-	virtual void K2_UpdateFromDataAsset_Implementation() override; // AScWWeapon_Base
+	virtual void BP_UpdateFromDataAsset_Implementation() override; // AScWWeapon_Base
 protected:
 	virtual void BeginPlay() override; // AActor
 //~ End Initialize

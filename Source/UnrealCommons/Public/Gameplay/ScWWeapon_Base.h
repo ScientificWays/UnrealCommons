@@ -32,7 +32,7 @@ public:
 	class UScWWeaponData_Base* GetDataAsset() const { return DataAsset; }
 
 	UFUNCTION(Category = "Initialize", BlueprintNativeEvent, BlueprintCallable)
-	void K2_UpdateFromDataAsset();
+	void BP_UpdateFromDataAsset();
 
 protected:
 	virtual void OnConstruction(const FTransform& InTransform) override; // AActor

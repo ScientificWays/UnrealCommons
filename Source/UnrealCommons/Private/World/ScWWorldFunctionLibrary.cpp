@@ -1,3 +1,3 @@
-// Avalanche Test
+// Scientific Ways
 
 #include "World/ScWWorldFunctionLibrary.h"

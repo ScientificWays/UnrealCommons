@@ -24,7 +24,7 @@ void AScWLevelScriptActor::BeginPlay() // AActor
 //~ End Initialize
 
 //~ Begin DataAssets
-const UScWCharacterData* AScWLevelScriptActor::K2_GetDataAssetForNewCharacter_Implementation(const AScWCharacter* InCharacter) const
+const UScWCharacterData* AScWLevelScriptActor::BP_GetDataAssetForNewCharacter_Implementation(const AScWCharacter* InCharacter) const
 {
 	if (InCharacter)
 	{

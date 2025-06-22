@@ -44,7 +44,7 @@ AScWWeapon_Base* AScWWeapon_Base::SpawnWeapon(AScWCharacter* InOwner, UScWWeapon
 //~ End Static
 
 //~ Begin Initialize
-void AScWWeapon_Base::K2_UpdateFromDataAsset_Implementation()
+void AScWWeapon_Base::BP_UpdateFromDataAsset_Implementation()
 {
 	if (!DataAsset)
 	{
@@ -60,7 +60,7 @@ void AScWWeapon_Base::OnConstruction(const FTransform& InTransform) // AActor
 {
 	Super::OnConstruction(InTransform);
 
-	K2_UpdateFromDataAsset();
+	BP_UpdateFromDataAsset();
 }
 
 void AScWWeapon_Base::BeginPlay() // AActor

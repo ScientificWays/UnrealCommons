@@ -32,9 +32,9 @@ protected:
 //~ Begin DataAssets
 public:
 
-	// Called from ScW Game State default implementation of K2_GetDataAssetForNewCharacter()
+	// Called from ScW Game State default implementation of BP_GetDataAssetForNewCharacter()
 	UFUNCTION(Category = "DataAssets", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "GetDataAssetForNewCharacter"))
-	const class UScWCharacterData* K2_GetDataAssetForNewCharacter(const class AScWCharacter* InCharacter) const;
+	const class UScWCharacterData* BP_GetDataAssetForNewCharacter(const class AScWCharacter* InCharacter) const;
 
 	UPROPERTY(Category = "DataAssets", EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<const class UScWCharacterData> DefaultPlayerCharacterDataAsset;

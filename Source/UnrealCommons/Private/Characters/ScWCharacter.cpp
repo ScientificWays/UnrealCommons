@@ -60,18 +60,18 @@ void AScWCharacter::PostInitializeComponents() // AActor
 	{
 		if (const AScWGameState* GameState = AScWGameState::TryGetScWGameState(this))
 		{
-			DataAsset = GameState->K2_GetDataAssetForNewCharacter(this);
+			DataAsset = GameState->BP_GetDataAssetForNewCharacter(this);
 		}
 		if (DataAsset)
 		{
-			DataAsset->K2_InitializeCharacterController(this);
+			DataAsset->BP_InitializeCharacterController(this);
 		}
 	}
 	Super::PostInitializeComponents();
 
 	if (World && World->IsGameWorld() && DataAsset)
 	{
-		DataAsset->K2_InitializeCharacterComponents(this);
+		DataAsset->BP_InitializeCharacterComponents(this);
 	}
 }
 
@@ -87,7 +87,7 @@ void AScWCharacter::OnConstruction(const FTransform& InTransform) // AActor
 	{
 		if (!World->IsGameWorld() && DataAsset)
 		{
-			DataAsset->K2_InitializeCharacterComponents(this);
+			DataAsset->BP_InitializeCharacterComponents(this);
 		}
 	}
 }
@@ -155,7 +155,7 @@ void AScWCharacter::PossessedBy(AController* InController) // APawn
 
 	if (DataAsset)
 	{
-		DataAsset->K2_InitializeCharacterController(this);
+		DataAsset->BP_InitializeCharacterController(this);
 	}
 	if (APlayerController* OwnerPlayerController = Cast<APlayerController>(InController))
 	{

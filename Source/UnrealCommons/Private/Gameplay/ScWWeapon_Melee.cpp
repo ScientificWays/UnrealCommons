@@ -15,9 +15,9 @@ AScWWeapon_Melee::AScWWeapon_Melee(const FObjectInitializer& InObjectInitializer
 }
 
 //~ Begin Initialize
-void AScWWeapon_Melee::K2_UpdateFromDataAsset_Implementation() // AScWWeapon_Base
+void AScWWeapon_Melee::BP_UpdateFromDataAsset_Implementation() // AScWWeapon_Base
 {
-	Super::K2_UpdateFromDataAsset_Implementation();
+	Super::BP_UpdateFromDataAsset_Implementation();
 
 	if (UScWWeaponData_Melee* WeaponDataAsset = Cast<UScWWeaponData_Melee>(DataAsset))
 	{

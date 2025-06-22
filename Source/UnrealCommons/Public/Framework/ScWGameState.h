@@ -30,7 +30,7 @@ public:
 
 	// Default implementation tries to get data from ScW Level Script Actor first
 	UFUNCTION(Category = "DataAssets", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "GetDataAssetForNewCharacter"))
-	const class UScWCharacterData* K2_GetDataAssetForNewCharacter(const class AScWCharacter* InCharacter) const;
+	const class UScWCharacterData* BP_GetDataAssetForNewCharacter(const class AScWCharacter* InCharacter) const;
 
 	UPROPERTY(Category = "DataAssets", EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<const class UScWCharacterData> DefaultPlayerCharacterDataAsset;
