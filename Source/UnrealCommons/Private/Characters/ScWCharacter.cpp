@@ -28,6 +28,8 @@ AScWCharacter::AScWCharacter(const FObjectInitializer& InObjectInitializer)
 	CharacterASC = CreateDefaultSubobject<UScWASC_Character>(TEXT("CharacterASC"));
 	CharacterASC->SetIsReplicated(true);
 	CharacterASC->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+
+	bHorizontalMovementAbsolute = false;
 }
 
 //~ Begin Statics
@@ -185,8 +187,9 @@ void AScWCharacter::SetupPlayerInputComponent(UInputComponent* InInputComponent)
 	ensure(HorizontalMovementAction);
 	if (HorizontalMovementAction)
 	{
-		EnhancedInputComponent->BindAction(HorizontalMovementAction, ETriggerEvent::Triggered, this, &AScWCharacter::InputHorizontalMovement);
-		EnhancedInputComponent->BindAction(HorizontalMovementAction, ETriggerEvent::Completed, this, &AScWCharacter::InputHorizontalMovement);
+		auto HorizontalMovementMethodPtr = bHorizontalMovementAbsolute ? &AScWCharacter::InputHorizontalMovement_Absolute : &AScWCharacter::InputHorizontalMovement;
+		EnhancedInputComponent->BindAction(HorizontalMovementAction, ETriggerEvent::Triggered, this, HorizontalMovementMethodPtr);
+		EnhancedInputComponent->BindAction(HorizontalMovementAction, ETriggerEvent::Completed, this, HorizontalMovementMethodPtr);
 	}
 	if (UsePrimaryAction)
 	{
@@ -269,6 +272,33 @@ void AScWCharacter::InputHorizontalMovement(const FInputActionInstance& InAction
 
 	AddMovementInput(GetActorForwardVector() * MoveForwardValue + GetActorRightVector() * MoveRightValue);
 	
+	if (MoveForwardValue > 0.0f)
+	{
+		OnForwardInputTriggeredDelegate.Broadcast();
+	}
+	else if (MoveForwardValue < 0.0f)
+	{
+		OnBackwardInputTriggeredDelegate.Broadcast();
+	}
+	if (MoveRightValue > 0.0f)
+	{
+		OnRightInputTriggeredDelegate.Broadcast();
+	}
+	else if (MoveRightValue < 0.0f)
+	{
+		OnLeftInputTriggeredDelegate.Broadcast();
+	}
+}
+
+void AScWCharacter::InputHorizontalMovement_Absolute(const FInputActionInstance& InActionInstance)
+{
+	FVector2D InputValue = InActionInstance.GetValue().Get<FVector2D>();
+
+	float MoveForwardValue = InputValue.Y;
+	float MoveRightValue = InputValue.X;
+
+	AddMovementInput(FVector(MoveForwardValue, MoveRightValue, 0.0f));
+
 	if (MoveForwardValue > 0.0f)
 	{
 		OnForwardInputTriggeredDelegate.Broadcast();

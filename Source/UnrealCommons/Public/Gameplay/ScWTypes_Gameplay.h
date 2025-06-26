@@ -35,7 +35,7 @@ struct FScWGameplayGiveAbilityData
 	int32 Level = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bAssignInputID = true;
+	bool bAssignInputID = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "bAssignInputID"))
 	EScWAbilityInputID InputID = EScWAbilityInputID::UsePrimary;

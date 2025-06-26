@@ -97,6 +97,7 @@ public:
 protected:
 	virtual void SetupPlayerInputComponent(UInputComponent* InInputComponent) override; // APawn
 	void InputHorizontalMovement(const FInputActionInstance& InActionInstance);
+	void InputHorizontalMovement_Absolute(const FInputActionInstance& InActionInstance);
 	void InputAbilityConfirmPressed();
 	void InputAbilityCancelPressed();
 	void InputUsePrimaryPressed();
@@ -139,6 +140,9 @@ protected:
 
 	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UInputAction> HorizontalMovementAction;
+
+	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
+	bool bHorizontalMovementAbsolute;
 
 	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UInputAction> UsePrimaryAction;

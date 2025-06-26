@@ -89,7 +89,7 @@ void AScWPlayerController::SetupInputComponent() // APlayerController
 	{
 		return;
 	}
-	ensure(MouseLookAction);
+	//ensure(MouseLookAction);
 	if (MouseLookAction)
 	{
 		EnhancedInputComponent->BindAction(MouseLookAction, ETriggerEvent::Triggered, this, &AScWPlayerController::InputMouseLook);
