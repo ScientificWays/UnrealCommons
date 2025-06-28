@@ -27,6 +27,8 @@ public:
 	UFUNCTION(Category = "Health", BlueprintCallable, BlueprintPure, meta = (WorldContext = "InWCO"))
 	static TSubclassOf<UGameplayEffect> GetAddHealthGameplayEffectClass(const UObject* InWCO);
 
+	UFUNCTION(Category = "Health", BlueprintCallable, BlueprintPure, meta = (WorldContext = "InWCO"))
+	static TSubclassOf<UGameplayEffect> GetDeadStateGameplayEffectClass(const UObject* InWCO);
 //~ Begin Damage
 public:
 

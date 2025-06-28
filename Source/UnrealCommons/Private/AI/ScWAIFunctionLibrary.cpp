@@ -2,6 +2,8 @@
 
 #include "AI/ScWAIFunctionLibrary.h"
 
+#include "AI/ScWAIPatrolPoint.h"
+
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AIPerceptionListenerInterface.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
@@ -28,15 +30,15 @@ float UScWAIFunctionLibrary::GetDistanceBetweenTwoBlackboardKeys(const UBlackboa
 	{
 		LocationB = ActorB->GetActorLocation();
 	}
-	FVector D = LocationB - LocationA;
+	FVector DistanceVector = LocationB - LocationA;
 
 	if (bInSquared)
 	{
-		return bInHorizontal ? D.SizeSquared2D() : D.SizeSquared();
+		return bInHorizontal ? DistanceVector.SizeSquared2D() : DistanceVector.SizeSquared();
 	}
 	else
 	{
-		return bInHorizontal ? D.Size2D() : D.Size();
+		return bInHorizontal ? DistanceVector.Size2D() : DistanceVector.Size();
 	}
 }
 //~ End Blackboard
@@ -63,3 +65,31 @@ int32 UScWAIFunctionLibrary::GetActorObserversNumFromActorArray(const AActor* In
 	return OutObserversNum;
 }
 //~ End Perception
+
+//~ Begin Navigation
+int32 UScWAIFunctionLibrary::GetNearestPatrolPointIndex(const FVector& InReferenceLocation, const TArray<AScWAIPatrolPoint*>& InPatrolPoints, const bool bInCheckMoveToLocations)
+{
+	float NearestDistanceSquared = MAX_FLT;
+	int32 OutIndex = INDEX_NONE;
+
+	for (int32 SampleIndex = 0; SampleIndex < InPatrolPoints.Num(); ++SampleIndex)
+	{
+		const AScWAIPatrolPoint* SamplePoint = InPatrolPoints[SampleIndex];
+		FVector SampleLocation = bInCheckMoveToLocations ? SamplePoint->BP_GetMoveToLocation() : SamplePoint->GetActorLocation();
+		float SampleDistanceSquared = FVector::DistSquared(InReferenceLocation, SampleLocation);
+
+		if (SampleDistanceSquared < NearestDistanceSquared)
+		{
+			OutIndex = SampleIndex;
+			NearestDistanceSquared = SampleDistanceSquared;
+		}
+	}
+	return OutIndex;
+}
+
+AScWAIPatrolPoint* UScWAIFunctionLibrary::GetNearestPatrolPoint(const FVector& InReferenceLocation, const TArray<AScWAIPatrolPoint*>& InPatrolPoints, const bool bInCheckMoveToLocations)
+{
+	int32 OutIndex = GetNearestPatrolPointIndex(InReferenceLocation, InPatrolPoints, bInCheckMoveToLocations);
+	return InPatrolPoints.IsValidIndex(OutIndex) ? InPatrolPoints[OutIndex] : nullptr;
+}
+//~ End Navigation

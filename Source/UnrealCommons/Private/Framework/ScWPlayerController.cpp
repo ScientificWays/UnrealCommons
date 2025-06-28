@@ -62,6 +62,15 @@ void AScWPlayerController::OnUnPossess() // AController
 	}
 }
 
+void AScWPlayerController::PawnPendingDestroy(APawn* InPawn) // AController
+{
+	//FVector ViewLocation;
+	//FRotator ViewRotation;
+	//GetPlayerViewPoint(ViewLocation, ViewRotation);
+	
+	Super::PawnPendingDestroy(InPawn);
+}
+
 void AScWPlayerController::BroadcastPawnHealthChanged(const FGameplayAttribute& InAttribute, float InPrevValue, float InNewValue)
 {
 	OnPawnHealthChangedDelegate.Broadcast(InAttribute, InPrevValue, InNewValue);

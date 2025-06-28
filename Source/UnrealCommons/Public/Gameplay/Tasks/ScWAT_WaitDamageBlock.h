@@ -27,7 +27,7 @@ protected:
 //~ End Common
 
 	UFUNCTION()
-	void OnDamageBlockedCallback(float InDamage, const struct FReceiveDamageData& InData);
+	void OnDamageBlockedCallback(float InDamage, const struct FReceivedDamageData& InData);
 
 	FScriptDelegate OnDamageBlockedScriptDelegate;
 

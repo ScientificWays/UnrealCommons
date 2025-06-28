@@ -14,6 +14,10 @@ class UNREALCOMMONS_API UScWGameplayAbility : public UGameplayAbility
 {
 
 	GENERATED_BODY()
+
+public:
+
+	UScWGameplayAbility();
 	
 //~ Begin Initialize
 protected:

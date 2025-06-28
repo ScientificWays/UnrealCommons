@@ -20,7 +20,7 @@ enum class EComboState : uint8
 };
 
 USTRUCT(BlueprintType)
-struct FReceiveDamageData
+struct FReceivedDamageData
 {
 	GENERATED_BODY()
 
@@ -36,11 +36,11 @@ struct FReceiveDamageData
 	UPROPERTY(Category = "Data", BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<AController> Instigator = nullptr;
 
-	FReceiveDamageData(const FHitResult& InHitResult = FHitResult(), const UDamageType* InDamageType = nullptr, AActor* InSource = nullptr, AController* InInstigator = nullptr)
+	FReceivedDamageData(const FHitResult& InHitResult = FHitResult(), const UDamageType* InDamageType = nullptr, AActor* InSource = nullptr, AController* InInstigator = nullptr)
 		: HitResult(InHitResult), DamageType(InDamageType), Source(InSource), Instigator(InInstigator) {}
 };
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FDamageEventSignature, float, InDamage, const FReceiveDamageData&, InData);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FDamageEventSignature, float, InDamage, const FReceivedDamageData&, InData);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAccumulatedDamageResolveEventSignature, float, InDamage);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FComboStateChangedSignature, EComboState, InNewState);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInputEventSignature, int32, InInputID);
@@ -173,11 +173,16 @@ public:
 	TSubclassOf<UGameplayEffect> SpawnEffectClass;
 //~ End Effects
 
+//~ Begin Tags
+protected:
+	virtual void OnStunnedTagNumChanged(const FGameplayTag InCallbackTag, int32 InNewCount);
+//~ End Tags
+
 //~ Begin Damage
 public:
 
 	UFUNCTION(Category = "Damage", BlueprintCallable)
-	const UDamageType* GetLastReceivedDamageType() const { return LastReceivedDamageType; }
+	const FReceivedDamageData& GetLastAppliedDamageData() const { return LastAppliedDamageData; }
 
 	UPROPERTY(Category = "Damage", BlueprintAssignable)
 	FDamageEventSignature OnDamageIgnored;
@@ -226,21 +231,21 @@ protected:
 	UFUNCTION()
 	void OnAvatarTakeRadialDamage(AActor* InDamagedActor, float InDamage, const UDamageType* InDamageType, FVector InOrigin, const FHitResult& InHitResult, AController* InInstigator, AActor* InDamageCauser);
 
-	bool HandleTryReceiveDamage(float InDamage, const FReceiveDamageData& InData);
+	bool HandleTryReceiveDamage(float InDamage, const FReceivedDamageData& InData);
 
 	FORCEINLINE bool ShouldIgnoreAnyAttackFrom(AController* InInstigator) const;
-	FORCEINLINE bool TryIgnoreDamage(float& InOutAdjustedDamage, const FReceiveDamageData& InData);
-	FORCEINLINE bool TryBlockDamage(float& InOutAdjustedDamage, const FReceiveDamageData& InData);
-	FORCEINLINE bool TryEvadeDamage(float& InOutAdjustedDamage, const FReceiveDamageData& InData);
-	FORCEINLINE bool TryApplyDamage(float InDamage, const FReceiveDamageData& InData);
+	FORCEINLINE bool TryIgnoreDamage(float& InOutAdjustedDamage, const FReceivedDamageData& InData);
+	FORCEINLINE bool TryBlockDamage(float& InOutAdjustedDamage, const FReceivedDamageData& InData);
+	FORCEINLINE bool TryEvadeDamage(float& InOutAdjustedDamage, const FReceivedDamageData& InData);
+	FORCEINLINE bool TryApplyDamage(float InDamage, const FReceivedDamageData& InData);
 
-	virtual void PostIgnoreDamage(float InDamage, const FReceiveDamageData& InData) {}
-	virtual void PostBlockDamage(float InDamage, const FReceiveDamageData& InData) {}
-	virtual void PostEvadeDamage(float InDamage, const FReceiveDamageData& InData) {}
-	virtual void PostApplyDamage(float InDamage, const FReceiveDamageData& InData) {}
+	virtual void PostIgnoreDamage(float InDamage, const FReceivedDamageData& InData) {}
+	virtual void PostBlockDamage(float InDamage, const FReceivedDamageData& InData) {}
+	virtual void PostEvadeDamage(float InDamage, const FReceivedDamageData& InData) {}
+	virtual void PostApplyDamage(float InDamage, const FReceivedDamageData& InData) {}
 
 	UPROPERTY(Category = "Damage", BlueprintReadOnly)
-	TObjectPtr<const UDamageType> LastReceivedDamageType;
+	FReceivedDamageData LastAppliedDamageData;
 
 	UPROPERTY(Category = "Damage", BlueprintReadOnly, EditAnywhere)
 	float ExplosionStumbleMinDuration;

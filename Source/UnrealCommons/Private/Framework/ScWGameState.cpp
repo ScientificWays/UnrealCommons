@@ -12,6 +12,11 @@ AScWGameState::AScWGameState()
 {
 	bForceDefaultPlayerCharacterDataAsset = true;
 
+	//CONSTRUCTOR_TRY_LOAD_CLASS(UGameplayEffect, DefaultAddHealthGameplayEffectClass, "/UnrealCommons/Blueprints/GameplayEffects/GE_CommonAddHealth");
+	//CONSTRUCTOR_TRY_LOAD_CLASS(UGameplayEffect, DefaultSetHealthGameplayEffectClass, "/UnrealCommons/Blueprints/GameplayEffects/GE_CommonSetHealth");
+	//CONSTRUCTOR_TRY_LOAD_CLASS(UGameplayEffect, DefaultDeadStateGameplayEffectClass, "/UnrealCommons/Blueprints/GameplayEffects/GE_CommonDeadState");
+	//CONSTRUCTOR_TRY_LOAD_CLASS(UGameplayEffect, DefaultApplyDamageGameplayEffectClass, "/UnrealCommons/Blueprints/GameplayEffects/GE_CommonApplyDamage");
+	
 	TeamMap.Add(TEXT("NoTeam"), FGenericTeamId::NoTeam);
 	TeamMap.Add(TEXT("Player"), FGenericTeamId(1u));
 	TeamMap.Add(TEXT("Enemy"), FGenericTeamId(2u));

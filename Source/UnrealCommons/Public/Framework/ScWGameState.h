@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS(Abstract, meta = (DisplayName = "[ScW] Game State"))
+UCLASS(Config = UnrealCommons, meta = (DisplayName = "[ScW] Game State"))
 class UNREALCOMMONS_API AScWGameState : public AGameStateBase
 {
 	GENERATED_BODY()
@@ -39,18 +39,21 @@ public:
 	bool bForceDefaultPlayerCharacterDataAsset;
 //~ End DataAssets
 
-//~ Begin GAS
+//~ Begin Gameplay Ability System
 public:
 
-	UPROPERTY(Category = "GAS", EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(Config, Category = "Gameplay Ability System", EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UGameplayEffect> DefaultSetHealthGameplayEffectClass;
 
-	UPROPERTY(Category = "GAS", EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(Config, Category = "Gameplay Ability System", EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UGameplayEffect> DefaultAddHealthGameplayEffectClass;
 
-	UPROPERTY(Category = "GAS", EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(Config, Category = "Gameplay Ability System", EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UGameplayEffect> DefaultDeadStateGameplayEffectClass;
+
+	UPROPERTY(Config, Category = "Gameplay Ability System", EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UGameplayEffect> DefaultApplyDamageGameplayEffectClass;
-//~ End GAS
+//~ End Gameplay Ability System
 
 //~ Begin Teams
 public:

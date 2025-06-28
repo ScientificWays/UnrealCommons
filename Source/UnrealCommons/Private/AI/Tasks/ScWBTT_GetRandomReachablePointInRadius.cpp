@@ -86,7 +86,7 @@ EBTNodeResult::Type UScWBTT_GetRandomReachablePointInRadius::Common_Execute(UBTN
 	}
 	if (OwnerController && BlackboardComponent)
 	{
-		FVector CenterLocation = FVector::ZeroVector;
+		FVector CenterLocation = FAISystem::InvalidLocation;
 
 		if (InCenterKey.SelectedKeyType == UBlackboardKeyType_Vector::StaticClass())
 		{

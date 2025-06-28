@@ -73,12 +73,21 @@ protected:
 //~ End Components
 
 //~ Begin Controller
+public:
+	virtual FVector GetPawnViewLocation() const override; // APawn
 protected:
 	virtual void SpawnDefaultController() override; // APawn
 	virtual void PossessedBy(AController* InController) override; // APawn
 	virtual void UnPossessed() override; // APawn
 //~ End Controller
 	
+//~ Begin Health
+protected:
+
+	UFUNCTION()
+	void OnDied();
+//~ End Health
+
 //~ Begin Input
 public:
 
@@ -219,10 +228,13 @@ public:
 	class AScWWeapon_Base* GetWeapon() const { return Weapon; }
 
 	UFUNCTION(Category = "Weapon", BlueprintCallable)
-	class AScWWeapon_Base* GiveWeapon(class UScWWeaponData_Base* InWeaponData);
+	class AScWWeapon_Base* GiveWeapon(class UScWWeaponData_Base* InWeaponData, const bool bInDropPrevious = true);
 
 	UFUNCTION(Category = "Weapon", BlueprintCallable)
-	void RemoveWeapon() { GiveWeapon(nullptr); }
+	void DropWeapon() { GiveWeapon(nullptr, true); }
+
+	UFUNCTION(Category = "Weapon", BlueprintCallable)
+	void RemoveWeapon() { GiveWeapon(nullptr, false); }
 
 	UPROPERTY(Category = "Weapon", BlueprintAssignable)
 	FDefaultEventSignature OnWeaponChanged;

@@ -77,3 +77,23 @@ void AScWWeapon_Base::BeginPlay() // AActor
 	}
 }
 //~ End Initialize
+
+//~ Begin Owner
+void AScWWeapon_Base::HandleDrop()
+{
+	ensureReturn(OwnerCharacter);
+	ensure(OwnerCharacter->GetWeapon() != this);
+	
+	//ensure(GetParentComponent() == OwnerCharacter->GetMesh());
+	//ensure(IsChildActor());
+	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+
+	if (Mesh && Mesh->GetStaticMesh())
+	{
+		Mesh->SetSimulatePhysics(true);
+		Mesh->SetCollisionProfileName(TEXT("PhysicsActor"));
+
+		Mesh->AddImpulse(OwnerCharacter->GetVelocity(), NAME_None, true);
+	}
+}
+//~ End Owner

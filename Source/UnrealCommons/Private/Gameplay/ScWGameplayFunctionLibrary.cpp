@@ -14,7 +14,7 @@ TSubclassOf<UGameplayEffect> UScWGameplayFunctionLibrary::GetSetHealthGameplayEf
 	{
 		return BaseGameState->DefaultSetHealthGameplayEffectClass;
 	}
-	UE_LOG(LogScWGameplay, Error, TEXT("UScWGameplayFunctionLibrary::GetDamageGameplayEffectClassForType() GameState does not have valid DefaultSetHealthGameplayEffectClass!"));
+	UE_LOG(LogScWGameplay, Error, TEXT("UScWGameplayFunctionLibrary::GetSetHealthGameplayEffectClass() GameState does not have valid DefaultSetHealthGameplayEffectClass!"));
 	return nullptr;
 }
 
@@ -25,7 +25,18 @@ TSubclassOf<UGameplayEffect> UScWGameplayFunctionLibrary::GetAddHealthGameplayEf
 	{
 		return BaseGameState->DefaultAddHealthGameplayEffectClass;
 	}
-	UE_LOG(LogScWGameplay, Error, TEXT("UScWGameplayFunctionLibrary::GetDamageGameplayEffectClassForType() GameState does not have valid DefaultSetHealthGameplayEffectClass!"));
+	UE_LOG(LogScWGameplay, Error, TEXT("UScWGameplayFunctionLibrary::GetAddHealthGameplayEffectClass() GameState does not have valid DefaultAddHealthGameplayEffectClass!"));
+	return nullptr;
+}
+
+TSubclassOf<UGameplayEffect> UScWGameplayFunctionLibrary::GetDeadStateGameplayEffectClass(const UObject* InWCO)
+{
+	const AScWGameState* BaseGameState = AScWGameState::TryGetScWGameState(InWCO);
+	if (BaseGameState && BaseGameState->DefaultDeadStateGameplayEffectClass)
+	{
+		return BaseGameState->DefaultDeadStateGameplayEffectClass;
+	}
+	UE_LOG(LogScWGameplay, Error, TEXT("UScWGameplayFunctionLibrary::GetDeadStateGameplayEffectClass() GameState does not have valid DefaultDeadStateGameplayEffectClass!"));
 	return nullptr;
 }
 //~ End Health

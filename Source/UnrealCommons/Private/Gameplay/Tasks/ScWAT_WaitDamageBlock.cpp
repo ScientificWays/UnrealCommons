@@ -39,7 +39,7 @@ void UScWAT_WaitDamageBlock::OnDestroy(bool bInAbilityIsEnding)
 	Super::OnDestroy(bInAbilityIsEnding);
 }
 
-void UScWAT_WaitDamageBlock::OnDamageBlockedCallback(float InDamage, const FReceiveDamageData& InData)
+void UScWAT_WaitDamageBlock::OnDamageBlockedCallback(float InDamage, const FReceivedDamageData& InData)
 {
 	if (!DamageTypeClass || (InData.DamageType && InData.DamageType->IsA(DamageTypeClass)))
 	{

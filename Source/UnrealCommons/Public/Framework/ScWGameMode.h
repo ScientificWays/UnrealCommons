@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS(Abstract, meta = (DisplayName = "[ScW] Game Mode"))
+UCLASS(meta = (DisplayName = "[ScW] Game Mode"))
 class UNREALCOMMONS_API AScWGameMode : public AGameModeBase
 {
 	GENERATED_BODY()

@@ -51,6 +51,26 @@
 
 DECLARE_LOG_CATEGORY_EXTERN(LogScWGameplay, Log, All);
 
+#define CONSTRUCTOR_TRY_LOAD_OBJECT(InClass, InProperty, InPath) \
+	{ \
+		static ConstructorHelpers::FObjectFinder<InClass> LoadedAsset(TEXT(InPath)); \
+		if (LoadedAsset.Succeeded()) \
+		{ \
+			InProperty = LoadedAsset.Object; \
+		} \
+	}
+
+#define CONSTRUCTOR_TRY_LOAD_CLASS(InClass, InProperty, InPath) \
+	{ \
+		static ConstructorHelpers::FClassFinder<InClass> LoadedAsset(TEXT(InPath)); \
+		if (LoadedAsset.Succeeded()) \
+		{ \
+			InProperty = LoadedAsset.Class; \
+		} \
+	}
+
+#define ensureReturn(InCondition, ...) ensure(InCondition); if (!InCondition) return __VA_ARGS__;
+
 class FUnrealCommonsModule : public IModuleInterface
 {
 public:

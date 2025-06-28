@@ -59,7 +59,7 @@ void UScWASC_Character::OnRegister() // UActorComponent
 	GravityScaleChangedDelegateHandle = GetGameplayAttributeValueChangeDelegate(CharacterAS->GetGravityScaleAttribute()).AddUObject(this, &ThisClass::OnGravityScaleChanged);
 	AirControlChangedDelegateHandle = GetGameplayAttributeValueChangeDelegate(CharacterAS->GetAirControlAttribute()).AddUObject(this, &ThisClass::OnAirControlChanged);
 
-	RegisterGameplayTagEvent(FScWGameplayTags::MovementMode, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ThisClass::OnMovementModeTagChanged);
+	RegisterGameplayTagEvent(FScWGameplayTags::MovementMode, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ThisClass::OnMovementModeTagNumChanged);
 }
 //~ End Initialize
 
@@ -111,10 +111,15 @@ void UScWASC_Character::OnAirControlChanged(const FOnAttributeChangeData& InData
 		OwnerCMC->AirControl = InData.NewValue;
 	}
 }
+
+void UScWASC_Character::HandleDied() // UScWASC_Base
+{
+	Super::HandleDied();
+}
 //~ End Attributes
 
 //~ Begin Tags
-void UScWASC_Character::OnMovementModeTagChanged(const FGameplayTag InCallbackTag, int32 InNewNum)
+void UScWASC_Character::OnMovementModeTagNumChanged(const FGameplayTag InCallbackTag, int32 InNewNum)
 {
 	UpdateCharacterMovementModeFromTags();
 }

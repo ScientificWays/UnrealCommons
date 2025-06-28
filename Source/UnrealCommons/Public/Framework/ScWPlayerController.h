@@ -42,6 +42,7 @@ public:
 protected:
 	virtual void OnPossess(APawn* InPawn) override; // AController
 	virtual void OnUnPossess() override; // AController
+	virtual void PawnPendingDestroy(APawn* InPawn) override; // AController
 
 	UFUNCTION()
 	void BroadcastPawnHealthChanged(const FGameplayAttribute& InAttribute, float InPrevValue, float InNewValue);

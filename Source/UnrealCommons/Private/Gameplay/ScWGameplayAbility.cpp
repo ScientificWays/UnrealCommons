@@ -3,9 +3,26 @@
 #include "Gameplay/ScWGameplayAbility.h"
 
 #include "Characters/ScWCharacter.h"
+
 #include "Framework/ScWPlayerController.h"
 
 #include "Gameplay/ScWASC_Base.h"
+#include "Gameplay/ScWGameplayTags.h"
+
+UScWGameplayAbility::UScWGameplayAbility()
+{
+	SetAssetTags(FGameplayTagContainer(FScWGameplayTags::Ability_CancelBy_Stunned));
+
+	ActivationBlockedTags.AddTag(FScWGameplayTags::State_Stunned);
+	ActivationBlockedTags.AddTag(FScWGameplayTags::State_Dead);
+
+	ReplicationPolicy = EGameplayAbilityReplicationPolicy::ReplicateYes;
+	NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::LocalPredicted;
+	NetSecurityPolicy = EGameplayAbilityNetSecurityPolicy::ServerOnlyTermination;
+	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+
+	bServerRespectsRemoteAbilityCancellation = false;
+}
 
 //~ Begin Initialize
 void UScWGameplayAbility::SetCurrentActorInfo(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo) const // UGameplayAbility

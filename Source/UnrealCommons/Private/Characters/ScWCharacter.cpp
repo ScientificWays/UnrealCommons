@@ -87,7 +87,7 @@ void AScWCharacter::OnConstruction(const FTransform& InTransform) // AActor
 	}
 	if (UWorld* World = GetWorld())
 	{
-		if (!World->IsGameWorld() && DataAsset)
+		if (World->IsEditorWorld() && DataAsset)
 		{
 			DataAsset->BP_InitializeCharacterComponents(this);
 		}
@@ -98,6 +98,10 @@ void AScWCharacter::BeginPlay() // AActor
 {
 	Super::BeginPlay();
 
+	if (CharacterASC)
+	{
+		CharacterASC->OnDiedDelegate.AddDynamic(this, &AScWCharacter::OnDied);
+	}
 	if (DataAsset)
 	{
 		GiveWeapon(DataAsset->DefaultWeaponData);
@@ -144,6 +148,11 @@ UAbilitySystemComponent* AScWCharacter::GetAbilitySystemComponent() const // IAb
 //~ End Components
 
 //~ Begin Controller
+FVector AScWCharacter::GetPawnViewLocation() const // APawn
+{
+	return Super::GetPawnViewLocation();
+}
+
 void AScWCharacter::SpawnDefaultController() // APawn
 {
 	Super::SpawnDefaultController();
@@ -174,6 +183,73 @@ void AScWCharacter::UnPossessed() // APawn
 	Super::UnPossessed();
 }
 //~ End Controller
+
+//~ Begin Health
+void AScWCharacter::OnDied()
+{
+	//DetachFromControllerPendingDestroy();
+
+	if (APlayerController* OwnerPlayerController = GetController<APlayerController>())
+	{
+		UScWGameplayFunctionLibrary::RemoveEnhancedInputMappingContextFrom(OwnerPlayerController, DefaultInputMappingContext, DefaultInputMappingContextOptions);
+	}
+	if (UCapsuleComponent* CharacterCollision = GetCapsuleComponent())
+	{
+		CharacterCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+	if (BaseCMC)
+	{
+		BaseCMC->DisableMovement();
+	}
+	bool bDestroyActor = true;
+
+	if (USkeletalMeshComponent* CharacterMesh = GetMesh())
+	{
+		if (DataAsset)
+		{
+			if (DataAsset->bRagdollOnDeath)
+			{
+				CharacterMesh->SetSimulatePhysics(true);
+				CharacterMesh->SetCollisionProfileName(TEXT("Ragdoll"));
+				bDestroyActor = false;
+
+				if (CharacterASC)
+				{
+					const FReceivedDamageData& LastAppliedDamageData = CharacterASC->GetLastAppliedDamageData();
+					if (LastAppliedDamageData.DamageType)
+					{
+						FVector RagdollImpulse = LastAppliedDamageData.DamageType->DamageImpulse * -LastAppliedDamageData.HitResult.ImpactNormal;
+						CharacterMesh->AddImpulseAtLocation(RagdollImpulse, LastAppliedDamageData.HitResult.ImpactPoint, LastAppliedDamageData.HitResult.BoneName);
+					}
+				}
+			}
+			else if (DataAsset->DiedAnimInstanceClass)
+			{
+				CharacterMesh->SetAnimInstanceClass(DataAsset->DiedAnimInstanceClass);
+				bDestroyActor = false;
+			}
+		}
+	}
+	if (Weapon)
+	{
+		if (UScWWeaponData_Base* WeaponDataAsset = Weapon->GetDataAsset())
+		{
+			if (WeaponDataAsset->bDropOnDeath)
+			{
+				DropWeapon();
+			}
+			else
+			{
+				RemoveWeapon();
+			}
+		}
+	}
+	if (bDestroyActor)
+	{
+		Destroy();
+	}
+}
+//~ End Health
 
 //~ Begin Input
 void AScWCharacter::SetupPlayerInputComponent(UInputComponent* InInputComponent) // APawn
@@ -520,28 +596,33 @@ void AScWCharacter::HandleGameplayCue(UObject* InSelf, FGameplayTag InGameplayCu
 //~ End GameplayCue
 
 //~ Begin Weapon
-AScWWeapon_Base* AScWCharacter::GiveWeapon(UScWWeaponData_Base* InWeaponData)
+AScWWeapon_Base* AScWCharacter::GiveWeapon(UScWWeaponData_Base* InWeaponData, const bool bInDropPrevious)
 {
 	AScWWeapon_Base* PrevWeapon = Weapon;
+	Weapon = nullptr;
 
 	CharacterASC->ClearAbilities(WeaponAbilitiesHandleArray, true);
 
+	if (PrevWeapon)
+	{
+		UScWWeaponData_Base* WeaponDataAsset = PrevWeapon->GetDataAsset();
+		if (bInDropPrevious && WeaponDataAsset && WeaponDataAsset->bCanDrop)
+		{
+			PrevWeapon->HandleDrop();
+		}
+		else
+		{
+			PrevWeapon->Destroy();
+		}
+	}
 	if (InWeaponData)
 	{
-		if (Weapon)
-		{
-			Weapon->Destroy();
-		}
 		Weapon = AScWWeapon_Base::SpawnWeapon(this, InWeaponData);
 
 		if (Weapon)
 		{
 			CharacterASC->GiveAbilitiesFromGiveData(InWeaponData->WeaponAbilitiesGiveData, WeaponAbilitiesHandleArray);
 		}
-	}
-	else
-	{
-		Weapon = nullptr;
 	}
 	if (Weapon != PrevWeapon)
 	{

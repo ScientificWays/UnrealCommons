@@ -40,11 +40,21 @@ protected:
 
 	UPROPERTY(Category = "Initialize", EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<class UScWWeaponData_Base> DataAsset;
-
-	UPROPERTY(Category = "Initialize", EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<class AScWCharacter> OwnerCharacter;
 //~ End Initialize
 	
+//~ Begin Owner
+public:
+
+	UFUNCTION(Category = "Owner", BlueprintCallable)
+	class AScWCharacter* GetOwnerCharacter() const { return OwnerCharacter; }
+
+	virtual void HandleDrop();
+protected:
+
+	UPROPERTY(Category = "Owner", EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<class AScWCharacter> OwnerCharacter;
+//~ End Owner
+
 //~ Begin Components
 public:
 

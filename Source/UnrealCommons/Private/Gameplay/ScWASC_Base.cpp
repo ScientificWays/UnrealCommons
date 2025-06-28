@@ -65,6 +65,8 @@ void UScWASC_Base::OnRegister() // UActorComponent
 	}
 	HealthChangedDelegateHandle = GetGameplayAttributeValueChangeDelegate(BaseAS->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthChanged);
 	MaxHealthChangedDelegateHandle = GetGameplayAttributeValueChangeDelegate(BaseAS->GetMaxHealthAttribute()).AddUObject(this, &ThisClass::OnMaxHealthChanged);
+
+	RegisterGameplayTagEvent(FScWGameplayTags::State_Stunned, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ThisClass::OnStunnedTagNumChanged);
 }
 
 void UScWASC_Base::BeginPlay() // UActorComponent
@@ -115,7 +117,7 @@ void UScWASC_Base::SetHealth(float InHealth)
 	}
 	else
 	{
-		UE_LOG(LogAbilitySystemComponent, Warning, TEXT("UScWASC_Base::SetHealth() SetHealthEffectClass == nullptr! Can't set health."));
+		UE_LOG(LogScWGameplay, Warning, TEXT("UScWASC_Base::SetHealth() SetHealthEffectClass == nullptr! Can't set health."));
 	}
 }
 
@@ -127,7 +129,7 @@ void UScWASC_Base::AddHealth(float InHealth)
 	}
 	else
 	{
-		UE_LOG(LogAbilitySystemComponent, Warning, TEXT("UScWASC_Base::AddHealth() AddHealthEffectClass == nullptr! Can't add health."));
+		UE_LOG(LogScWGameplay, Warning, TEXT("UScWASC_Base::AddHealth() AddHealthEffectClass == nullptr! Can't add health."));
 	}
 }
 
@@ -156,6 +158,14 @@ void UScWASC_Base::OnZeroHealth()
 
 void UScWASC_Base::HandleDied()
 {
+	if (TSubclassOf<UGameplayEffect> DeadStateEffectClass = UScWGameplayFunctionLibrary::GetDeadStateGameplayEffectClass(this))
+	{
+		TryApplyGameplayEffectByClass(DeadStateEffectClass);
+	}
+	else
+	{
+		UE_LOG(LogScWGameplay, Warning, TEXT("UScWASC_Base::HandleDied() DeadEffectClass == nullptr! Can't apply dead state."));
+	}
 	OnDiedDelegate.Broadcast();
 }
 //~ End Attributes
@@ -257,7 +267,7 @@ FActiveGameplayEffectHandle UScWASC_Base::TryApplyGameplayEffectByClass(TSubclas
 {
 	if (InClass == nullptr)
 	{
-		UE_LOG(LogAbilitySystemComponent, Warning, TEXT("UScWASC_Base::TryApplyGameplayEffectByClass() InClass == nullptr! Can't apply GameplayEffect by class."));
+		UE_LOG(LogScWGameplay, Warning, TEXT("UScWASC_Base::TryApplyGameplayEffectByClass() InClass == nullptr! Can't apply GameplayEffect by class."));
 		return FActiveGameplayEffectHandle();
 	}
 	FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingSpec(InClass, InLevel, MakeEffectContext());
@@ -274,7 +284,7 @@ int32 UScWASC_Base::TryRemoveGameplayEffectByClass(TSubclassOf<UGameplayEffect> 
 {
 	if (InClass == nullptr)
 	{
-		UE_LOG(LogAbilitySystemComponent, Warning, TEXT("UScWASC_Base::TryRemoveGameplayEffectByClass() InClass == nullptr! Can't remove GameplayEffect by class."));
+		UE_LOG(LogScWGameplay, Warning, TEXT("UScWASC_Base::TryRemoveGameplayEffectByClass() InClass == nullptr! Can't remove GameplayEffect by class."));
 		return 0;
 	}
 	FGameplayEffectQuery RemoveQuery = FGameplayEffectQuery();
@@ -294,6 +304,17 @@ void UScWASC_Base::ApplySpawnEffect()
 	}
 }
 //~ End Effects
+
+//~ Begin Tags
+void UScWASC_Base::OnStunnedTagNumChanged(const FGameplayTag InCallbackTag, int32 InNewNum)
+{
+	if (InNewNum > 0)
+	{
+		static const FGameplayTagContainer CancelByStunnedTagContainer = FGameplayTagContainer(FScWGameplayTags::Ability_CancelBy_Stunned);
+		CancelAbilities(&CancelByStunnedTagContainer);
+	}
+}
+//~ End Tags
 
 //~ Begin Damage
 #define ACCUMULATED_DAMAGE_DECLARE_METHODS(InRoute) \
@@ -354,13 +375,17 @@ void UScWASC_Base::OnAvatarTakeRadialDamage(AActor* InDamagedActor, float InDama
 	HandleTryReceiveDamage(InDamage, { InHitResult, InDamageType, InDamageCauser, InInstigator });
 }
 
-bool UScWASC_Base::HandleTryReceiveDamage(float InDamage, const FReceiveDamageData& InData)
+bool UScWASC_Base::HandleTryReceiveDamage(float InDamage, const FReceivedDamageData& InData)
 {
 	check(IsOwnerActorAuthoritative());
 
 	UAISense_Damage::ReportDamageEvent(this, GetAvatarActor(), InData.Instigator, InDamage, InData.Source->GetActorLocation(), InData.HitResult.Location);
 
-	if (TryIgnoreDamage(InDamage, InData))
+	if (HasMatchingGameplayTag(FScWGameplayTags::Cheat_Invulnerable))
+	{
+		return false;
+	}
+	else if (TryIgnoreDamage(InDamage, InData))
 	{
 		OnDamageIgnored.Broadcast(InDamage, InData);
 		PostIgnoreDamage(InDamage, InData);
@@ -425,22 +450,30 @@ bool UScWASC_Base::ShouldIgnoreAnyAttackFrom(AController* InInstigator) const
 	return false;
 }
 
-bool UScWASC_Base::TryIgnoreDamage(float& InOutAdjustedDamage, const FReceiveDamageData& InData)
+bool UScWASC_Base::TryIgnoreDamage(float& InOutAdjustedDamage, const FReceivedDamageData& InData)
 {
 	check(IsOwnerActorAuthoritative());
 
 	bool bIsIgnored = false;
-	/*if (HasMatchingGameplayTag(FIDGameplayTags::Effect_IgnoreAttack_Bullet) && InData.DamageTypeClass->IsChildOf(UIDDamageType_Bullet::StaticClass()))
+
+	if (HasMatchingGameplayTag(FScWGameplayTags::State_IgnoreAnyDamage))
 	{
 		bIsIgnored = true;
 	}
-	else if (HasMatchingGameplayTag(FIDGameplayTags::Effect_IgnoreAttack_Melee) && InData.DamageTypeClass->IsChildOf(UIDDamageType_Melee::StaticClass()))
+	else
 	{
-		bIsIgnored = true;
-	}
-	else */if (ShouldIgnoreAnyAttackFrom(InData.Instigator))
-	{
-		bIsIgnored = true;
+		/*if (HasMatchingGameplayTag(FIDGameplayTags::Effect_IgnoreAttack_Bullet) && InData.DamageTypeClass->IsChildOf(UIDDamageType_Bullet::StaticClass()))
+		{
+			bIsIgnored = true;
+		}
+		else if (HasMatchingGameplayTag(FIDGameplayTags::Effect_IgnoreAttack_Melee) && InData.DamageTypeClass->IsChildOf(UIDDamageType_Melee::StaticClass()))
+		{
+			bIsIgnored = true;
+		}
+		else */if (ShouldIgnoreAnyAttackFrom(InData.Instigator))
+		{
+			bIsIgnored = true;
+		}
 	}
 	if (bIsIgnored)
 	{
@@ -453,19 +486,28 @@ bool UScWASC_Base::TryIgnoreDamage(float& InOutAdjustedDamage, const FReceiveDam
 	}
 }
 
-bool UScWASC_Base::TryBlockDamage(float& InOutAdjustedDamage, const FReceiveDamageData& InData)
+bool UScWASC_Base::TryBlockDamage(float& InOutAdjustedDamage, const FReceivedDamageData& InData)
 {
 	check(IsOwnerActorAuthoritative());
 
 	bool bIsBlocked = false;
-	/*if (HasMatchingGameplayTag(FIDGameplayTags::Effect_BlockAttack_Bullet) && InData.DamageTypeClass->IsChildOf(UIDDamageType_Bullet::StaticClass()))
+
+	if (HasMatchingGameplayTag(FScWGameplayTags::State_BlockAnyDamage))
 	{
 		bIsBlocked = true;
 	}
-	else if (HasMatchingGameplayTag(FIDGameplayTags::Effect_BlockAttack_Melee) && InData.DamageTypeClass->IsChildOf(UIDDamageType_Melee::StaticClass()))
+	else
 	{
-		bIsBlocked = true;
-	}*/
+		// TODO: Move this to respective DamageType classes
+		/*if (HasMatchingGameplayTag(FIDGameplayTags::Effect_BlockAttack_Bullet) && InData.DamageTypeClass->IsChildOf(UIDDamageType_Bullet::StaticClass()))
+		{
+			bIsBlocked = true;
+		}
+		else if (HasMatchingGameplayTag(FIDGameplayTags::Effect_BlockAttack_Melee) && InData.DamageTypeClass->IsChildOf(UIDDamageType_Melee::StaticClass()))
+		{
+			bIsBlocked = true;
+		}*/
+	}
 	if (bIsBlocked)
 	{
 		//AccumulateBlockedDamage(InOutAdjustedDamage);
@@ -477,24 +519,37 @@ bool UScWASC_Base::TryBlockDamage(float& InOutAdjustedDamage, const FReceiveDama
 	}
 }
 
-bool UScWASC_Base::TryEvadeDamage(float& InOutAdjustedDamage, const FReceiveDamageData& InData)
+bool UScWASC_Base::TryEvadeDamage(float& InOutAdjustedDamage, const FReceivedDamageData& InData)
 {
 	check(IsOwnerActorAuthoritative());
 
-	const UScWAS_Base* AttributeSet = GetAttributeSet<UScWAS_Base>();
-	check(AttributeSet);
+	bool bIsEvaded = false;
 
-	float EvasionChance = 0.0f;
-
-	/*if (InData.DamageType->IsA(UScWDT_Ranged::StaticClass()))
+	if (HasMatchingGameplayTag(FScWGameplayTags::State_EvadeAnyDamage))
 	{
-		EvasionChance = AttributeSet->GetRangedDamageEvasionChance();
+		bIsEvaded = true;
 	}
-	else if (InData.DamageType->IsA(UScWDT_Melee::StaticClass()))
+	else
 	{
-		EvasionChance = AttributeSet->GetMeleeDamageEvasionChance();
-	}*/
-	if (FMath::FRand() <= EvasionChance)
+		const UScWAS_Base* AttributeSet = GetAttributeSet<UScWAS_Base>();
+		check(AttributeSet);
+
+		float EvasionChance = 0.0f;
+
+		/*if (InData.DamageType->IsA(UScWDT_Ranged::StaticClass()))
+		{
+			EvasionChance = AttributeSet->GetRangedDamageEvasionChance();
+		}
+		else if (InData.DamageType->IsA(UScWDT_Melee::StaticClass()))
+		{
+			EvasionChance = AttributeSet->GetMeleeDamageEvasionChance();
+		}*/
+		if (FMath::FRand() <= EvasionChance)
+		{
+			bIsEvaded = true;
+		}
+	}
+	if (bIsEvaded)
 	{
 		//AccumulateEvadedDamage(InOutAdjustedDamage);
 		return true;
@@ -505,7 +560,7 @@ bool UScWASC_Base::TryEvadeDamage(float& InOutAdjustedDamage, const FReceiveDama
 	}
 }
 
-bool UScWASC_Base::TryApplyDamage(float InDamage, const FReceiveDamageData& InData)
+bool UScWASC_Base::TryApplyDamage(float InDamage, const FReceivedDamageData& InData)
 {
 	check(IsOwnerActorAuthoritative());
 
@@ -515,7 +570,7 @@ bool UScWASC_Base::TryApplyDamage(float InDamage, const FReceiveDamageData& InDa
 	{
 		return false;
 	}
-	LastReceivedDamageType = InData.DamageType;
+	LastAppliedDamageData = InData;
 
 	/*if (UIDDamageType_Explosion* ExplosionDamageType = Cast<UIDDamageType_Explosion>(InData.DamageTypeClass.GetDefaultObject()))
 	{
@@ -564,12 +619,12 @@ bool UScWASC_Base::TryApplyDamage(float InDamage, const FReceiveDamageData& InDa
 	}
 	else
 	{
-		UE_LOG(LogAbilitySystemComponent, Log, TEXT("UScWASC_Base::TryApplyDamage() DamageEffectClass == nullptr! Can't apply damage."));
+		UE_LOG(LogScWGameplay, Log, TEXT("UScWASC_Base::TryApplyDamage() DamageEffectClass == nullptr! Can't apply damage."));
 		return false;
 	}
 }
 
-/*float UScWASC_Base::AdjustIncomingDamage(float InDamage, const FReceiveDamageData& InData) const
+/*float UScWASC_Base::AdjustIncomingDamage(float InDamage, const FReceivedDamageData& InData) const
 {
 	bool bApplyBoneDamageMul = true;
 	bool bApplyTeamDamageMul = true;

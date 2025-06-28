@@ -28,6 +28,15 @@ public:
 
 	UFUNCTION(Category = "Perception", BlueprintCallable)
 	static int32 GetActorObserversNumFromActorArray(const AActor* InActor, const TArray<AActor*>& InActorArray);
-
 //~ End Perception
+
+//~ Begin Navigation
+public:
+
+	UFUNCTION(Category = "Navigation", BlueprintCallable)
+	static int32 GetNearestPatrolPointIndex(const FVector& InReferenceLocation, const TArray<class AScWAIPatrolPoint*>& InPatrolPoints, const bool bInCheckMoveToLocations = true);
+
+	UFUNCTION(Category = "Navigation", BlueprintCallable)
+	static class AScWAIPatrolPoint* GetNearestPatrolPoint(const FVector& InReferenceLocation, const TArray<class AScWAIPatrolPoint*>& InPatrolPoints, const bool bInCheckMoveToLocations = true);
+//~ End Navigation
 };

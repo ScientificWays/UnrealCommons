@@ -13,8 +13,8 @@ UScWAIPC_Base::UScWAIPC_Base()
 	UAISenseConfig_Sight* SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight Config"));
 	SensesConfig.Add(SightConfig);
 
-	SightConfig->SightRadius = 6000.0f;
-	SightConfig->LoseSightRadius = 6100.0f;
+	SightConfig->SightRadius = 2000.0f;
+	SightConfig->LoseSightRadius = 2100.0f;
 	SightConfig->PeripheralVisionAngleDegrees = 90.0f;
 	SightConfig->DetectionByAffiliation.bDetectEnemies = true;
 	SightConfig->DetectionByAffiliation.bDetectNeutrals = false;

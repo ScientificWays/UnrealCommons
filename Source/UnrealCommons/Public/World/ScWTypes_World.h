@@ -8,11 +8,11 @@
 
 #define TraceTypeQuery_Visibility				ETraceTypeQuery::TraceTypeQuery1
 #define TraceTypeQuery_Camera					ETraceTypeQuery::TraceTypeQuery2
-//#define TraceTypeQuery_Shoot					ETraceTypeQuery::TraceTypeQuery3
-//#define TraceTypeQuery_Interact					ETraceTypeQuery::TraceTypeQuery4
-//#define TraceTypeQuery_OnlyCharacterIgnore		ETraceTypeQuery::TraceTypeQuery5
-//#define TraceTypeQuery_Melee					ETraceTypeQuery::TraceTypeQuery6
-//#define TraceTypeQuery_OverlapAllShapes			ETraceTypeQuery::TraceTypeQuery7
+#define TraceTypeQuery_Melee					ETraceTypeQuery::TraceTypeQuery3
+
+#define CollisionChannel_Visibility				ECollisionChannel::ECC_GameTraceChannel1
+#define CollisionChannel_Camera					ECollisionChannel::ECC_GameTraceChannel2
+#define CollisionChannel_Melee					ECollisionChannel::ECC_GameTraceChannel3
 
 //#define ECC_Shoot								ECollisionChannel::ECC_GameTraceChannel1
 //#define ECC_Interact							ECollisionChannel::ECC_GameTraceChannel2

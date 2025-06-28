@@ -45,6 +45,7 @@ public:
 public:
 
 protected:
+	virtual void HandleDied() override; // UScWASC_Base
 	virtual void OnMaxWalkSpeedChanged(const FOnAttributeChangeData& InData);
 	virtual void OnMaxWalkSpeedCrouchedChanged(const FOnAttributeChangeData& InData);
 	virtual void OnMaxAccelerationChanged(const FOnAttributeChangeData& InData);
@@ -62,7 +63,7 @@ protected:
 
 //~ Begin Tags
 protected:
-	virtual void OnMovementModeTagChanged(const FGameplayTag InCallbackTag, int32 InNewCount);
+	virtual void OnMovementModeTagNumChanged(const FGameplayTag InCallbackTag, int32 InNewCount);
 	virtual void UpdateCharacterMovementModeFromTags();
 //~ End Tags
 };

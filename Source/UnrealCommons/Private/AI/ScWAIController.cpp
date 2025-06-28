@@ -4,6 +4,7 @@
 
 #include "AI/ScWPFC_Base.h"
 #include "AI/ScWAIPC_Base.h"
+#include "AI/ScWAIFunctionLibrary.h"
 
 AScWAIController::AScWAIController(const FObjectInitializer& InObjectInitializer)
 //	: Super(InObjectInitializer.SetDefaultSubobjectClass<UScWPFC_Base>(TEXT("PathFollowingComponent")))
@@ -43,6 +44,18 @@ void AScWAIController::SetGenericTeamId(const FGenericTeamId& InNewTeamId) // IG
 	}
 }
 //~ End Team
+
+//~ Begin Navigation
+AScWAIPatrolPoint* AScWAIController::BP_GetRelevantPatrolPoint_Implementation(const FVector& InReferenceLocation, int32 InDesiredPathPointOffset) const
+{
+	int32 NearestPointIndex = UScWAIFunctionLibrary::GetNearestPatrolPointIndex(InReferenceLocation, CurrentPatrolPoints, true);
+	if (CurrentPatrolPoints.IsValidIndex(NearestPointIndex))
+	{
+		return CurrentPatrolPoints[(NearestPointIndex + InDesiredPathPointOffset) % CurrentPatrolPoints.Num()];
+	}
+	return nullptr;
+}
+//~ End Navigation
 
 //~ Begin Rotation
 void AScWAIController::ClearAllFocuses()

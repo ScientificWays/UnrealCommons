@@ -38,9 +38,6 @@ public:
 
 	UPROPERTY(Category = "Class", EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<class AScWCharacter> CharacterClass;
-
-	UPROPERTY(Category = "Class", EditDefaultsOnly, BlueprintReadOnly)
-	TSubclassOf<class AScWAIController> AIControllerClass;
 //~ End Class
 
 //~ Begin Team
@@ -61,6 +58,9 @@ public:
 
 	UPROPERTY(Category = "Mesh", EditDefaultsOnly, BlueprintReadOnly)
 	FTransform SkeletalMeshRelativeTransform;
+
+	UPROPERTY(Category = "Mesh", EditDefaultsOnly, BlueprintReadOnly)
+	bool bRagdollOnDeath;
 //~ End Mesh
 
 //~ Begin Animations
@@ -69,7 +69,7 @@ public:
 	UPROPERTY(Category = "Animations", EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<UAnimInstance> AnimInstanceClass;
 
-	UPROPERTY(Category = "Animations", EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(Category = "Animations", EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "!bRagdollOnDeath"))
 	TSubclassOf<UAnimInstance> DiedAnimInstanceClass;
 //~ End Animations
 	
@@ -96,7 +96,13 @@ public:
 //~ Begin AI
 public:
 
+	UPROPERTY(Category = "Class", EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<class AScWAIController> AIControllerClass;
+
 	UPROPERTY(Category = "AI", EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UBehaviorTree> DefaultBehaviorTree = nullptr;
+
+	UPROPERTY(Category = "AI", EditDefaultsOnly, BlueprintReadOnly)
+	float SightRadius = 2000.0f;
 //~ End AI
 };

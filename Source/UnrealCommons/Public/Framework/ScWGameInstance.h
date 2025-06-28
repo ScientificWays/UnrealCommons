@@ -11,7 +11,7 @@
 /**
  * 
  */
-UCLASS(Abstract, meta = (DisplayName = "[ScW] Game Instance"))
+UCLASS(meta = (DisplayName = "[ScW] Game Instance"))
 class UNREALCOMMONS_API UScWGameInstance : public UGameInstance
 {
 	GENERATED_BODY()

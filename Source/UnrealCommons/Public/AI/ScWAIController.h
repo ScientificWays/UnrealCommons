@@ -41,10 +41,18 @@ protected:
 //~ End Perception
 
 //~ Begin Navigation
+public:
+
+	UFUNCTION(Category = "Navigation | Patrol", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "GetRelevantPatrolPoint"))
+	class AScWAIPatrolPoint* BP_GetRelevantPatrolPoint(const FVector& InReferenceLocation, int32 InDesiredPathPointOffset) const;
+
 protected:
 
 	UPROPERTY(Category = "Navigation", VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<class UScWPFC_Base> BasePFC;
+
+	UPROPERTY(Category = "Navigation | Patrol", EditAnywhere, BlueprintReadWrite)
+	TArray<TObjectPtr<class AScWAIPatrolPoint>> CurrentPatrolPoints;
 //~ End Navigation
 	
 //~ Begin Rotation
@@ -53,7 +61,7 @@ public:
 	UFUNCTION(Category = "View", BlueprintCallable)
 	void ClearAllFocuses();
 
-	UPROPERTY(Category = "View", EditAnywhere)
+	UPROPERTY(Category = "View", EditAnywhere, BlueprintReadWrite)
 	float FocusInterpSpeed;
 
 	virtual FVector GetFocalPointOnActor(const AActor* Actor) const override; // AAIController

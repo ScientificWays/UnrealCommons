@@ -27,12 +27,18 @@ public:
 	FText DisplayName;
 //~ End UI
 
-//~ Begin Class
+//~ Begin General
 public:
 
-	UPROPERTY(Category = "Class", EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(Category = "General", EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<class AScWWeapon_Base> WeaponClass;
-//~ End Class
+
+	UPROPERTY(Category = "General", EditDefaultsOnly, BlueprintReadOnly)
+	bool bCanDrop;
+
+	UPROPERTY(Category = "General", EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "bCanDrop"))
+	bool bDropOnDeath;
+//~ End General
 	
 //~ Begin Mesh
 public:
