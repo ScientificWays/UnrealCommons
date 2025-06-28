@@ -7,7 +7,7 @@ UScWAS_Character::UScWAS_Character()
 	InitMoveSpeedMul(1.0f);
 	InitMoveSpeedBase(600.0f);
 	InitMoveSpeedCrouchedBase(300.0f);
-	InitMoveSpeedMax(1000.0f);
+	InitMoveSpeedMax(1200.0f);
 
 	InitMaxAcceleration(1500.0f);
 	InitBrakingDecelerationWalking(2000.0f);
