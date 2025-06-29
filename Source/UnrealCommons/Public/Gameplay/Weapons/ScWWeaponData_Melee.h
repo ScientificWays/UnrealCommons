@@ -4,7 +4,7 @@
 
 #include "UnrealCommons.h"
 
-#include "Gameplay/DataAssets/ScWWeaponData_Base.h"
+#include "Gameplay/Weapons/ScWWeaponData_Base.h"
 
 #include "ScWWeaponData_Melee.generated.h"
 

@@ -1,29 +1,35 @@
 // Scientific Ways
 
-#include "Characters/ScWCharacter.h"
+#include "Gameplay/Characters/ScWCharacter.h"
 
 #include "AI/ScWAIController.h"
 
-#include "Characters/ScWCMC_Base.h"
-#include "Characters/DataAssets/ScWCharacterData.h"
-
 #include "Framework/ScWGameState.h"
 
-#include "Gameplay/ScWWeapon_Base.h"
 #include "Gameplay/ScWASC_Character.h"
 #include "Gameplay/ScWTypes_Gameplay.h"
+#include "Gameplay/Weapons/ScWWeapon_Base.h"
 #include "Gameplay/ScWGameplayFunctionLibrary.h"
-#include "Gameplay/DataAssets/ScWWeaponData_Base.h"
+#include "Gameplay/Weapons/ScWWeaponData_Base.h"
+#include "Gameplay/Characters/ScWCharacterMesh.h"
+#include "Gameplay/Characters/ScWCharacterData.h"
+#include "Gameplay/Characters/ScWCharacterCapsule.h"
+#include "Gameplay/Characters/ScWCharacterMovement.h"
 
 AScWCharacter::AScWCharacter(const FObjectInitializer& InObjectInitializer)
-	: Super(InObjectInitializer.SetDefaultSubobjectClass<UScWCMC_Base>(ACharacter::CharacterMovementComponentName))
+	: Super(InObjectInitializer
+		.SetDefaultSubobjectClass<UScWCharacterMesh>(ACharacter::MeshComponentName)
+		.SetDefaultSubobjectClass<UScWCharacterMovement>(ACharacter::CharacterMovementComponentName)
+		.SetDefaultSubobjectClass<UScWCharacterCapsule>(ACharacter::CapsuleComponentName))
 {
 	PrimaryActorTick.bCanEverTick = true;
 
 	AIControllerClass = AScWAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
-	BaseCMC = Cast<UScWCMC_Base>(GetCharacterMovement());
+	ScWCharacterMesh = Cast<UScWCharacterMesh>(GetMesh());
+	ScWCharacterMovement = Cast<UScWCharacterMovement>(GetCharacterMovement());
+	ScWCharacterCapsule = Cast<UScWCharacterCapsule>(GetCapsuleComponent());
 
 	CharacterASC = CreateDefaultSubobject<UScWASC_Character>(TEXT("CharacterASC"));
 	CharacterASC->SetIsReplicated(true);
@@ -35,21 +41,17 @@ AScWCharacter::AScWCharacter(const FObjectInitializer& InObjectInitializer)
 //~ Begin Statics
 AScWCharacter* AScWCharacter::SpawnCharacter(const UObject* InWCO, UScWCharacterData* InData, FTransform InTransform)
 {
-	if (!InWCO || !InData)
-	{
-		return nullptr;
-	}
+	ensureReturn(InWCO, nullptr);
+	ensureReturn(InData, nullptr);
+	
 	UWorld* World = InWCO->GetWorld();
-	if (!World)
-	{
-		return nullptr;
-	}
+	ensureReturn(World, nullptr);
+
 	AScWCharacter* OutCharacter = World->SpawnActorDeferred<AScWCharacter>(InData->CharacterClass, InTransform, nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
-	if (OutCharacter)
-	{
-		OutCharacter->DataAsset = InData;
-		OutCharacter->FinishSpawning(InTransform);
-	}
+	ensureReturn(OutCharacter, nullptr);
+	
+	OutCharacter->DataAsset = InData;
+	OutCharacter->FinishSpawning(InTransform);
 	return OutCharacter;
 }
 //~ End Statics
@@ -100,7 +102,7 @@ void AScWCharacter::BeginPlay() // AActor
 
 	if (CharacterASC)
 	{
-		CharacterASC->OnDiedDelegate.AddDynamic(this, &AScWCharacter::OnDied);
+		CharacterASC->OnDied.AddDynamic(this, &ThisClass::OnDied);
 	}
 	if (DataAsset)
 	{
@@ -133,9 +135,9 @@ UActorComponent* AScWCharacter::FindComponentByClass(const TSubclassOf<UActorCom
 	{
 		return CharacterASC;
 	}
-	if (BaseCMC && BaseCMC->IsA(InComponentClass))
+	if (ScWCharacterMovement && ScWCharacterMovement->IsA(InComponentClass))
 	{
-		return BaseCMC;
+		return ScWCharacterMovement;
 	}
 	return Super::FindComponentByClass(InComponentClass);
 }
@@ -184,7 +186,7 @@ void AScWCharacter::UnPossessed() // APawn
 }
 //~ End Controller
 
-//~ Begin Health
+//~ Begin Attributes
 void AScWCharacter::OnDied()
 {
 	//DetachFromControllerPendingDestroy();
@@ -193,43 +195,8 @@ void AScWCharacter::OnDied()
 	{
 		UScWGameplayFunctionLibrary::RemoveEnhancedInputMappingContextFrom(OwnerPlayerController, DefaultInputMappingContext, DefaultInputMappingContextOptions);
 	}
-	if (UCapsuleComponent* CharacterCollision = GetCapsuleComponent())
-	{
-		CharacterCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	}
-	if (BaseCMC)
-	{
-		BaseCMC->DisableMovement();
-	}
 	bool bDestroyActor = true;
 
-	if (USkeletalMeshComponent* CharacterMesh = GetMesh())
-	{
-		if (DataAsset)
-		{
-			if (DataAsset->bRagdollOnDeath)
-			{
-				CharacterMesh->SetSimulatePhysics(true);
-				CharacterMesh->SetCollisionProfileName(TEXT("Ragdoll"));
-				bDestroyActor = false;
-
-				if (CharacterASC)
-				{
-					const FReceivedDamageData& LastAppliedDamageData = CharacterASC->GetLastAppliedDamageData();
-					if (LastAppliedDamageData.DamageType)
-					{
-						FVector RagdollImpulse = LastAppliedDamageData.DamageType->DamageImpulse * -LastAppliedDamageData.HitResult.ImpactNormal;
-						CharacterMesh->AddImpulseAtLocation(RagdollImpulse, LastAppliedDamageData.HitResult.ImpactPoint, LastAppliedDamageData.HitResult.BoneName);
-					}
-				}
-			}
-			else if (DataAsset->DiedAnimInstanceClass)
-			{
-				CharacterMesh->SetAnimInstanceClass(DataAsset->DiedAnimInstanceClass);
-				bDestroyActor = false;
-			}
-		}
-	}
 	if (Weapon)
 	{
 		if (UScWWeaponData_Base* WeaponDataAsset = Weapon->GetDataAsset())
@@ -249,7 +216,7 @@ void AScWCharacter::OnDied()
 		Destroy();
 	}
 }
-//~ End Health
+//~ End Attributes
 
 //~ Begin Input
 void AScWCharacter::SetupPlayerInputComponent(UInputComponent* InInputComponent) // APawn

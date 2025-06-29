@@ -1,6 +1,6 @@
 // Scientific Ways
 
-#include "Gameplay/ScWAS_Character.h"
+#include "Gameplay/Attributes/ScWAS_Character.h"
 
 UScWAS_Character::UScWAS_Character()
 {
@@ -9,10 +9,11 @@ UScWAS_Character::UScWAS_Character()
 	InitMoveSpeedCrouchedBase(300.0f);
 	InitMoveSpeedMax(1200.0f);
 
-	InitMaxAcceleration(1500.0f);
-	InitBrakingDecelerationWalking(2000.0f);
+	InitMaxAcceleration(1800.0f);
+	InitBrakingDecelerationWalking(2400.0f);
 	InitGravityScale(1.0f);
-	InitAirControl(0.1f);
+	InitAirControl(0.2f);
+	InitMass(80.0f);
 }
 
 //~ Begin Replication
@@ -28,6 +29,7 @@ void UScWAS_Character::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(ThisClass, AirControl);
 	DOREPLIFETIME(ThisClass, Stamina);
 	DOREPLIFETIME(ThisClass, MaxStamina);
+	DOREPLIFETIME(ThisClass, Mass);
 }
 //~ End Replication
 
@@ -132,5 +134,10 @@ void UScWAS_Character::OnRep_GravityScale(const FGameplayAttributeData& InPrevVa
 void UScWAS_Character::OnRep_AirControl(const FGameplayAttributeData& InPrevValue)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, AirControl, InPrevValue);
+}
+
+void UScWAS_Character::OnRep_Mass(const FGameplayAttributeData& InPrevValue)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, Mass, InPrevValue);
 }
 //~ End Replication

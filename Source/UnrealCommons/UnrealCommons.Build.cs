@@ -8,15 +8,15 @@ public class UnrealCommons : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		//PublicIncludePaths.AddRange(new string[]
-		//{
-		//    "UnrealCommons",
-		//});
+		PublicIncludePaths.AddRange(new string[]
+		{
+			
+		});
 
 		PublicDependencyModuleNames.AddRange(new string[] {
 
 			"Core",
-            "EngineSettings",
+			"EngineSettings",
 
 			"InputCore",
 			"EnhancedInput",
@@ -34,10 +34,10 @@ public class UnrealCommons : ModuleRules
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]
-        {
-            "CoreUObject",
-            "Engine",
-        });
+		{
+			"Engine",
+			"CoreUObject",
+		});
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

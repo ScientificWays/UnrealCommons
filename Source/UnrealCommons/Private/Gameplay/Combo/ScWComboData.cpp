@@ -1,9 +1,9 @@
 // Scientific Ways
 
-#include "Gameplay/DataAssets/ScWComboData.h"
+#include "Gameplay/Combo/ScWComboData.h"
 
 #include "Gameplay/ScWDamageType.h"
-#include "Gameplay/DataAssets/ScWWeaponData_Base.h"
+#include "Gameplay/Weapons/ScWWeaponData_Base.h"
 
 UScWComboData::UScWComboData()
 {

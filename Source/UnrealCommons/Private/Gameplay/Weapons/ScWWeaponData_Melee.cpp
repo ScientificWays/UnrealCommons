@@ -1,6 +1,6 @@
 // Scientific Ways
 
-#include "Gameplay/DataAssets/ScWWeaponData_Melee.h"
+#include "Gameplay/Weapons/ScWWeaponData_Melee.h"
 
 UScWWeaponData_Melee::UScWWeaponData_Melee()
 {

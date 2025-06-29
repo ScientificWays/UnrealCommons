@@ -4,7 +4,7 @@
 
 #include "UnrealCommons.h"
 
-#include "Gameplay/ScWWeapon_Base.h"
+#include "Gameplay/Weapons/ScWWeapon_Base.h"
 
 #include "ScWWeapon_Melee.generated.h"
 

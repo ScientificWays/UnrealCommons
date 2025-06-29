@@ -2,7 +2,7 @@
 
 #include "Gameplay/Tasks/ScWAT_ModifyCharacterMovement.h"
 
-#include "Characters/ScWCMC_Base.h"
+#include "Gameplay/Characters/ScWCharacterMovement.h"
 
 UScWAT_ModifyCharacterMovement::UScWAT_ModifyCharacterMovement()
 {
@@ -10,7 +10,7 @@ UScWAT_ModifyCharacterMovement::UScWAT_ModifyCharacterMovement()
 	bSimulatedTask = true;
 }
 
-UScWAT_ModifyCharacterMovement* UScWAT_ModifyCharacterMovement::ModifyCharacterMovement(UGameplayAbility* InOwningAbility, UScWCMC_Base* InTarget, FVector InMagnitude, const bool bInApplyAsForce, float InTimeOut)
+UScWAT_ModifyCharacterMovement* UScWAT_ModifyCharacterMovement::ModifyCharacterMovement(UGameplayAbility* InOwningAbility, UScWCharacterMovement* InTarget, FVector InMagnitude, const bool bInApplyAsForce, float InTimeOut)
 {
 	UScWAT_ModifyCharacterMovement* OutTaskObject = NewAbilityTask<UScWAT_ModifyCharacterMovement>(InOwningAbility);
 

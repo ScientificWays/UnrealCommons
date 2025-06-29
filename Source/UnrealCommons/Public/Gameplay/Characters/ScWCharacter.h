@@ -60,16 +60,28 @@ public:
 	UFUNCTION(Category = "Components", BlueprintCallable, meta = (KeyWords = "GetAbilitySystemComponent"))
 	class UScWASC_Character* GetCharacterASC() const { return CharacterASC; }
 
-	UFUNCTION(Category = "Components", BlueprintCallable, meta = (KeyWords = "GetCharacterMovementComponent, GetCMC"))
-	class UScWCMC_Base* GetBaseCMC() const { return BaseCMC; }
+	UFUNCTION(Category = "Components", BlueprintCallable, meta = (KeyWords = "GetCharacterMesh, GetMesh", DisplayName = "Get ScW Character Mesh"))
+	class UScWCharacterMesh* GetScWCharacterMesh() const { return ScWCharacterMesh; }
+
+	UFUNCTION(Category = "Components", BlueprintCallable, meta = (KeyWords = "GetCharacterMovementComponent, GetCMC", DisplayName = "Get ScW Character Movement"))
+	class UScWCharacterMovement* GetScWCharacterMovement() const { return ScWCharacterMovement; }
+
+	UFUNCTION(Category = "Components", BlueprintCallable, meta = (KeyWords = "GetCharacterCapsuleComponent, GetCapsule", DisplayName = "Get ScW Character Capsule"))
+	class UScWCharacterCapsule* GetScWCharacterCapsule() const { return ScWCharacterCapsule; }
 
 protected:
 
 	UPROPERTY(Category = "Components", VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<class UScWASC_Character> CharacterASC;
 
-	UPROPERTY(Category = "Components", BlueprintReadOnly)
-	TObjectPtr<class UScWCMC_Base> BaseCMC;
+	UPROPERTY(Category = "Components", BlueprintReadOnly, meta = (DisplayName = "ScW Character Mesh"))
+	TObjectPtr<class UScWCharacterMesh> ScWCharacterMesh;
+
+	UPROPERTY(Category = "Components", BlueprintReadOnly, meta = (DisplayName = "ScW Character Movement"))
+	TObjectPtr<class UScWCharacterMovement> ScWCharacterMovement;
+
+	UPROPERTY(Category = "Components", BlueprintReadOnly, meta = (DisplayName = "ScW Character Capsule"))
+	TObjectPtr<class UScWCharacterCapsule> ScWCharacterCapsule;
 //~ End Components
 
 //~ Begin Controller
@@ -81,12 +93,12 @@ protected:
 	virtual void UnPossessed() override; // APawn
 //~ End Controller
 	
-//~ Begin Health
+//~ Begin Attributes
 protected:
 
 	UFUNCTION()
 	void OnDied();
-//~ End Health
+//~ End Attributes
 
 //~ Begin Input
 public:

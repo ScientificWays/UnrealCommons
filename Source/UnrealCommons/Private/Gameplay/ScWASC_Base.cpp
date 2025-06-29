@@ -2,14 +2,17 @@
 
 #include "Gameplay/ScWASC_Base.h"
 
-#include "Perception/AISenseConfig_Damage.h"
+#include "Gameplay/Characters/ScWCharacterData.h"
 
-#include "Gameplay/ScWAS_Base.h"
 #include "Gameplay/ScWDamageType.h"
 #include "Gameplay/ScWGameplayTags.h"
-#include "Gameplay/DataAssets/ScWComboData.h"
-#include "Gameplay/DataAssets/ScWComboMoveData.h"
+#include "Gameplay/Combo/ScWComboData.h"
+#include "Gameplay/ScWASC_InitInterface.h"
+#include "Gameplay/Attributes/ScWAS_Base.h"
+#include "Gameplay/Combo/ScWComboMoveData.h"
 #include "Gameplay/ScWGameplayFunctionLibrary.h"
+
+#include "Perception/AISenseConfig_Damage.h"
 
 UScWASC_Base::UScWASC_Base()
 {
@@ -36,14 +39,11 @@ void UScWASC_Base::InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarAc
 	{
 		return;
 	}
-	// TODO: Check if something was bound before
+	// TODO: Check if something was bound before?
 	InAvatarActor->OnTakePointDamage.AddDynamic(this, &UScWASC_Base::OnAvatarTakePointDamage);
 	InAvatarActor->OnTakeRadialDamage.AddDynamic(this, &UScWASC_Base::OnAvatarTakeRadialDamage);
 
-	//OwnerController = Cast<AController>(InOwnerActor);
-
-	//OwnerPlayerController = Cast<AIDPlayerController>(InOwnerActor);
-	//check(OwnerController);
+	IScWASC_InitInterface::HandleInit(this, InOwnerActor, InAvatarActor);
 }
 
 void UScWASC_Base::DestroyActiveState() // UAbilitySystemComponent
@@ -63,10 +63,18 @@ void UScWASC_Base::OnRegister() // UActorComponent
 	{
 		return;
 	}
-	HealthChangedDelegateHandle = GetGameplayAttributeValueChangeDelegate(BaseAS->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthChanged);
-	MaxHealthChangedDelegateHandle = GetGameplayAttributeValueChangeDelegate(BaseAS->GetMaxHealthAttribute()).AddUObject(this, &ThisClass::OnMaxHealthChanged);
+	HealthChangedDelegateHandle = GetGameplayAttributeValueChangeDelegate(BaseAS->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthAttributeChanged);
+	MaxHealthChangedDelegateHandle = GetGameplayAttributeValueChangeDelegate(BaseAS->GetMaxHealthAttribute()).AddUObject(this, &ThisClass::OnMaxHealthAttributeChanged);
 
 	RegisterGameplayTagEvent(FScWGameplayTags::State_Stunned, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ThisClass::OnStunnedTagNumChanged);
+}
+
+void UScWASC_Base::InitFromCharacterData(const UScWCharacterData* InInitCharacterData) // IScWCharacterData_InitInterface
+{
+	ensureReturn(InInitCharacterData);
+
+	SpawnEffectClass = InInitCharacterData->SpawnEffectClass;
+	SpawnAbilitiesGiveData = InInitCharacterData->DefaultAbilitiesGiveData;
 }
 
 void UScWASC_Base::BeginPlay() // UActorComponent
@@ -133,9 +141,9 @@ void UScWASC_Base::AddHealth(float InHealth)
 	}
 }
 
-void UScWASC_Base::OnHealthChanged(const FOnAttributeChangeData& InData)
+void UScWASC_Base::OnHealthAttributeChanged(const FOnAttributeChangeData& InData)
 {
-	OnHealthChangedDelegate.Broadcast(InData.Attribute, InData.OldValue, InData.NewValue);
+	OnHealthChanged.Broadcast(InData.Attribute, InData.OldValue, InData.NewValue);
 
 	if (InData.NewValue == 0.0f)
 	{
@@ -143,9 +151,9 @@ void UScWASC_Base::OnHealthChanged(const FOnAttributeChangeData& InData)
 	}
 }
 
-void UScWASC_Base::OnMaxHealthChanged(const FOnAttributeChangeData& InData)
+void UScWASC_Base::OnMaxHealthAttributeChanged(const FOnAttributeChangeData& InData)
 {
-	OnMaxHealthChangedDelegate.Broadcast(InData.Attribute, InData.OldValue, InData.NewValue);
+	OnMaxHealthChanged.Broadcast(InData.Attribute, InData.OldValue, InData.NewValue);
 }
 
 void UScWASC_Base::OnZeroHealth()
@@ -166,7 +174,7 @@ void UScWASC_Base::HandleDied()
 	{
 		UE_LOG(LogScWGameplay, Warning, TEXT("UScWASC_Base::HandleDied() DeadEffectClass == nullptr! Can't apply dead state."));
 	}
-	OnDiedDelegate.Broadcast();
+	OnDied.Broadcast();
 }
 //~ End Attributes
 
@@ -367,12 +375,16 @@ ACCUMULATED_DAMAGE_DECLARE_METHODS(Applied)
 
 void UScWASC_Base::OnAvatarTakePointDamage(AActor* InDamagedActor, float InDamage, AController* InInstigator, FVector InHitLocation, UPrimitiveComponent* InHitComponent, FName InBoneName, FVector InHitDirection, const UDamageType* InDamageType, AActor* InDamageCauser)
 {
-	HandleTryReceiveDamage(InDamage, { FHitResult(InDamagedActor, InHitComponent, InHitLocation, -InHitDirection), InDamageType, InDamageCauser, InInstigator });
+	const UScWDamageType* ScWDamageType = Cast<UScWDamageType>(InDamageType);
+	ensure(ScWDamageType);
+	HandleTryReceiveDamage(InDamage, { FHitResult(InDamagedActor, InHitComponent, InHitLocation, -InHitDirection), ScWDamageType, InDamageCauser, InInstigator });
 }
 
 void UScWASC_Base::OnAvatarTakeRadialDamage(AActor* InDamagedActor, float InDamage, const UDamageType* InDamageType, FVector InOrigin, const FHitResult& InHitResult, AController* InInstigator, AActor* InDamageCauser)
 {
-	HandleTryReceiveDamage(InDamage, { InHitResult, InDamageType, InDamageCauser, InInstigator });
+	const UScWDamageType* ScWDamageType = Cast<UScWDamageType>(InDamageType);
+	ensure(ScWDamageType);
+	HandleTryReceiveDamage(InDamage, { InHitResult, ScWDamageType, InDamageCauser, InInstigator });
 }
 
 bool UScWASC_Base::HandleTryReceiveDamage(float InDamage, const FReceivedDamageData& InData)
@@ -605,10 +617,7 @@ bool UScWASC_Base::TryApplyDamage(float InDamage, const FReceivedDamageData& InD
 		{
 			if (InDamage > PrevHealth)
 			{
-				/*if (IPawnInterface* OwnerPawnInterface = Cast<IPawnInterface>(OwnerPawn))
-				{
-					OwnerPawnInterface->HandleZeroHealthDamageRemainder(InDamage - PrevHealth, InData);
-				}*/
+				// Empty
 			}
 			return true;
 		}
@@ -623,34 +632,6 @@ bool UScWASC_Base::TryApplyDamage(float InDamage, const FReceivedDamageData& InD
 		return false;
 	}
 }
-
-/*float UScWASC_Base::AdjustIncomingDamage(float InDamage, const FReceivedDamageData& InData) const
-{
-	bool bApplyBoneDamageMul = true;
-	bool bApplyTeamDamageMul = true;
-
-	if (CustomBehavior && CustomBehavior->IsAdjustIncomingDamageImplemented())
-	{
-		InDamage = CustomBehavior->BP_AdjustIncomingDamage(this, InDamage, InData, bApplyBoneDamageMul, bApplyTeamDamageMul);
-	}
-	if (bApplyBoneDamageMul && !InData.HitResult.BoneName.IsNone())
-	{
-		InDamage *= IDGameState->BP_GetBoneDamageMul(InData.HitResult.BoneName);
-	}
-	if (bApplyTeamDamageMul)
-	{
-		if (ITeamInterface* PawnTeamInterface = Cast<ITeamInterface>(OwnerPawn))
-		{
-			if (ITeamInterface* InstigatorTeamInterface = Cast<ITeamInterface>(InData.Instigator))
-			{
-				const FTeamIdentity& PawnTeam = PawnTeamInterface->GetTeamIdentity();
-				const FTeamIdentity& InstigatorTeam = InstigatorTeamInterface->GetTeamIdentity();
-				InDamage *= IDGameState->BP_GetTeamDamageMul(InstigatorTeam, PawnTeam);
-			}
-		}
-	}
-	return IDGameState->BP_AdjustIncomingDamage(OwnerPawn, InDamage, InData);
-}*/
 //~ End Damage
 
 //~ Begin Input

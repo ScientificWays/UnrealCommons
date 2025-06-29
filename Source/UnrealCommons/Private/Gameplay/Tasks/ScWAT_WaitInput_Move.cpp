@@ -2,7 +2,7 @@
 
 #include "Gameplay/Tasks/ScWAT_WaitInput_Move.h"
 
-#include "Characters/ScWCharacter.h"
+#include "Gameplay/Characters/ScWCharacter.h"
 
 UScWAT_WaitInput_Move* UScWAT_WaitInput_Move::WaitInput_Move(UGameplayAbility* InOwningAbility, AScWCharacter* InTargetCharacter, bool bTriggerOnForward, bool bTriggerOnBackward, bool bTriggerOnRight, bool bTriggerOnLeft, bool bOnce)
 {

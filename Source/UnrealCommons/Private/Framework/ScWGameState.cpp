@@ -2,7 +2,7 @@
 
 #include "Framework/ScWGameState.h"
 
-#include "Characters/ScWCharacter.h"
+#include "Gameplay/Characters/ScWCharacter.h"
 
 #include "Framework/ScWLevelScriptActor.h"
 

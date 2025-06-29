@@ -2,7 +2,7 @@
 
 #include "Gameplay/ScWGameplayAbility.h"
 
-#include "Characters/ScWCharacter.h"
+#include "Gameplay/Characters/ScWCharacter.h"
 
 #include "Framework/ScWPlayerController.h"
 

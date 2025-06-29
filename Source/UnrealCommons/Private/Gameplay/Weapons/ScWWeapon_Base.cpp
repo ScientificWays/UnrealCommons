@@ -1,10 +1,10 @@
 // Scientific Ways
 
-#include "Gameplay/ScWWeapon_Base.h"
+#include "Gameplay/Weapons/ScWWeapon_Base.h"
 
-#include "Characters/ScWCharacter.h"
+#include "Gameplay/Characters/ScWCharacter.h"
 
-#include "Gameplay/DataAssets/ScWWeaponData_Base.h"
+#include "Gameplay/Weapons/ScWWeaponData_Base.h"
 
 AScWWeapon_Base::AScWWeapon_Base(const FObjectInitializer& InObjectInitializer)
 	: Super(InObjectInitializer)

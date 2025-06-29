@@ -4,7 +4,7 @@
 
 #include "UnrealCommons.h"
 
-#include "Gameplay/ScWAS_Base.h"
+#include "Gameplay/Attributes/ScWAS_Base.h"
 
 #include "ScWAS_Character.generated.h"
 
@@ -85,6 +85,10 @@ public:
 	UPROPERTY(ReplicatedUsing = "OnRep_AirControl", BlueprintReadOnly)
 	FGameplayAttributeData AirControl;
 	ATTRIBUTE_ACCESSORS(ThisClass, AirControl)
+
+	UPROPERTY(ReplicatedUsing = "OnRep_Mass", BlueprintReadOnly)
+	FGameplayAttributeData Mass;
+	ATTRIBUTE_ACCESSORS(ThisClass, Mass)
 //~ End Attributes
 
 //~ Begin Replication
@@ -113,5 +117,8 @@ protected:
 
 	UFUNCTION()
 	virtual void OnRep_AirControl(const FGameplayAttributeData& InPrevValue);
+
+	UFUNCTION()
+	virtual void OnRep_Mass(const FGameplayAttributeData& InPrevValue);
 //~ End Replication
 };

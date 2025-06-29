@@ -1,11 +1,11 @@
 // Scientific Ways
 
-#include "Gameplay/ScWWeapon_Melee.h"
+#include "Gameplay/Weapons/ScWWeapon_Melee.h"
 
-#include "Characters/ScWCharacter.h"
+#include "Gameplay/Characters/ScWCharacter.h"
 
 #include "Gameplay/ScWGameplayFunctionLibrary.h"
-#include "Gameplay/DataAssets/ScWWeaponData_Melee.h"
+#include "Gameplay/Weapons/ScWWeaponData_Melee.h"
 
 #include "World/ScWTypes_World.h"
 

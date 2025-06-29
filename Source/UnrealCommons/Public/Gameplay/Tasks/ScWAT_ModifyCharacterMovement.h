@@ -22,7 +22,7 @@ public:
 	FGenericGameplayTaskDelegate OnTimeOutExec;
 
 	UFUNCTION(BlueprintCallable, Category = "Ability | Tasks", meta = (HidePin = "InOwningAbility", DefaultToSelf = "InOwningAbility", BlueprintInternalUseOnly = "true"))
-	static UScWAT_ModifyCharacterMovement* ModifyCharacterMovement(UGameplayAbility* InOwningAbility, class UScWCMC_Base* InTarget, FVector InMagnitude, const bool bInApplyAsForce = false, float InTimeOut = -1.0f);
+	static UScWAT_ModifyCharacterMovement* ModifyCharacterMovement(UGameplayAbility* InOwningAbility, class UScWCharacterMovement* InTarget, FVector InMagnitude, const bool bInApplyAsForce = false, float InTimeOut = -1.0f);
 	
 //~ Begin Initialize
 protected:
@@ -47,5 +47,5 @@ protected:
 	float TimeOut;
 
 	UPROPERTY()
-	TObjectPtr<class UScWCMC_Base> TargetCMC;
+	TObjectPtr<class UScWCharacterMovement> TargetCMC;
 };

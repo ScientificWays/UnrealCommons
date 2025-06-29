@@ -1,6 +1,6 @@
 // Scientific Ways
 
-#include "Gameplay/ScWAS_Base.h"
+#include "Gameplay/Attributes/ScWAS_Base.h"
 
 UScWAS_Base::UScWAS_Base()
 {

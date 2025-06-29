@@ -1,6 +1,6 @@
 // Scientific Ways
 
-#include "Gameplay/DataAssets/ScWWeaponData_Base.h"
+#include "Gameplay/Weapons/ScWWeaponData_Base.h"
 
 UScWWeaponData_Base::UScWWeaponData_Base()
 {

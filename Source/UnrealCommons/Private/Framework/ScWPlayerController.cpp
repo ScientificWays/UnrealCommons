@@ -44,9 +44,9 @@ void AScWPlayerController::OnPossess(APawn* InPawn) // AController
 
 	if (UScWASC_Base* PawnASC = UScWASC_Base::TryGetBaseAtaASCFromActor(InPawn))
 	{
-		PawnASC->OnHealthChangedDelegate.Add(OnPawnHealthChangedBind);
-		PawnASC->OnMaxHealthChangedDelegate.Add(OnPawnMaxHealthChangedBind);
-		PawnASC->OnDiedDelegate.Add(OnPawnDiedBind);
+		PawnASC->OnHealthChanged.Add(OnPawnHealthChangedBind);
+		PawnASC->OnMaxHealthChanged.Add(OnPawnMaxHealthChangedBind);
+		PawnASC->OnDied.Add(OnPawnDiedBind);
 	}
 }
 
@@ -56,9 +56,9 @@ void AScWPlayerController::OnUnPossess() // AController
 
 	if (UScWASC_Base* PawnASC = UScWASC_Base::TryGetBaseAtaASCFromActor(GetPawn()))
 	{
-		PawnASC->OnHealthChangedDelegate.Remove(OnPawnHealthChangedBind);
-		PawnASC->OnMaxHealthChangedDelegate.Remove(OnPawnMaxHealthChangedBind);
-		PawnASC->OnDiedDelegate.Remove(OnPawnDiedBind);
+		PawnASC->OnHealthChanged.Remove(OnPawnHealthChangedBind);
+		PawnASC->OnMaxHealthChanged.Remove(OnPawnMaxHealthChangedBind);
+		PawnASC->OnDied.Remove(OnPawnDiedBind);
 	}
 }
 

@@ -1,6 +1,6 @@
 // Scientific Ways
 
-#include "Gameplay/DataAssets/ScWComboMoveData.h"
+#include "Gameplay/Combo/ScWComboMoveData.h"
 
 UScWComboMoveData::UScWComboMoveData()
 {

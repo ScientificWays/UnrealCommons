@@ -18,7 +18,7 @@ void UScWAT_WaitDied::Activate()
 	if (TargetASC)
 	{
 		OnDiedScriptDelegate.BindUFunction(this, TEXT("OnDiedCallback"));
-		TargetASC->OnDiedDelegate.Add(OnDiedScriptDelegate);
+		TargetASC->OnDied.Add(OnDiedScriptDelegate);
 		Super::Activate();
 	}
 	else
@@ -32,7 +32,7 @@ void UScWAT_WaitDied::OnDestroy(bool bInAbilityIsEnding)
 	ensure(TargetASC);
 	if (TargetASC)
 	{
-		TargetASC->OnDiedDelegate.Remove(OnDiedScriptDelegate);
+		TargetASC->OnDied.Remove(OnDiedScriptDelegate);
 	}
 	Super::OnDestroy(bInAbilityIsEnding);
 }

@@ -8,6 +8,8 @@
 
 #include "Gameplay/ScWTypes_Gameplay.h"
 
+#include "Gameplay/Characters/ScWCharacterData_InitInterface.h"
+
 #include "ScWASC_Base.generated.h"
 
 UENUM(BlueprintType)
@@ -28,7 +30,7 @@ struct FReceivedDamageData
 	FHitResult HitResult = FHitResult();
 
 	UPROPERTY(Category = "Data", BlueprintReadWrite, EditAnywhere)
-	TObjectPtr<const UDamageType> DamageType = nullptr;
+	TObjectPtr<const class UScWDamageType> DamageType = nullptr;
 
 	UPROPERTY(Category = "Data", BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<AActor> Source = nullptr;
@@ -36,7 +38,7 @@ struct FReceivedDamageData
 	UPROPERTY(Category = "Data", BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<AController> Instigator = nullptr;
 
-	FReceivedDamageData(const FHitResult& InHitResult = FHitResult(), const UDamageType* InDamageType = nullptr, AActor* InSource = nullptr, AController* InInstigator = nullptr)
+	FReceivedDamageData(const FHitResult& InHitResult = FHitResult(), const class UScWDamageType* InDamageType = nullptr, AActor* InSource = nullptr, AController* InInstigator = nullptr)
 		: HitResult(InHitResult), DamageType(InDamageType), Source(InSource), Instigator(InInstigator) {}
 };
 
@@ -45,11 +47,12 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAccumulatedDamageResolveEventSignat
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FComboStateChangedSignature, EComboState, InNewState);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInputEventSignature, int32, InInputID);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FComboMoveEventSignature, class UScWComboMoveData*, InComboMoveData);
+
 /**
  * 
  */
 UCLASS(Abstract, Blueprintable, meta = (DisplayName = "[ScW] ASC Base"))
-class UNREALCOMMONS_API UScWASC_Base : public UAbilitySystemComponent
+class UNREALCOMMONS_API UScWASC_Base : public UAbilitySystemComponent, public IScWCharacterData_InitInterface
 {
 	GENERATED_BODY()
 	
@@ -63,12 +66,13 @@ public:
 	UFUNCTION(Category = "Statics", BlueprintCallable, BlueprintPure)
 	static UScWASC_Base* TryGetBaseAtaASCFromActor(const AActor* InActor, bool bInTryFindComponentIfNoInterface = true);
 //~ End Statics
-
+	
 //~ Begin Initialize
 protected:
 	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override; // UAbilitySystemComponent
 	virtual void DestroyActiveState() override; // UAbilitySystemComponent
 	virtual void OnRegister() override; // UActorComponent
+	virtual void InitFromCharacterData(const class UScWCharacterData* InInitCharacterData) override; // IScWCharacterData_InitInterface
 	virtual void BeginPlay() override; // UActorComponent
 //~ End Initialize
 
@@ -96,21 +100,21 @@ public:
 	bool bShouldDieOnZeroHealth;
 
 	UPROPERTY(Category = "Attributes", BlueprintAssignable)
-	FAttributeChangedSignature OnHealthChangedDelegate;
+	FAttributeChangedSignature OnHealthChanged;
 
 	UPROPERTY(Category = "Attributes", BlueprintAssignable)
-	FAttributeChangedSignature OnMaxHealthChangedDelegate;
+	FAttributeChangedSignature OnMaxHealthChanged;
 
 	UPROPERTY(Category = "Attributes", BlueprintAssignable)
-	FDefaultEventSignature OnDiedDelegate;
+	FDefaultEventSignature OnDied;
 
 protected:
 
 	UPROPERTY(Category = "Attributes", EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<class UScWAS_Base> AttributeSetClass;
 
-	virtual void OnHealthChanged(const FOnAttributeChangeData& InData);
-	virtual void OnMaxHealthChanged(const FOnAttributeChangeData& InData);
+	virtual void OnHealthAttributeChanged(const FOnAttributeChangeData& InData);
+	virtual void OnMaxHealthAttributeChanged(const FOnAttributeChangeData& InData);
 
 	virtual void OnZeroHealth();
 	virtual void HandleDied();

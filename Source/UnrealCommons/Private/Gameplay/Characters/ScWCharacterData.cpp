@@ -1,15 +1,13 @@
 // Scientific Ways
 
-#include "Characters/DataAssets/ScWCharacterData.h"
+#include "Gameplay/Characters/ScWCharacterData.h"
 
 #include "AI/ScWAIPC_Base.h"
 #include "AI/ScWAIController.h"
 
-#include "Characters/ScWCharacter.h"
+#include "Gameplay/Characters/ScWCharacterData_InitInterface.h"
 
 #include "Framework/ScWGameState.h"
-
-#include "Gameplay/ScWASC_Character.h"
 
 #include "Perception/AISenseConfig_Sight.h"
 
@@ -27,25 +25,8 @@ UScWCharacterData::UScWCharacterData()
 
 void UScWCharacterData::BP_InitializeCharacterComponents_Implementation(AScWCharacter* InCharacter) const
 {
-	if (!InCharacter)
-	{
-		return;
-	}
-	if (UScWASC_Character* CharacterASC = InCharacter->GetCharacterASC())
-	{
-		CharacterASC->SpawnEffectClass = SpawnEffectClass;
-		CharacterASC->SpawnAbilitiesGiveData = DefaultAbilitiesGiveData;
-	}
-	if (USkeletalMeshComponent* CharacterMesh = InCharacter->GetMesh())
-	{
-		CharacterMesh->SetSkeletalMeshAsset(SkeletalMesh);
-		CharacterMesh->SetAnimInstanceClass(AnimInstanceClass);
-		CharacterMesh->SetRelativeTransform(SkeletalMeshRelativeTransform);
-	}
-	if (UCapsuleComponent* CharacterCapsule = InCharacter->GetCapsuleComponent())
-	{
-		CharacterCapsule->SetCapsuleSize(CapsuleRadiusHeight.X, CapsuleRadiusHeight.Y);
-	}
+	ensureReturn(InCharacter);
+	IScWCharacterData_InitInterface::HandleInit(InCharacter, this);
 }
 
 void UScWCharacterData::BP_InitializeCharacterController_Implementation(AScWCharacter* InCharacter) const
