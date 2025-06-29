@@ -18,10 +18,6 @@ public class UnrealCommons : ModuleRules
 			"Core",
 			"EngineSettings",
 
-			"InputCore",
-			"EnhancedInput",
-			"UMG",
-
 			"AIModule",
 			"Navmesh",
 			"NavigationSystem",
@@ -30,7 +26,13 @@ public class UnrealCommons : ModuleRules
 			"GameplayTags",
 			"GameplayTasks",
 
-			"Networking",
+            "InputCore",
+            "EnhancedInput",
+            "UMG",
+
+            "Niagara",
+
+            "Networking",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]

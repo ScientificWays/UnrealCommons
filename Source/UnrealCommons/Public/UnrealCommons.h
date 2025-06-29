@@ -11,8 +11,6 @@
 #include "Engine/LevelScriptActor.h"
 #include "UObject/SparseDelegate.h"
 
-#include "Net/UnrealNetwork.h"
-
 #include "Blueprint/UserWidget.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
@@ -48,6 +46,10 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+
+#include "NiagaraSystem.h"
+
+#include "Net/UnrealNetwork.h"
 
 DECLARE_LOG_CATEGORY_EXTERN(LogScWGameplay, Log, All);
 

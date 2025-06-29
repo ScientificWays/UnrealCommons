@@ -146,7 +146,6 @@ UAbilitySystemComponent* AScWCharacter::GetAbilitySystemComponent() const // IAb
 {
 	return CharacterASC;
 }
-
 //~ End Components
 
 //~ Begin Controller
@@ -197,6 +196,17 @@ void AScWCharacter::OnDied()
 	}
 	bool bDestroyActor = true;
 
+	if (DataAsset)
+	{
+		if (DataAsset->bRagdollOnDeath)
+		{
+			bDestroyActor = false;
+		}
+		else if (DataAsset->DiedAnimInstanceClass)
+		{
+			bDestroyActor = false;
+		}
+	}
 	if (Weapon)
 	{
 		if (UScWWeaponData_Base* WeaponDataAsset = Weapon->GetDataAsset())

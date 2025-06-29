@@ -32,7 +32,7 @@ public:
 public:
 
 	UPROPERTY(Category = "Moves", EditDefaultsOnly, BlueprintReadOnly)
-	TArray<TObjectPtr<class UScWComboMoveData>> Moves;
+	TArray<TObjectPtr<const class UScWComboMoveData>> Moves;
 //~ End Moves
 
 //~ Begin Damage
@@ -52,12 +52,15 @@ public:
 
 	UPROPERTY(Category = "Damage", EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<class UScWDamageType> OverrideDamageTypeClass;
+
+	UPROPERTY(Category = "Damage", EditDefaultsOnly, BlueprintReadOnly)
+	float DamageImpactImpulseMul;
 //~ End Damage
 
 //~ Begin Animations
 public:
 
 	UPROPERTY(Category = "Animations", EditDefaultsOnly, BlueprintReadOnly)
-	TArray<TObjectPtr<UAnimMontage>> MontageVariants;
+	TArray<TObjectPtr<const UAnimMontage>> MontageVariants;
 //~ End Animations
 };

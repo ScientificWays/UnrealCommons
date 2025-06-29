@@ -44,10 +44,10 @@ TSubclassOf<UGameplayEffect> UScWGameplayFunctionLibrary::GetDeadStateGameplayEf
 //~ Begin Damage
 TSubclassOf<UGameplayEffect> UScWGameplayFunctionLibrary::GetApplyDamageGameplayEffectClassForType(const UObject* InWCO, const UDamageType* InDamageType)
 {
-	const UScWDamageType* ATADamageType = Cast<UScWDamageType>(InDamageType);
-	if (ATADamageType && ATADamageType->ApplyDamageGameplayEffectClass)
+	const UScWDamageType* ScWDamageType = Cast<UScWDamageType>(InDamageType);
+	if (ScWDamageType && ScWDamageType->ApplyDamageGameplayEffectClass)
 	{
-		return ATADamageType->ApplyDamageGameplayEffectClass;
+		return ScWDamageType->ApplyDamageGameplayEffectClass;
 	}
 	const AScWGameState* BaseGameState = AScWGameState::TryGetScWGameState(InWCO);
 	if (BaseGameState && BaseGameState->DefaultApplyDamageGameplayEffectClass)

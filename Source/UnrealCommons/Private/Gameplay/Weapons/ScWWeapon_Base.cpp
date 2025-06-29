@@ -97,3 +97,14 @@ void AScWWeapon_Base::HandleDrop()
 	}
 }
 //~ End Owner
+
+//~ Begin Components
+UAbilitySystemComponent* AScWWeapon_Base::GetAbilitySystemComponent() const // IAbilitySystemInterface
+{
+	if (OwnerCharacter)
+	{
+		return OwnerCharacter->GetAbilitySystemComponent();
+	}
+	return nullptr;
+}
+//~ End Components

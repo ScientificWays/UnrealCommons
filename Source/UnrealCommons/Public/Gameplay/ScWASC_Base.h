@@ -40,13 +40,15 @@ struct FReceivedDamageData
 
 	FReceivedDamageData(const FHitResult& InHitResult = FHitResult(), const class UScWDamageType* InDamageType = nullptr, AActor* InSource = nullptr, AController* InInstigator = nullptr)
 		: HitResult(InHitResult), DamageType(InDamageType), Source(InSource), Instigator(InInstigator) {}
+
+	class UScWASC_Base* TryGetAttackerBaseASC() const;
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FDamageEventSignature, float, InDamage, const FReceivedDamageData&, InData);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAccumulatedDamageResolveEventSignature, float, InDamage);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FComboStateChangedSignature, EComboState, InNewState);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInputEventSignature, int32, InInputID);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FComboMoveEventSignature, class UScWComboMoveData*, InComboMoveData);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FComboMoveEventSignature, const class UScWComboMoveData*, InComboMoveData);
 
 /**
  * 
@@ -186,6 +188,9 @@ protected:
 public:
 
 	UFUNCTION(Category = "Damage", BlueprintCallable)
+	float GetLastAppliedDamage() const { return LastAppliedDamage; }
+
+	UFUNCTION(Category = "Damage", BlueprintCallable)
 	const FReceivedDamageData& GetLastAppliedDamageData() const { return LastAppliedDamageData; }
 
 	UPROPERTY(Category = "Damage", BlueprintAssignable)
@@ -237,16 +242,14 @@ protected:
 
 	bool HandleTryReceiveDamage(float InDamage, const FReceivedDamageData& InData);
 
-	FORCEINLINE bool ShouldIgnoreAnyAttackFrom(AController* InInstigator) const;
-	FORCEINLINE bool TryIgnoreDamage(float& InOutAdjustedDamage, const FReceivedDamageData& InData);
-	FORCEINLINE bool TryBlockDamage(float& InOutAdjustedDamage, const FReceivedDamageData& InData);
-	FORCEINLINE bool TryEvadeDamage(float& InOutAdjustedDamage, const FReceivedDamageData& InData);
-	FORCEINLINE bool TryApplyDamage(float InDamage, const FReceivedDamageData& InData);
+	bool ShouldIgnoreAnyAttackFrom(AController* InInstigator) const;
+	bool TryIgnoreDamage(float& InOutAdjustedDamage, const FReceivedDamageData& InData);
+	bool TryBlockDamage(float& InOutAdjustedDamage, const FReceivedDamageData& InData);
+	bool TryEvadeDamage(float& InOutAdjustedDamage, const FReceivedDamageData& InData);
+	bool TryApplyDamage(float InDamage, const FReceivedDamageData& InData);
 
-	virtual void PostIgnoreDamage(float InDamage, const FReceivedDamageData& InData) {}
-	virtual void PostBlockDamage(float InDamage, const FReceivedDamageData& InData) {}
-	virtual void PostEvadeDamage(float InDamage, const FReceivedDamageData& InData) {}
-	virtual void PostApplyDamage(float InDamage, const FReceivedDamageData& InData) {}
+	UPROPERTY(Category = "Damage", BlueprintReadOnly)
+	float LastAppliedDamage;
 
 	UPROPERTY(Category = "Damage", BlueprintReadOnly)
 	FReceivedDamageData LastAppliedDamageData;
@@ -304,8 +307,11 @@ public:
 	UFUNCTION(Category = "Combo", BlueprintCallable)
 	bool IsUsingComboSystem() const { return !AvailableCombos.IsEmpty(); }
 
+	UFUNCTION(Category = "Combo", BlueprintCallable)
+	const class UScWComboData* GetRelevantCombo() const { return RelevantCombo; }
+
 	UFUNCTION(Category = "Combo | Queue", BlueprintCallable, meta = (AdvancedDisplay = "InUpdateRelevantCombo, InResetIfNoRelevantCombo"))
-	void QueueComboMove(class UScWComboMoveData* InComboMoveData);
+	void QueueComboMove(const class UScWComboMoveData* InComboMoveData);
 
 	UFUNCTION(Category = "Combo | Queue", BlueprintCallable)
 	void AcceptQueuedComboMove();
@@ -323,7 +329,7 @@ public:
 	FComboMoveEventSignature OnQueuedComboMoveDeniedDelegate;
 
 	UFUNCTION(Category = "Combo", BlueprintCallable, meta = (AdvancedDisplay = "InUpdateRelevantCombo, InResetIfNoRelevantCombo"))
-	void AddComboMove(class UScWComboMoveData* InComboMoveData, bool InUpdateRelevantCombo = true, bool InResetIfNoRelevantCombo = true);
+	void AddComboMove(const class UScWComboMoveData* InComboMoveData, bool InUpdateRelevantCombo = true, bool InResetIfNoRelevantCombo = true);
 
 	UFUNCTION(Category = "Combo", BlueprintCallable, meta = (AdvancedDisplay = "InUpdateRelevantComboOnResetOrFail"))
 	void SetComboState(EComboState InState, bool InUpdateRelevantComboOnResetOrFail = true);
@@ -331,26 +337,28 @@ public:
 	UFUNCTION(Category = "Combo", BlueprintCallable, meta = (AdvancedDisplay = "InResetIfNoRelevantCombo", KeyWords = "GetComboFromCurrentMoves"))
 	bool UpdateRelevantComboFromCurrentMoves(bool InResetIfNoRelevantCombo = true);
 
-	UPROPERTY(Category = "Combo", BlueprintReadOnly)
-	EComboState CurrentComboState;
-
-	UPROPERTY(Category = "Combo", BlueprintReadOnly)
-	TObjectPtr<class UScWComboMoveData> QueuedComboMove;
-
-	UPROPERTY(Category = "Combo", EditDefaultsOnly, BlueprintReadOnly)
-	TArray<TObjectPtr<class UScWComboMoveData>> CurrentComboMoves;
-
-	UPROPERTY(Category = "Combo", EditDefaultsOnly, BlueprintReadOnly)
-	TArray<TObjectPtr<class UScWComboData>> AvailableCombos;
-
-	UPROPERTY(Category = "Combo", EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<class UScWComboData> RelevantCombo;
-
 	UPROPERTY(Category = "Combo", BlueprintAssignable)
 	FComboMoveEventSignature OnComboMoveAddedDelegate;
 
 	UPROPERTY(Category = "Combo", BlueprintAssignable)
 	FComboStateChangedSignature OnComboStateChangedDelegate;
+
+protected:
+
+	UPROPERTY(Category = "Combo", BlueprintReadOnly)
+	EComboState CurrentComboState;
+
+	UPROPERTY(Category = "Combo", BlueprintReadOnly)
+	TObjectPtr<const class UScWComboMoveData> QueuedComboMove;
+
+	UPROPERTY(Category = "Combo", EditDefaultsOnly, BlueprintReadOnly)
+	TArray<TObjectPtr<const class UScWComboMoveData>> CurrentComboMoves;
+
+	UPROPERTY(Category = "Combo", EditDefaultsOnly, BlueprintReadOnly)
+	TArray<TObjectPtr<const class UScWComboData>> AvailableCombos;
+
+	UPROPERTY(Category = "Combo", EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<const class UScWComboData> RelevantCombo;
 
 	UPROPERTY(Category = "Combo", BlueprintAssignable)
 	FBoolSignature OnRelevantComboUpdated;

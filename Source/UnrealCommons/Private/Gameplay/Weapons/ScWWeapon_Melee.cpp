@@ -108,8 +108,15 @@ void AScWWeapon_Melee::OnCollisionComponentBeginOverlap(UPrimitiveComponent* InO
 	}
 	else
 	{
-		FVector ThisLocation = InOverlappedComponent ? InOverlappedComponent->GetComponentLocation() : FVector::ZeroVector;
-		FVector TargetLocation = InOtherComponent ? InOtherComponent->GetComponentLocation() : FVector::ZeroVector;
+		ensure(InOverlappedComponent);
+		FVector ThisLocation = InOverlappedComponent ? InOverlappedComponent->GetComponentLocation() : GetActorLocation();
+		
+		if (OwnerCharacter)
+		{
+			ThisLocation = FMath::Lerp(ThisLocation, OwnerCharacter->GetPawnViewLocation(), 0.5f);
+		}
+		ensure(InOtherComponent || InOtherActor);
+		FVector TargetLocation = InOtherComponent ? InOtherComponent->GetComponentLocation() : (InOtherActor ? InOtherActor->GetActorLocation() : FVector::ZeroVector);
 
 		FHitResult MinimalInfoHitResult = FHitResult(InOtherActor, InOtherComponent, TargetLocation, (TargetLocation - ThisLocation).GetSafeNormal());
 		MinimalInfoHitResult.TraceStart = ThisLocation;

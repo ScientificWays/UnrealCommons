@@ -67,6 +67,6 @@ public:
 	UPROPERTY(Category = "Teams", EditAnywhere, BlueprintReadWrite)
 	TMap<FName, FGenericTeamId> TeamMap;
 
-	static const FName InvalidTeam;
+	static const FName InvalidTeamName;
 //~ End Teams
 };

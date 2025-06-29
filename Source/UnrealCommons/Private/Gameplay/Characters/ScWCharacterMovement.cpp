@@ -14,6 +14,13 @@ UScWCharacterMovement::UScWCharacterMovement()
 }
 
 //~ Begin Initialize
+void UScWCharacterMovement::InitFromCharacterData(const UScWCharacterData* InInitCharacterData) // IScWCharacterData_InitInterface
+{
+	ensureReturn(InInitCharacterData);
+
+	
+}
+
 void UScWCharacterMovement::InitFromASC(UScWASC_Base* InInitASC, AActor* InOwnerActor, AActor* InAvatarActor) // IScWASC_InitInterface
 {
 	ensureReturn(InInitASC);

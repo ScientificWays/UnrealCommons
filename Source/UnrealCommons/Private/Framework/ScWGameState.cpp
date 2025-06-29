@@ -6,7 +6,7 @@
 
 #include "Framework/ScWLevelScriptActor.h"
 
-const FName AScWGameState::InvalidTeam = TEXT("InvalidTeam");
+const FName AScWGameState::InvalidTeamName = TEXT("InvalidTeam");
 
 AScWGameState::AScWGameState()
 {
@@ -19,7 +19,7 @@ AScWGameState::AScWGameState()
 	
 	TeamMap.Add(TEXT("NoTeam"), FGenericTeamId::NoTeam);
 	TeamMap.Add(TEXT("Player"), FGenericTeamId(1u));
-	TeamMap.Add(TEXT("Enemy"), FGenericTeamId(2u));
+	TeamMap.Add(TEXT("Enemies"), FGenericTeamId(2u));
 }
 
 //~ Begin Statics
@@ -77,19 +77,15 @@ const UScWCharacterData* AScWGameState::BP_GetDataAssetForNewCharacter_Implement
 //~ Begin Teams
 FGenericTeamId AScWGameState::GetTeamId(const FName& InTeamName) const
 {
-	if (const FGenericTeamId* OutTeamIdPtr = TeamMap.Find(InTeamName))
-	{
-		return *OutTeamIdPtr;
-	}
-	return FGenericTeamId::NoTeam;
+	const FGenericTeamId* OutTeamIdPtr = TeamMap.Find(InTeamName);
+	ensureReturn(OutTeamIdPtr, FGenericTeamId::NoTeam);
+	return *OutTeamIdPtr;
 }
 
 const FName& AScWGameState::GetTeamName(FGenericTeamId InGenericTeamId) const
 {
-	if (const FName* OutName = TeamMap.FindKey(InGenericTeamId.GetId()))
-	{
-		return *OutName;
-	}
-	return InvalidTeam;
+	const FName* OutName = TeamMap.FindKey(InGenericTeamId.GetId());
+	ensureReturn(OutName, InvalidTeamName);
+	return *OutName;
 }
 //~ End Teams

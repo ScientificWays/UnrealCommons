@@ -57,6 +57,17 @@ AScWAIPatrolPoint* AScWAIController::BP_GetRelevantPatrolPoint_Implementation(co
 }
 //~ End Navigation
 
+//~ Begin AbilitySystem
+UAbilitySystemComponent* AScWAIController::GetAbilitySystemComponent() const // IAbilitySystemInterface
+{
+	if (IAbilitySystemInterface* PawnAbilitySystemInterface = GetPawn<IAbilitySystemInterface>())
+	{
+		return PawnAbilitySystemInterface->GetAbilitySystemComponent();
+	}
+	return nullptr;
+}
+//~ End AbilitySystem
+
 //~ Begin Rotation
 void AScWAIController::ClearAllFocuses()
 {

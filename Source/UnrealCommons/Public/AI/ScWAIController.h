@@ -10,7 +10,7 @@
  *
  */
 UCLASS(Abstract, meta = (DisplayName = "[ScW] AI Controller"))
-class UNREALCOMMONS_API AScWAIController : public AAIController
+class UNREALCOMMONS_API AScWAIController : public AAIController, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 	
@@ -25,6 +25,10 @@ protected:
 
 //~ Begin Team
 public:
+
+	UFUNCTION(Category = "Team", BlueprintCallable)
+	FGenericTeamId GetTeamId() const { return GetGenericTeamId(); }
+
 	virtual void SetGenericTeamId(const FGenericTeamId& InNewTeamID) override; // IGenericTeamAgentInterface
 //~ End Team
 
@@ -55,6 +59,11 @@ protected:
 	TArray<TObjectPtr<class AScWAIPatrolPoint>> CurrentPatrolPoints;
 //~ End Navigation
 	
+//~ Begin AbilitySystem
+public:
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override; // IAbilitySystemInterface
+//~ End AbilitySystem
+
 //~ Begin Rotation
 public:
 

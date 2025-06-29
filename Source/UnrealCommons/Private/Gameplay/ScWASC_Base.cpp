@@ -14,6 +14,28 @@
 
 #include "Perception/AISenseConfig_Damage.h"
 
+class UScWASC_Base* FReceivedDamageData::TryGetAttackerBaseASC() const
+{
+	UScWASC_Base* OutASC = nullptr;
+
+	if (UScWASC_Base* SourceASC = UScWASC_Base::TryGetBaseAtaASCFromActor(Source))
+	{
+		OutASC = SourceASC;
+	}
+	else if (Instigator)
+	{
+		if (UScWASC_Base* InstigatorASC = UScWASC_Base::TryGetBaseAtaASCFromActor(Instigator))
+		{
+			OutASC = InstigatorASC;
+		}
+		else if (UScWASC_Base* InstigatorPawnASC = UScWASC_Base::TryGetBaseAtaASCFromActor(Instigator->GetPawn()))
+		{
+			OutASC = InstigatorPawnASC;
+		}
+	}
+	return OutASC;
+}
+
 UScWASC_Base::UScWASC_Base()
 {
 	AttributeSetClass = UScWAS_Base::StaticClass();
@@ -400,25 +422,21 @@ bool UScWASC_Base::HandleTryReceiveDamage(float InDamage, const FReceivedDamageD
 	else if (TryIgnoreDamage(InDamage, InData))
 	{
 		OnDamageIgnored.Broadcast(InDamage, InData);
-		PostIgnoreDamage(InDamage, InData);
 		return false;
 	}
 	else if (TryBlockDamage(InDamage, InData))
 	{
 		OnDamageBlocked.Broadcast(InDamage, InData);
-		PostBlockDamage(InDamage, InData);
 		return false;
 	}
 	else if (TryEvadeDamage(InDamage, InData))
 	{
 		OnDamageEvaded.Broadcast(InDamage, InData);
-		PostEvadeDamage(InDamage, InData);
 		return false;
 	}
 	else if (TryApplyDamage(InDamage, InData))
 	{
 		OnDamageApplied.Broadcast(InDamage, InData);
-		PostApplyDamage(InDamage, InData);
 		return true;
 	}
 	else
@@ -582,6 +600,7 @@ bool UScWASC_Base::TryApplyDamage(float InDamage, const FReceivedDamageData& InD
 	{
 		return false;
 	}
+	LastAppliedDamage = InDamage;
 	LastAppliedDamageData = InData;
 
 	/*if (UIDDamageType_Explosion* ExplosionDamageType = Cast<UIDDamageType_Explosion>(InData.DamageTypeClass.GetDefaultObject()))
@@ -595,42 +614,30 @@ bool UScWASC_Base::TryApplyDamage(float InDamage, const FReceivedDamageData& InD
 			}
 		}
 	}*/
-	const UScWDamageType* ATADamageType = Cast<UScWDamageType>(InData.DamageType);
+	const UScWDamageType* ScWDamageType = Cast<UScWDamageType>(InData.DamageType);
+	ensure(ScWDamageType);
 
 	TSubclassOf<UGameplayEffect> ApplyDamageGameplayEffectClass = UScWGameplayFunctionLibrary::GetApplyDamageGameplayEffectClassForType(this, InData.DamageType);
+	ensureReturn(ApplyDamageGameplayEffectClass, false);
 
-	if (ApplyDamageGameplayEffectClass)
+	AccumulateAppliedDamage(LastAppliedDamage);
+
+	FGameplayEffectContextHandle DamageEffectContext = MakeEffectContext();
+	DamageEffectContext.AddSourceObject(this);
+	DamageEffectContext.AddInstigator(InData.Instigator, InData.Source);
+
+	float PrevHealth = GetHealth();
+
+	FGameplayEffectSpecHandle DamageEffectHandle = MakeOutgoingSpec(ApplyDamageGameplayEffectClass, 1.0f, DamageEffectContext);
+	DamageEffectHandle.Data->SetSetByCallerMagnitude(FScWGameplayTags::SetByCaller_Magnitude, -LastAppliedDamage);
+
+	if (ScWDamageType)
 	{
-		AccumulateAppliedDamage(InDamage);
-
-		FGameplayEffectContextHandle DamageEffectContext = MakeEffectContext();
-		DamageEffectContext.AddSourceObject(this);
-		DamageEffectContext.AddInstigator(InData.Instigator, InData.Source);
-
-		float PrevHealth = GetHealth();
-
-		FGameplayEffectSpecHandle DamageEffectHandle = MakeOutgoingSpec(ApplyDamageGameplayEffectClass, 1.0f, DamageEffectContext);
-		DamageEffectHandle.Data->SetSetByCallerMagnitude(FScWGameplayTags::SetByCaller_Magnitude, -InDamage);
-		FActiveGameplayEffectHandle EffectHandle = ApplyGameplayEffectSpecToSelf(*DamageEffectHandle.Data.Get());
-
-		if (EffectHandle.WasSuccessfullyApplied())
-		{
-			if (InDamage > PrevHealth)
-			{
-				// Empty
-			}
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		DamageEffectHandle.Data->SetSetByCallerMagnitude(FScWGameplayTags::SetByCaller_Duration, ScWDamageType->ApplyDamageGameplayEffectDuration);
 	}
-	else
-	{
-		UE_LOG(LogScWGameplay, Log, TEXT("UScWASC_Base::TryApplyDamage() DamageEffectClass == nullptr! Can't apply damage."));
-		return false;
-	}
+	FActiveGameplayEffectHandle EffectHandle = ApplyGameplayEffectSpecToSelf(*DamageEffectHandle.Data.Get());
+	ensureReturn(EffectHandle.WasSuccessfullyApplied(), false);
+	return true;
 }
 //~ End Damage
 
@@ -703,21 +710,25 @@ void UScWASC_Base::Server_SetInputReleasedFromWaitInputTask_Implementation(int32
 
 void UScWASC_Base::AbilityLocalInputPressed(int32 InInputID) // UAbilitySystemComponent
 {
+	ensure(!PressedInputIDSet.Contains(InInputID));
 	PressedInputIDSet.Add(InInputID);
+
 	Super::AbilityLocalInputPressed(InInputID);
 	OnInputPressedDelegate.Broadcast(InInputID);
 }
 
 void UScWASC_Base::AbilityLocalInputReleased(int32 InInputID) // UAbilitySystemComponent
 {
+	ensure(PressedInputIDSet.Contains(InInputID));
 	PressedInputIDSet.Remove(InInputID);
+
 	Super::AbilityLocalInputReleased(InInputID);
 	OnInputReleasedDelegate.Broadcast(InInputID);
 }
 //~ End Input
 
 //~ Begin Combo
-void UScWASC_Base::QueueComboMove(UScWComboMoveData* InComboMoveData)
+void UScWASC_Base::QueueComboMove(const UScWComboMoveData* InComboMoveData)
 {
 	if (InComboMoveData)
 	{
@@ -730,7 +741,7 @@ void UScWASC_Base::AcceptQueuedComboMove()
 {
 	if (QueuedComboMove)
 	{
-		UScWComboMoveData* AcceptedComboMove = QueuedComboMove;
+		const UScWComboMoveData* AcceptedComboMove = QueuedComboMove;
 		QueuedComboMove = nullptr;
 		OnQueuedComboMoveAcceptedDelegate.Broadcast(AcceptedComboMove);
 
@@ -742,14 +753,14 @@ void UScWASC_Base::DenyQueuedComboMove()
 {
 	if (QueuedComboMove)
 	{
-		UScWComboMoveData* DeniedComboMove = QueuedComboMove;
+		const UScWComboMoveData* DeniedComboMove = QueuedComboMove;
 		QueuedComboMove = nullptr;
 		OnQueuedComboMoveDeniedDelegate.Broadcast(DeniedComboMove);
 
 	}
 }
 
-void UScWASC_Base::AddComboMove(UScWComboMoveData* InComboMoveData, bool InUpdateRelevantCombo, bool InResetIfNoRelevantCombo)
+void UScWASC_Base::AddComboMove(const UScWComboMoveData* InComboMoveData, bool InUpdateRelevantCombo, bool InResetIfNoRelevantCombo)
 {
 	CurrentComboMoves.Add(InComboMoveData);
 	OnComboMoveAddedDelegate.Broadcast(InComboMoveData);

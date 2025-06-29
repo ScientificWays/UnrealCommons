@@ -11,6 +11,7 @@ UScWComboData::UScWComboData()
 
 	DamageMul = 1.0f;
 	DamageAdditive = 0.0f;
+	DamageImpactImpulseMul = 1.0f;
 }
 
 //~ Begin Damage

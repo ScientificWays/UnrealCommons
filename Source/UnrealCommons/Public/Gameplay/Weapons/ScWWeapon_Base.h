@@ -10,7 +10,7 @@
  *
  */
 UCLASS(Abstract, Blueprintable, meta = (DisplayName = "[ScW] Weapon Base"))
-class AScWWeapon_Base : public AActor
+class AScWWeapon_Base : public AActor, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -54,9 +54,10 @@ protected:
 	UPROPERTY(Category = "Owner", EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<class AScWCharacter> OwnerCharacter;
 //~ End Owner
-
+	
 //~ Begin Components
 public:
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override; // IAbilitySystemInterface
 
 	UFUNCTION(Category = "Components", BlueprintCallable)
 	UStaticMeshComponent* GetMesh() const { return Mesh; }

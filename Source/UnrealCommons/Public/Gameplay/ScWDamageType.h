@@ -22,17 +22,20 @@ public:
 public:
 
 	UPROPERTY(Category = "UI", EditDefaultsOnly, BlueprintReadOnly)
-	FText DisplayName = FText();
+	FText DisplayName;
 
 	UPROPERTY(Category = "UI", EditDefaultsOnly, BlueprintReadOnly, meta = (AssetBundles = "Game"))
-	TSoftObjectPtr<UTexture2D> Image = nullptr;
+	TSoftObjectPtr<UTexture2D> Image;
 //~ End UI
 
 //~ Begin GAS
 public:
 
 	UPROPERTY(Category = "GAS", EditDefaultsOnly, BlueprintReadOnly, meta = (AssetBundles = "Game"))
-	TSubclassOf<UGameplayEffect> ApplyDamageGameplayEffectClass = nullptr;
+	TSubclassOf<UGameplayEffect> ApplyDamageGameplayEffectClass;
+
+	UPROPERTY(Category = "GAS", EditDefaultsOnly, BlueprintReadOnly)
+	float ApplyDamageGameplayEffectDuration;
 //~ End GAS
 
 //~ Begin Impact
@@ -41,12 +44,17 @@ public:
 	void ApplyImpactImpulseToPhysicsBody(UPrimitiveComponent* InBody, const FHitResult& InHitResult) const;
 
 	UPROPERTY(Category = "Impact", EditDefaultsOnly, BlueprintReadOnly)
-	bool bApplyImpactImpulse = true;
+	bool bApplyImpactImpulse;
+
+	UPROPERTY(Category = "Impact", EditDefaultsOnly, BlueprintReadOnly)
+	float ImpactImpulsePerDamagePoint;
+
+	UPROPERTY(Category = "Impact", EditDefaultsOnly, BlueprintReadOnly)
+	float ImpactImpulseMassFactor;
 
 protected:
 
 	UFUNCTION(Category = "Impact", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Get Impact Impulse for Hit"))
-	FVector BP_GetImpactImpulseForHit(const FHitResult& InHitResult) const;
-
+	FVector BP_GetImpactImpulseForHit(const UActorComponent* InTargetComponent, const FHitResult& InHitResult) const;
 //~ End Impact
 };

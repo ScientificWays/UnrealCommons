@@ -29,7 +29,7 @@ public:
 
 //~ Begin DataAsset
 public:
-	const class UScWCharacterData* GetInitCharacterData() { return PrivateCharacterData; }
+	const class UScWCharacterData* GetInitCharacterData() const { return PrivateCharacterData; }
 private:
 	static void HandleInit(class AScWCharacter* InCharacter, const class UScWCharacterData* InInitCharacterData);
 	TObjectPtr<const class UScWCharacterData> PrivateCharacterData;

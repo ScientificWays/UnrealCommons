@@ -11,7 +11,7 @@
 /**
  *
  */
-UCLASS(const, Abstract, Blueprintable, BlueprintType, meta = (DisplayName = "[ScW] Character Data"))
+UCLASS(Const, Abstract, Blueprintable, BlueprintType, meta = (DisplayName = "[ScW] Character Data"))
 class UNREALCOMMONS_API UScWCharacterData : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
@@ -19,12 +19,16 @@ class UNREALCOMMONS_API UScWCharacterData : public UPrimaryDataAsset
 public:	
 
 	UScWCharacterData();
+	
+//~ Begin Initialize
+public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "InitializeCharacterComponents"))
 	void BP_InitializeCharacterComponents(class AScWCharacter* InCharacter) const;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "InitializeCharacterController"))
 	void BP_InitializeCharacterController(class AScWCharacter* InCharacter) const;
+//~ End Initialize
 
 //~ Begin UI
 public:
@@ -93,6 +97,13 @@ public:
 	TObjectPtr<class UScWWeaponData_Base> DefaultWeaponData;
 //~ End Gameplay
 	
+//~ Begin FX
+public:
+
+	UPROPERTY(Category = "FX", EditDefaultsOnly, BlueprintReadOnly, meta = (KeyWords = "NiagaraSystem"))
+	TObjectPtr<UNiagaraSystem> DamageImpactParticles;
+//~ End FX
+	
 //~ Begin AI
 public:
 
@@ -100,9 +111,12 @@ public:
 	TSubclassOf<class AScWAIController> AIControllerClass;
 
 	UPROPERTY(Category = "AI", EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<UBehaviorTree> DefaultBehaviorTree = nullptr;
+	TObjectPtr<UBehaviorTree> DefaultBehaviorTree;
 
 	UPROPERTY(Category = "AI", EditDefaultsOnly, BlueprintReadOnly)
-	float SightRadius = 2000.0f;
+	float SightRadius;
+
+	UPROPERTY(Category = "AI", EditDefaultsOnly, BlueprintReadOnly)
+	float LoseSightRadiusOffset;
 //~ End AI
 };

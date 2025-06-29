@@ -29,7 +29,7 @@ public:
 
 //~ Begin Components | AbilitySystem
 public:
-	class UScWASC_Base* GetInitASC() { return PrivateASC; }
+	class UScWASC_Base* GetInitASC() const { return PrivateASC; }
 private:
 	static void HandleInit(class UScWASC_Base* InInitASC, AActor* InOwnerActor, AActor* InAvatarActor);
 	TObjectPtr<class UScWASC_Base> PrivateASC;

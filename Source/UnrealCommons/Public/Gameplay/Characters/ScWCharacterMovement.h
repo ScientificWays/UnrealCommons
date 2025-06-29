@@ -5,6 +5,7 @@
 #include "UnrealCommons.h"
 
 #include "Gameplay/ScWASC_InitInterface.h"
+#include "Gameplay/Characters/ScWCharacterData_InitInterface.h"
 
 #include "ScWCharacterMovement.generated.h"
 
@@ -12,7 +13,7 @@
  *
  */
 UCLASS(meta = (DisplayName = "[ScW] Character Movement (Component)"))
-class UNREALCOMMONS_API UScWCharacterMovement : public UCharacterMovementComponent, public IScWASC_InitInterface
+class UNREALCOMMONS_API UScWCharacterMovement : public UCharacterMovementComponent, public IScWCharacterData_InitInterface, public IScWASC_InitInterface
 {
 	GENERATED_BODY()
 	
@@ -22,6 +23,7 @@ public:
 	
 //~ Begin Initialize
 public:
+	virtual void InitFromCharacterData(const class UScWCharacterData* InInitCharacterData) override; // IScWCharacterData_InitInterface
 	virtual void InitFromASC(class UScWASC_Base* InInitASC, AActor* InOwnerActor, AActor* InAvatarActor) override; // IScWASC_InitInterface
 //~ End Initialize
 

@@ -13,6 +13,15 @@ UScWCharacterMesh::UScWCharacterMesh()
 }
 
 //~ Begin Initialize
+void UScWCharacterMesh::InitFromCharacterData(const UScWCharacterData* InInitCharacterData) // IScWCharacterData_InitInterface
+{
+	ensureReturn(InInitCharacterData);
+
+	SetSkeletalMeshAsset(InInitCharacterData->SkeletalMesh);
+	SetAnimInstanceClass(InInitCharacterData->AnimInstanceClass);
+	SetRelativeTransform(InInitCharacterData->SkeletalMeshRelativeTransform);
+}
+
 void UScWCharacterMesh::InitFromASC(UScWASC_Base* InInitASC, AActor* InOwnerActor, AActor* InAvatarActor) // IScWASC_InitInterface
 {
 	ensureReturn(InInitASC);
@@ -21,15 +30,6 @@ void UScWCharacterMesh::InitFromASC(UScWASC_Base* InInitASC, AActor* InOwnerActo
 
 	InInitASC->OnDamageApplied.AddDynamic(this, &ThisClass::HandleDamageApplied);
 	InInitASC->OnDied.AddDynamic(this, &ThisClass::HandleDied);
-}
-
-void UScWCharacterMesh::InitFromCharacterData(const UScWCharacterData* InInitCharacterData) // IScWCharacterData_InitInterface
-{
-	ensureReturn(InInitCharacterData);
-
-	SetSkeletalMeshAsset(InInitCharacterData->SkeletalMesh);
-	SetAnimInstanceClass(InInitCharacterData->AnimInstanceClass);
-	SetRelativeTransform(InInitCharacterData->SkeletalMeshRelativeTransform);
 }
 //~ End Initialize
 
