@@ -66,7 +66,7 @@ public:
 public:
 
 	UFUNCTION(Category = "Statics", BlueprintCallable, BlueprintPure)
-	static UScWASC_Base* TryGetBaseAtaASCFromActor(const AActor* InActor, bool bInTryFindComponentIfNoInterface = true);
+	static UScWASC_Base* TryGetBaseScWASCFromActor(const AActor* InActor, bool bInTryFindComponentIfNoInterface = true);
 //~ End Statics
 	
 //~ Begin Initialize

@@ -42,5 +42,7 @@ void UScWCharacterCapsule::HandleDamageApplied(float InDamage, const FReceivedDa
 void UScWCharacterCapsule::HandleDied()
 {
 	SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SetCanEverAffectNavigation(false);
+	Deactivate();
 }
 //~ End Damage

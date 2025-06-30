@@ -38,7 +38,7 @@ EBTNodeResult::Type UScWBTT_TryActivateAbility::ExecuteTask(UBehaviorTreeCompone
 	{
 		if (APawn* OwnerPawn = OwnerController->GetPawn())
 		{
-			if (UScWASC_Base* OwnerASC = UScWASC_Base::TryGetBaseAtaASCFromActor(OwnerPawn))
+			if (UScWASC_Base* OwnerASC = UScWASC_Base::TryGetBaseScWASCFromActor(OwnerPawn))
 			{
 				if (AbilityClassKey.IsSet())
 				{

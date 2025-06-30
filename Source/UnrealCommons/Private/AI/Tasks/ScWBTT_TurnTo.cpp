@@ -55,7 +55,7 @@ EBTNodeResult::Type UScWBTT_TurnTo::ExecuteTask(UBehaviorTreeComponent& InOwnerT
 {
 	if (AScWAIController* OwnerController = Cast<AScWAIController>(InOwnerTree.GetAIOwner()))
 	{
-		OwnerController->AddControlRotationBlock(this);
+		Common_Init(*this, InOwnerTree, InNodeMemory);
 
 		FThisTaskMemory* ThisNodeMemory = CastInstanceNodeMemory<FThisTaskMemory>(InNodeMemory);
 		ThisNodeMemory->UpdateTimeLeft = TargetRotationUpdateRate;
@@ -118,14 +118,29 @@ void UScWBTT_TurnTo::TickTask(UBehaviorTreeComponent& InOwnerTree, uint8* InNode
 
 void UScWBTT_TurnTo::OnTaskFinished(UBehaviorTreeComponent& InOwnerTree, uint8* InNodeMemory, EBTNodeResult::Type InTaskResult) // UBTTaskNode
 {
-	if (AScWAIController* OwnerController = Cast<AScWAIController>(InOwnerTree.GetAIOwner()))
-	{
-		OwnerController->RemoveControlRotationBlock(this);
-	}
+	Common_DeInit(*this, InOwnerTree, InNodeMemory);
 	Super::OnTaskFinished(InOwnerTree, InNodeMemory, InTaskResult);
 }
 
 //UE_DISABLE_OPTIMIZATION
+
+void UScWBTT_TurnTo::Common_Init(UBTNode& InNode, UBehaviorTreeComponent& InOwnerTree, uint8* InNodeMemory)
+{
+	if (AScWAIController* OwnerController = Cast<AScWAIController>(InOwnerTree.GetAIOwner()))
+	{
+		OwnerController->AddControlRotationUpdateBlockSource(&InNode);
+		OwnerController->ForceControlRotationOnPawn();
+	}
+}
+
+void UScWBTT_TurnTo::Common_DeInit(UBTNode& InNode, UBehaviorTreeComponent& InOwnerTree, uint8* InNodeMemory)
+{
+	if (AScWAIController* OwnerController = Cast<AScWAIController>(InOwnerTree.GetAIOwner()))
+	{
+		OwnerController->RemoveControlRotationUpdateBlockSource(&InNode);
+		OwnerController->DisableForceControlRotationOnPawn();
+	}
+}
 
 FString UScWBTT_TurnTo::Common_GetStaticDescription(const UBTNode& InNode, const bool bInGetRotationFromTarget, const FBlackboardKeySelector& InBlackboardKey, const FRotator& InOffset, const float InConstantSpeed)
 {

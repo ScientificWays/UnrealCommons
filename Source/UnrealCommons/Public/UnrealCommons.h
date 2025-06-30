@@ -48,6 +48,8 @@
 #include "EnhancedInputSubsystems.h"
 
 #include "NiagaraSystem.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 
 #include "Net/UnrealNetwork.h"
 

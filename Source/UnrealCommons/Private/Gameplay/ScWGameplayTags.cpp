@@ -111,9 +111,5 @@ namespace FScWGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(MovementMode_Swimming, "MovementMode.Swimming", "[Native] Character movement mode tag.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(MovementMode_Flying, "MovementMode.Flying", "[Native] Character movement mode tag.");
 
-	/*UE_DEFINE_GAMEPLAY_TAG_COMMENT(MovementMode_Custom_Ladder, "MovementMode.Custom.Ladder", "[Native] Character custom movement mode tag.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(MovementMode_Custom_Cling, "MovementMode.Custom.Cling", "[Native] Character custom movement mode tag.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(MovementMode_Custom_InVehicle, "MovementMode.Custom.InVehicle", "[Native] Character custom movement mode tag.");
-
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_Firearm_Shoot, "GameplayCue.Firearm.Shoot", "[Native] Complex cue which handles animations, tracers, and impacts");*/
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayCue_Damage_Impact, "GameplayCue.Damage.Impact", "[Native] TODO: Add description");
 }

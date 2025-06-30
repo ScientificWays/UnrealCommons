@@ -55,6 +55,9 @@ protected:
 //~ Begin Swing
 public:
 
+	UFUNCTION(Category = "Swing", BlueprintCallable)
+	int32 GetSwingCounter() const { return SwingCounter; }
+
 	UFUNCTION(Category = "Swing", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "BeginSwing"))
 	void BP_BeginSwing(float InSwingDamage, TSubclassOf<UDamageType> InSwingDamageTypeClass);
 
@@ -65,6 +68,9 @@ protected:
 
 	UFUNCTION(Category = "Swing", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "HandleSwingHit"))
 	void BP_HandleSwingHit(const FHitResult& InHitResult);
+
+	UPROPERTY(Category = "Swing", BlueprintReadWrite)
+	int32 SwingCounter;
 
 	UPROPERTY(Category = "Swing", BlueprintReadWrite)
 	float LastSwingDamage;

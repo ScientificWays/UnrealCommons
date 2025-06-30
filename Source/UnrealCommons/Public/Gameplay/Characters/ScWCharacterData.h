@@ -100,8 +100,14 @@ public:
 //~ Begin FX
 public:
 
+	UFUNCTION(Category = "FX", BlueprintNativeEvent, BlueprintCallable, BlueprintCosmetic, meta = (WorldContext = "InWCO", DisplayName = "Spawn Damage Impact Particles from GameplayCue", KeyWords = "NiagaraSystem"))
+	UNiagaraComponent* BP_SpawnDamageImpactParticlesFromGameplayCue(const UObject* InWCO, const FGameplayCueParameters& InParams) const;
+
 	UPROPERTY(Category = "FX", EditDefaultsOnly, BlueprintReadOnly, meta = (KeyWords = "NiagaraSystem"))
 	TObjectPtr<UNiagaraSystem> DamageImpactParticles;
+
+	UPROPERTY(Category = "FX", EditDefaultsOnly, BlueprintReadOnly, meta = (KeyWords = "NiagaraSystem"))
+	FLinearColor DamageImpactParticlesColor;
 //~ End FX
 	
 //~ Begin AI

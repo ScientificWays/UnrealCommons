@@ -18,17 +18,17 @@ class UScWASC_Base* FReceivedDamageData::TryGetAttackerBaseASC() const
 {
 	UScWASC_Base* OutASC = nullptr;
 
-	if (UScWASC_Base* SourceASC = UScWASC_Base::TryGetBaseAtaASCFromActor(Source))
+	if (UScWASC_Base* SourceASC = UScWASC_Base::TryGetBaseScWASCFromActor(Source))
 	{
 		OutASC = SourceASC;
 	}
 	else if (Instigator)
 	{
-		if (UScWASC_Base* InstigatorASC = UScWASC_Base::TryGetBaseAtaASCFromActor(Instigator))
+		if (UScWASC_Base* InstigatorASC = UScWASC_Base::TryGetBaseScWASCFromActor(Instigator))
 		{
 			OutASC = InstigatorASC;
 		}
-		else if (UScWASC_Base* InstigatorPawnASC = UScWASC_Base::TryGetBaseAtaASCFromActor(Instigator->GetPawn()))
+		else if (UScWASC_Base* InstigatorPawnASC = UScWASC_Base::TryGetBaseScWASCFromActor(Instigator->GetPawn()))
 		{
 			OutASC = InstigatorPawnASC;
 		}
@@ -46,7 +46,7 @@ UScWASC_Base::UScWASC_Base()
 }
 
 //~ Begin Statics
-UScWASC_Base* UScWASC_Base::TryGetBaseAtaASCFromActor(const AActor* InActor, bool bInTryFindComponentIfNoInterface)
+UScWASC_Base* UScWASC_Base::TryGetBaseScWASCFromActor(const AActor* InActor, bool bInTryFindComponentIfNoInterface)
 {
 	return Cast<UScWASC_Base>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(InActor, bInTryFindComponentIfNoInterface));
 }
@@ -399,7 +399,10 @@ void UScWASC_Base::OnAvatarTakePointDamage(AActor* InDamagedActor, float InDamag
 {
 	const UScWDamageType* ScWDamageType = Cast<UScWDamageType>(InDamageType);
 	ensure(ScWDamageType);
-	HandleTryReceiveDamage(InDamage, { FHitResult(InDamagedActor, InHitComponent, InHitLocation, -InHitDirection), ScWDamageType, InDamageCauser, InInstigator });
+	
+	FHitResult MinimalInfoHitResult;
+	UScWGameplayFunctionLibrary::MakeMinimalInfoDamageImpactHitResult(InDamageCauser, nullptr, InInstigator ? InInstigator->GetPawn() : nullptr, InDamagedActor, InHitComponent, MinimalInfoHitResult);
+	HandleTryReceiveDamage(InDamage, { MinimalInfoHitResult, ScWDamageType, InDamageCauser, InInstigator });
 }
 
 void UScWASC_Base::OnAvatarTakeRadialDamage(AActor* InDamagedActor, float InDamage, const UDamageType* InDamageType, FVector InOrigin, const FHitResult& InHitResult, AController* InInstigator, AActor* InDamageCauser)
@@ -594,28 +597,12 @@ bool UScWASC_Base::TryApplyDamage(float InDamage, const FReceivedDamageData& InD
 {
 	check(IsOwnerActorAuthoritative());
 
-	//InDamage = AdjustIncomingDamage(InDamage, InData);
-
 	if (InDamage <= 0.0f)
 	{
 		return false;
 	}
 	LastAppliedDamage = InDamage;
 	LastAppliedDamageData = InData;
-
-	/*if (UIDDamageType_Explosion* ExplosionDamageType = Cast<UIDDamageType_Explosion>(InData.DamageTypeClass.GetDefaultObject()))
-	{
-		if (ExplosionDamageType->StumbleEffectClass && ExplosionDamageType->DamageToStumbleDurationCurve)
-		{
-			float ExplosionStumbleDuration = ExplosionDamageType->DamageToStumbleDurationCurve->GetFloatValue(InDamage);
-			if (ExplosionStumbleDuration >= ExplosionStumbleMinDuration)
-			{
-				TryApplyGameplayEffectByClass(ExplosionDamageType->StumbleEffectClass, ExplosionStumbleDuration);
-			}
-		}
-	}*/
-	const UScWDamageType* ScWDamageType = Cast<UScWDamageType>(InData.DamageType);
-	ensure(ScWDamageType);
 
 	TSubclassOf<UGameplayEffect> ApplyDamageGameplayEffectClass = UScWGameplayFunctionLibrary::GetApplyDamageGameplayEffectClassForType(this, InData.DamageType);
 	ensureReturn(ApplyDamageGameplayEffectClass, false);
@@ -631,12 +618,24 @@ bool UScWASC_Base::TryApplyDamage(float InDamage, const FReceivedDamageData& InD
 	FGameplayEffectSpecHandle DamageEffectHandle = MakeOutgoingSpec(ApplyDamageGameplayEffectClass, 1.0f, DamageEffectContext);
 	DamageEffectHandle.Data->SetSetByCallerMagnitude(FScWGameplayTags::SetByCaller_Magnitude, -LastAppliedDamage);
 
-	if (ScWDamageType)
+	if (InData.DamageType)
 	{
-		DamageEffectHandle.Data->SetSetByCallerMagnitude(FScWGameplayTags::SetByCaller_Duration, ScWDamageType->ApplyDamageGameplayEffectDuration);
+		DamageEffectHandle.Data->SetSetByCallerMagnitude(FScWGameplayTags::SetByCaller_Duration, InData.DamageType->ApplyDamageGameplayEffectDuration);
 	}
 	FActiveGameplayEffectHandle EffectHandle = ApplyGameplayEffectSpecToSelf(*DamageEffectHandle.Data.Get());
 	ensureReturn(EffectHandle.WasSuccessfullyApplied(), false);
+
+	// Damage impact GameplayCue
+	{
+		FGameplayCueParameters ImpactCueParams = FGameplayCueParameters(MakeEffectContext());
+		ImpactCueParams.Instigator = InData.Instigator ? InData.Instigator->GetPawn() : nullptr;
+		ImpactCueParams.EffectCauser = InData.Source;
+		ImpactCueParams.Location = InData.HitResult.Location;
+		ImpactCueParams.Normal = InData.HitResult.Normal;
+		ImpactCueParams.RawMagnitude = InDamage;
+		ImpactCueParams.NormalizedMagnitude = FMath::Min(InDamage / GetMaxHealth(), 1.0f);
+		ExecuteGameplayCue(FScWGameplayTags::GameplayCue_Damage_Impact, ImpactCueParams);
+	}
 	return true;
 }
 //~ End Damage

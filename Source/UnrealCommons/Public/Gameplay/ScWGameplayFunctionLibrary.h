@@ -29,6 +29,8 @@ public:
 
 	UFUNCTION(Category = "Health", BlueprintCallable, BlueprintPure, meta = (WorldContext = "InWCO"))
 	static TSubclassOf<UGameplayEffect> GetDeadStateGameplayEffectClass(const UObject* InWCO);
+//~ End Health
+	
 //~ Begin Damage
 public:
 
@@ -38,11 +40,8 @@ public:
 	UFUNCTION(Category = "Damage", BlueprintCallable, BlueprintAuthorityOnly)
 	static float ApplyPointDamage(AActor* InSourceActor, AActor* InTargetActor, float InDamage, const FVector& InHitFromDirection, const FHitResult& InHitResult, AController* InInstigator, TSubclassOf<UDamageType> InDamageTypeClass);
 
-	//UFUNCTION(Category = "Damage", BlueprintCallable, BlueprintAuthorityOnly)
-	//static void HandleFirearmBulletHit(UScWASC_Base* InShootingASC, const FHitResult& InHitResult, const class UFirearmDataAsset* InFirearmAsset);
-
-	//UFUNCTION(Category = "Damage", BlueprintCallable, BlueprintAuthorityOnly)
-	//static void HandleMeleeSwingHit(UIDASC_Character* InSwingingASC, const FHitResult& InHitResult, const UMeleeDataAsset* InMeleeAsset);
+	UFUNCTION(Category = "Damage", BlueprintCallable, BlueprintPure, meta = (KeyWords = "GetHitResult, GetMinimalInfoHitResult, GetMinimalHitResult, MakeHitResult, MakeMinimalHitResult"))
+	static void MakeMinimalInfoDamageImpactHitResult(AActor* InSourceActor, UPrimitiveComponent* InSourceComponent, APawn* InInstigatorPawn, AActor* InDamagedActor, UPrimitiveComponent* InDamagedComponent, FHitResult& OutHitResult);
 //~ End Damage
 
 //~ Begin GameplayTags

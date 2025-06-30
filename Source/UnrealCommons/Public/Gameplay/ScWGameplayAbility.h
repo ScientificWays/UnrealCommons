@@ -18,7 +18,7 @@ class UNREALCOMMONS_API UScWGameplayAbility : public UGameplayAbility
 public:
 
 	UScWGameplayAbility();
-	
+
 //~ Begin Initialize
 protected:
 	virtual void SetCurrentActorInfo(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo) const override; // UGameplayAbility

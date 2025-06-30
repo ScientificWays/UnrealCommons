@@ -5,6 +5,7 @@
 #include "AI/ScWAIPC_Base.h"
 #include "AI/ScWAIController.h"
 
+#include "Gameplay/Weapons/ScWWeapon_Melee.h"
 #include "Gameplay/Characters/ScWCharacter.h"
 #include "Gameplay/Characters/ScWCharacterData_InitInterface.h"
 
@@ -22,6 +23,8 @@ UScWCharacterData::UScWCharacterData()
 
 	SkeletalMeshRelativeTransform = FTransform(FRotator(0.0f, -90.0, 0.0f), FVector(0.0f, 0.0f, -90.0f), FVector::OneVector);
 	CapsuleRadiusHeight = FVector2D(34.0f, 90.0f);
+
+	DamageImpactParticlesColor = FColor::Red;
 
 	SightRadius = 2000.0f;
 	LoseSightRadiusOffset = 100.0f;
@@ -64,3 +67,31 @@ FGenericTeamId UScWCharacterData::GetDefaultTeamId(const UObject* InWCO) const
 	return BaseGameState->GetTeamId(DefaultTeamName);
 }
 //~ End Teams
+
+//~ Begin FX
+UNiagaraComponent* UScWCharacterData::BP_SpawnDamageImpactParticlesFromGameplayCue_Implementation(const UObject* InWCO, const FGameplayCueParameters& InParams) const
+{
+	static const FName DamageParameterName = TEXT("Damage");
+	static const FName BloodColorParameterName = TEXT("BloodColor");
+	static const FName GlowVariantParameterName = TEXT("GlowVariant");
+
+	UNiagaraComponent* OutParticles = UNiagaraFunctionLibrary::SpawnSystemAtLocation(InWCO, DamageImpactParticles, InParams.Location, InParams.Normal.Rotation(), FVector::OneVector, true, true, ENCPoolMethod::AutoRelease);
+	ensureReturn(OutParticles, nullptr);
+
+	OutParticles->SetVariableFloat(DamageParameterName, InParams.RawMagnitude);
+	OutParticles->SetVariableLinearColor(BloodColorParameterName, DamageImpactParticlesColor);
+
+	int32 GlowVariant = 0;
+
+	if (AScWWeapon_Melee* SourceMeleeWeapon = Cast<AScWWeapon_Melee>(InParams.GetEffectCauser()))
+	{
+		GlowVariant = SourceMeleeWeapon->GetSwingCounter() % 2;
+	}
+	else
+	{
+		GlowVariant = FMath::Rand32() % 2;
+	}
+	OutParticles->SetVariableInt(GlowVariantParameterName, GlowVariant);
+	return OutParticles;
+}
+//~ End FX

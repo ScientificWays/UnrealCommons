@@ -67,6 +67,7 @@ EBTNodeResult::Type UScWBTT_AbilityInput::ExecuteTask(UBehaviorTreeComponent& In
 				if (bPressInput)
 				{
 					OwnerASC->PressInputID(static_cast<int32>(InputID));
+					return EBTNodeResult::Succeeded;
 				}
 				if (bReleaseInput)
 				{
@@ -82,11 +83,12 @@ EBTNodeResult::Type UScWBTT_AbilityInput::ExecuteTask(UBehaviorTreeComponent& In
 					{
 						OwnerASC->ReleaseInputID(static_cast<int32>(InputID));
 					}
+					return EBTNodeResult::Succeeded;
 				}
 			}
 		}
 	}
-	return EBTNodeResult::Succeeded;
+	return EBTNodeResult::Failed;
 }
 
 void UScWBTT_AbilityInput::TickTask(UBehaviorTreeComponent& InOwnerTree, uint8* InNodeMemory, float InDeltaSeconds) // UBTTaskNode

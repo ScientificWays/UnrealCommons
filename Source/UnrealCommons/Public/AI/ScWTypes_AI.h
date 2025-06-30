@@ -31,3 +31,9 @@ namespace FScWBlackboard
 	const FName FirearmShootDelay = TEXT("FirearmShootDelay");
 	const FName FirearmShootDuration = TEXT("FirearmShootDuration");
 }
+
+namespace FScWAIMessage
+{
+	static FName AbilityEnded = TEXT("AbilityEnded");
+	static FName AbilityCancelled = TEXT("AbilityCancelled");
+}

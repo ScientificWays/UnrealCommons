@@ -42,7 +42,7 @@ void AScWPlayerController::OnPossess(APawn* InPawn) // AController
 {
 	Super::OnPossess(InPawn);
 
-	if (UScWASC_Base* PawnASC = UScWASC_Base::TryGetBaseAtaASCFromActor(InPawn))
+	if (UScWASC_Base* PawnASC = UScWASC_Base::TryGetBaseScWASCFromActor(InPawn))
 	{
 		PawnASC->OnHealthChanged.Add(OnPawnHealthChangedBind);
 		PawnASC->OnMaxHealthChanged.Add(OnPawnMaxHealthChangedBind);
@@ -54,7 +54,7 @@ void AScWPlayerController::OnUnPossess() // AController
 {
 	Super::OnUnPossess();
 
-	if (UScWASC_Base* PawnASC = UScWASC_Base::TryGetBaseAtaASCFromActor(GetPawn()))
+	if (UScWASC_Base* PawnASC = UScWASC_Base::TryGetBaseScWASCFromActor(GetPawn()))
 	{
 		PawnASC->OnHealthChanged.Remove(OnPawnHealthChangedBind);
 		PawnASC->OnMaxHealthChanged.Remove(OnPawnMaxHealthChangedBind);

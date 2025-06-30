@@ -67,21 +67,36 @@ public:
 //~ Begin Rotation
 public:
 
-	UFUNCTION(Category = "View", BlueprintCallable)
+	UFUNCTION(Category = "Rotation", BlueprintCallable)
 	void ClearAllFocuses();
 
-	UPROPERTY(Category = "View", EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(Category = "Rotation", EditAnywhere, BlueprintReadWrite)
 	float FocusInterpSpeed;
+
+	UFUNCTION(Category = "Rotation", BlueprintCallable)
+	void ForceControlRotationOnPawn();
+
+	UFUNCTION(Category = "Rotation", BlueprintCallable)
+	void DisableForceControlRotationOnPawn();
 
 	virtual FVector GetFocalPointOnActor(const AActor* Actor) const override; // AAIController
 
-	void AddControlRotationBlock(UObject* InObject) { ControlRotationBlockSet.Add(InObject); }
-	void RemoveControlRotationBlock(UObject* InObject) { ControlRotationBlockSet.Remove(InObject); }
+	UFUNCTION(Category = "Rotation", BlueprintCallable)
+	void AddControlRotationUpdateBlockSource(UObject* InObject) { ControlRotationUpdateBlockSet.Add(InObject); }
+
+	UFUNCTION(Category = "Rotation", BlueprintCallable)
+	void RemoveControlRotationUpdateBlockSource(UObject* InObject) { ControlRotationUpdateBlockSet.Remove(InObject); }
+
 protected:
 	virtual void UpdateControlRotation(float InDeltaSeconds, bool bInUpdatePawn) override; // AAIController
 
-	UPROPERTY(Category = "Pawn", BlueprintReadOnly)
-	TSet<UObject*> ControlRotationBlockSet;
-//~ End Rotation
+	UPROPERTY(Category = "Rotation", BlueprintReadOnly)
+	TSet<UObject*> ControlRotationUpdateBlockSet;
 
+	UPROPERTY()
+	bool bPrevForceControlRotationOnPawnCallUseYawValue;
+
+	UPROPERTY()
+	bool bPrevForceControlRotationOnPawnCallOrientValue;
+//~ End Rotation
 };

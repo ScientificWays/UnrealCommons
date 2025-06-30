@@ -45,6 +45,21 @@ void UScWCharacterMovement::InitFromASC(UScWASC_Base* InInitASC, AActor* InOwner
 }
 //~ End Initialize
 
+//~ Begin Rotation
+void UScWCharacterMovement::PhysicsRotation(float InDeltaTime) // UCharacterMovementComponent
+{
+	/*if (PhysicsRotationBlockSourceSet.IsEmpty())
+	{
+		Super::PhysicsRotation(InDeltaTime);
+	}
+	else
+	{
+		return;
+	}*/
+	Super::PhysicsRotation(InDeltaTime);
+}
+//~ End Rotation
+
 //~ Begin Attributes
 void UScWCharacterMovement::OnMaxWalkSpeedAttributeChanged(const FOnAttributeChangeData& InData)
 {

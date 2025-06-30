@@ -10,7 +10,7 @@ UScWASC_Character::UScWASC_Character()
 }
 
 //~ Begin Statics
-UScWASC_Character* UScWASC_Character::TryGetCharacterAtaASCFromActor(const AActor* InActor, bool bInTryFindComponentIfNoInterface)
+UScWASC_Character* UScWASC_Character::TryGetCharacterScWASCFromActor(const AActor* InActor, bool bInTryFindComponentIfNoInterface)
 {
 	return Cast<UScWASC_Character>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(InActor, bInTryFindComponentIfNoInterface));
 }

@@ -7,7 +7,7 @@
 #include "AI/ScWAIFunctionLibrary.h"
 
 AScWAIController::AScWAIController(const FObjectInitializer& InObjectInitializer)
-//	: Super(InObjectInitializer.SetDefaultSubobjectClass<UScWPFC_Base>(TEXT("PathFollowingComponent")))
+	//: Super(InObjectInitializer.SetDefaultSubobjectClass<UScWPFC_Base>(TEXT("PathFollowingComponent")))
 	: Super(InObjectInitializer.DoNotCreateDefaultSubobject(TEXT("PathFollowingComponent")))
 {
 	//BasePFC = Cast<UScWPFC_Base>(GetPathFollowingComponent());
@@ -78,6 +78,34 @@ void AScWAIController::ClearAllFocuses()
 	}
 }
 
+void AScWAIController::ForceControlRotationOnPawn()
+{
+	if (APawn* OwnerPawn = GetPawn())
+	{
+		bPrevForceControlRotationOnPawnCallUseYawValue = OwnerPawn->bUseControllerRotationYaw;
+		OwnerPawn->bUseControllerRotationYaw = true;
+
+		if (UCharacterMovementComponent* CharacterMovement = OwnerPawn->FindComponentByClass<UCharacterMovementComponent>())
+		{
+			bPrevForceControlRotationOnPawnCallOrientValue = CharacterMovement->bOrientRotationToMovement;
+			CharacterMovement->bOrientRotationToMovement = false;
+		}
+	}
+}
+
+void AScWAIController::DisableForceControlRotationOnPawn()
+{
+	if (APawn* OwnerPawn = GetPawn())
+	{
+		OwnerPawn->bUseControllerRotationYaw = bPrevForceControlRotationOnPawnCallUseYawValue;
+
+		if (UCharacterMovementComponent* CharacterMovement = OwnerPawn->FindComponentByClass<UCharacterMovementComponent>())
+		{
+			CharacterMovement->bOrientRotationToMovement = bPrevForceControlRotationOnPawnCallOrientValue;
+		}
+	}
+}
+
 FVector AScWAIController::GetFocalPointOnActor(const AActor* InActor) const // AAIController
 {
 	return InActor ? InActor->GetTargetLocation(const_cast<AScWAIController*>(this)) : FAISystem::InvalidLocation;
@@ -89,7 +117,7 @@ void AScWAIController::UpdateControlRotation(float InDeltaSeconds, bool bInUpdat
 	{
 		FRotator NewControlRotation = GetControlRotation();
 
-		if (ControlRotationBlockSet.IsEmpty())
+		if (ControlRotationUpdateBlockSet.IsEmpty())
 		{
 			const FVector FocalPoint = GetFocalPoint();
 

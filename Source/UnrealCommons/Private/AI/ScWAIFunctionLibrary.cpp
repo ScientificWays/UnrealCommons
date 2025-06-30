@@ -93,3 +93,18 @@ AScWAIPatrolPoint* UScWAIFunctionLibrary::GetNearestPatrolPoint(const FVector& I
 	return InPatrolPoints.IsValidIndex(OutIndex) ? InPatrolPoints[OutIndex] : nullptr;
 }
 //~ End Navigation
+
+
+//~ Begin Brain
+UBrainComponent* UScWAIFunctionLibrary::TryGetActorBrainComponent(const AActor* InActor)
+{
+	if (const APawn* PawnActor = Cast<APawn>(InActor))
+	{
+		if (const AController* PawnController = PawnActor->GetController())
+		{
+			return PawnController->FindComponentByClass<UBrainComponent>();
+		}
+	}
+	return InActor->FindComponentByClass<UBrainComponent>();
+}
+//~ End Brain

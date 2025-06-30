@@ -74,107 +74,47 @@ float UScWGameplayFunctionLibrary::ApplyPointDamage(AActor* InSourceActor, AActo
 	return InTargetActor->TakeDamage(InDamage, PointDamageEvent, InInstigator, InSourceActor);
 }
 
-/*void UScWGameplayFunctionLibrary::HandleFirearmBulletHit(UScWASC_Base* InShootingASC, const FHitResult& InHitResult, const UFirearmDataAsset* InFirearmAsset)
+void UScWGameplayFunctionLibrary::MakeMinimalInfoDamageImpactHitResult(AActor* InSourceActor, UPrimitiveComponent* InSourceComponent, APawn* InInstigatorPawn, AActor* InDamagedActor, UPrimitiveComponent* InDamagedComponent, FHitResult& OutHitResult)
 {
-	if (InShootingASC == nullptr)
+	ensure(InDamagedComponent);
+	FVector SourceLocation = FVector::ZeroVector;
+
+	if (InSourceComponent)
 	{
-		UE_LOG(LogServer, Error, TEXT("UScWGameplayFunctionLibrary::HandleFirearmBulletHit() InShootingASC is nullptr!"));
-		return;
+		SourceLocation = InSourceComponent->GetComponentLocation();
 	}
-	check(InShootingASC->IsOwnerActorAuthoritative());
-
-	AActor* HitActor = InHitResult.GetActor();
-	if (HitActor && HitActor->CanBeDamaged())
+	else if (InSourceActor)
 	{
-		float DamageFalloff = InFirearmAsset->ShootDamageFalloffCurve->GetFloatValue(InHitResult.Distance / InFirearmAsset->ShootMaxRange);
-		float AdjustedDamage = InFirearmAsset->ShootImpactDamage * DamageFalloff;
-
-		if (AdjustedDamage <= 0.0f)
-		{
-			return;
-		}
-		APawn* ShootingPawn = InShootingASC->GetOwnerPawn();
-		AController* ShootingController = InShootingASC->GetOwnerController();
-
-		FVector Direction = ShootingPawn->GetActorLocation() - HitActor->GetActorLocation();
-		Direction.Normalize();
-
-		if (UScWASC_Base* TargetASC = UIDAbilitySystemGlobals::GetBaseASCFromActor(HitActor))
-		{
-			if (TargetASC->ReceiveDamage(AdjustedDamage, { Direction, InHitResult, InFirearmAsset->ShootImpactDamageType.Get(), ShootingController, ShootingPawn })
-				&& InFirearmAsset->ShootTargetEffectClass.Get())
-			{
-				TargetASC->TryApplyGameplayEffectByClass(InFirearmAsset->ShootTargetEffectClass.Get());
-			}
-			else
-			{
-				return;
-			}
-		}
-		else
-		{
-			ApplyPointDamage(ShootingPawn, HitActor, AdjustedDamage, Direction, InHitResult, ShootingController, InFirearmAsset->ShootImpactDamageType.Get());
-		}
-		TryApplyHitImpulse(InHitResult, InFirearmAsset->ShootImpactImpulseScale);
+		SourceLocation = InSourceActor->GetActorLocation();
 	}
-	//UAISense_Hearing::ReportNoiseEvent(InShootingASC, InHitResult.ImpactPoint, 1.0f, InShootingASC->GetOwnerPawn(), InFirearmAsset->BulletData.HitMaxHearingRange);
+	else
+	{
+		ensure(false);
+	}
+	if (InInstigatorPawn)
+	{
+		SourceLocation = FMath::Lerp(SourceLocation, InInstigatorPawn->GetPawnViewLocation(), 0.5f);
+	}
+	FVector ImpactLocation = FVector::ZeroVector;
+
+	if (InDamagedComponent)
+	{
+		ImpactLocation = InDamagedComponent->GetComponentLocation();
+	}
+	else if (InDamagedActor)
+	{
+		ImpactLocation = InDamagedActor->GetActorLocation();
+	}
+	else
+	{
+		ensure(false);
+	}
+	OutHitResult = FHitResult(InDamagedActor, InDamagedComponent, ImpactLocation, (ImpactLocation - SourceLocation).GetSafeNormal());
+	OutHitResult.TraceStart = SourceLocation;
+	OutHitResult.TraceEnd = ImpactLocation;
+	OutHitResult.Time = 1.0f;
+	OutHitResult.Distance = FVector::Distance(SourceLocation, ImpactLocation);
 }
-
-void UScWGameplayFunctionLibrary::HandleMeleeSwingHit(UIDASC_Character* InSwingingASC, const FHitResult& InHitResult, const UMeleeDataAsset* InMeleeAsset)
-{
-	if (InSwingingASC == nullptr)
-	{
-		UE_LOG(LogServer, Error, TEXT("UScWGameplayFunctionLibrary::HandleMeleeSwingHit() InSwingingASC is nullptr!"));
-		return;
-	}
-	if (InMeleeAsset == nullptr)
-	{
-		UE_LOG(LogServer, Error, TEXT("UScWGameplayFunctionLibrary::HandleMeleeSwingHit() InMeleeAsset is nullptr!"));
-		return;
-	}
-	check(InSwingingASC->IsOwnerActorAuthoritative());
-
-	AActor* HitActor = InHitResult.GetActor();
-	if (HitActor && HitActor->CanBeDamaged())
-	{
-		const UIDAttributeSet_Character* AttributeSet = InSwingingASC->GetAttributeSet<UIDAttributeSet_Character>();
-		check(AttributeSet);
-
-		float AdjustedDamage = InSwingingASC->GetMeleeSwingDamage(InMeleeAsset, InHitResult);
-
-		AIDCharacter_Base* SwingingCharacter = InSwingingASC->GetOwnerCharacter();
-		AController* SwingingController = InSwingingASC->GetOwnerController();
-
-		FVector Direction = SwingingCharacter->GetActorLocation() - HitActor->GetActorLocation();
-		Direction.Normalize();
-
-		if (UScWASC_Base* TargetASC = UIDAbilitySystemGlobals::GetBaseASCFromActor(HitActor))
-		{
-			if (TargetASC->ReceiveDamage(AdjustedDamage, { Direction, InHitResult, InMeleeAsset->SwingImpactDamageType.Get(), SwingingController, SwingingCharacter }))
-			{
-				const bool bRiposting = InSwingingASC->HasMatchingGameplayTag(FIDGameplayTags::State_Riposting);
-				if (bRiposting && InMeleeAsset->BlockData.RiposteTargetEffectClass.Get())
-				{
-					TargetASC->TryApplyGameplayEffectByClass(InMeleeAsset->BlockData.RiposteTargetEffectClass.Get());
-				}
-				if (!bRiposting || InMeleeAsset->bApplySwingTargetEffectOnRiposte)
-				{
-					TargetASC->TryApplyGameplayEffectByClass(InMeleeAsset->SwingTargetEffectClass.Get());
-				}
-			}
-			else
-			{
-				return;
-			}
-		}
-		else
-		{
-			ApplyPointDamage(SwingingCharacter, HitActor, AdjustedDamage, Direction, InHitResult, SwingingController, InMeleeAsset->SwingImpactDamageType.Get());
-		}
-		TryApplyHitImpulse(InHitResult, InMeleeAsset->SwingImpactImpulseScale);
-	}
-	//UAISense_Hearing::ReportNoiseEvent(InSwingingASC, InHitResult.ImpactPoint, 1.0f, InSwingingASC->GetOwnerPawn(), InMeleeAsset->SwingHitMaxHearingRange);
-}*/
 //~ End Damage
 
 //~ Begin GameplayTags

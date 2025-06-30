@@ -79,6 +79,8 @@ void AScWWeapon_Melee::BeginPlay() // AActor
 			CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AScWWeapon_Melee::OnCollisionComponentBeginOverlap);
 		}
 	}
+	SwingCounter = 0;
+
 	BP_EndSwing();
 
 	DefaultPatternTraceIgnoredActorArray = { OwnerCharacter, this };
@@ -108,19 +110,8 @@ void AScWWeapon_Melee::OnCollisionComponentBeginOverlap(UPrimitiveComponent* InO
 	}
 	else
 	{
-		ensure(InOverlappedComponent);
-		FVector ThisLocation = InOverlappedComponent ? InOverlappedComponent->GetComponentLocation() : GetActorLocation();
-		
-		if (OwnerCharacter)
-		{
-			ThisLocation = FMath::Lerp(ThisLocation, OwnerCharacter->GetPawnViewLocation(), 0.5f);
-		}
-		ensure(InOtherComponent || InOtherActor);
-		FVector TargetLocation = InOtherComponent ? InOtherComponent->GetComponentLocation() : (InOtherActor ? InOtherActor->GetActorLocation() : FVector::ZeroVector);
-
-		FHitResult MinimalInfoHitResult = FHitResult(InOtherActor, InOtherComponent, TargetLocation, (TargetLocation - ThisLocation).GetSafeNormal());
-		MinimalInfoHitResult.TraceStart = ThisLocation;
-		MinimalInfoHitResult.TraceEnd = TargetLocation;
+		FHitResult MinimalInfoHitResult;
+		UScWGameplayFunctionLibrary::MakeMinimalInfoDamageImpactHitResult(this, InOverlappedComponent, OwnerCharacter, InOtherActor, InOtherComponent, MinimalInfoHitResult);
 		BP_HandleSwingHit(MinimalInfoHitResult);
 	}
 }
@@ -129,6 +120,8 @@ void AScWWeapon_Melee::OnCollisionComponentBeginOverlap(UPrimitiveComponent* InO
 //~ Begin Swing
 void AScWWeapon_Melee::BP_BeginSwing_Implementation(float InSwingDamage, TSubclassOf<UDamageType> InSwingDamageTypeClass)
 {
+	++SwingCounter;
+
 	LastSwingDamage = InSwingDamage;
 	LastSwingDamageTypeClass = InSwingDamageTypeClass;
 	LastSwingAffectedActorArray.Empty();

@@ -2,12 +2,14 @@
 
 #include "Gameplay/ScWGameplayAbility.h"
 
-#include "Gameplay/Characters/ScWCharacter.h"
+#include "AI/ScWTypes_AI.h"
+#include "AI/ScWAIFunctionLibrary.h"
 
 #include "Framework/ScWPlayerController.h"
 
 #include "Gameplay/ScWASC_Base.h"
 #include "Gameplay/ScWGameplayTags.h"
+#include "Gameplay/Characters/ScWCharacter.h"
 
 UScWGameplayAbility::UScWGameplayAbility()
 {
@@ -29,16 +31,20 @@ void UScWGameplayAbility::SetCurrentActorInfo(const FGameplayAbilitySpecHandle I
 {
 	Super::SetCurrentActorInfo(InHandle, InActorInfo);
 
-	const_cast<ThisClass*>(this)->OwnerCharacter = Cast<AScWCharacter>(InActorInfo->AvatarActor);
-	ensure(OwnerCharacter);
-
-	const_cast<ThisClass*>(this)->OwnerASC = Cast<UScWASC_Base>(InActorInfo->AbilitySystemComponent);
-	ensure(OwnerASC);
-
-	if (InActorInfo->PlayerController.IsValid())
+	if (InstancingPolicy == EGameplayAbilityInstancingPolicy::InstancedPerActor ||
+		InstancingPolicy == EGameplayAbilityInstancingPolicy::InstancedPerExecution)
 	{
-		const_cast<ThisClass*>(this)->OwnerPlayerController = Cast<AScWPlayerController>(InActorInfo->PlayerController);
-		ensure(OwnerPlayerController);
+		const_cast<ThisClass*>(this)->OwnerCharacter = Cast<AScWCharacter>(InActorInfo->AvatarActor);
+		ensure(OwnerCharacter);
+
+		const_cast<ThisClass*>(this)->OwnerASC = Cast<UScWASC_Base>(InActorInfo->AbilitySystemComponent);
+		ensure(OwnerASC);
+
+		if (InActorInfo->PlayerController.IsValid())
+		{
+			const_cast<ThisClass*>(this)->OwnerPlayerController = Cast<AScWPlayerController>(InActorInfo->PlayerController);
+			ensure(OwnerPlayerController);
+		}
 	}
 }
 //~ End Initialize
@@ -55,13 +61,29 @@ void UScWGameplayAbility::CancelAbility(const FGameplayAbilitySpecHandle InHandl
 {
 	Super::CancelAbility(InHandle, InActorInfo, InActivationInfo, bInReplicateCancelAbility);
 
-
+	UBrainComponent* MessageTarget = UScWAIFunctionLibrary::TryGetActorBrainComponent(InActorInfo->OwnerActor.Get());
+	if (!MessageTarget)
+	{
+		MessageTarget = UScWAIFunctionLibrary::TryGetActorBrainComponent(InActorInfo->AvatarActor.Get());
+	}
+	if (MessageTarget)
+	{
+		FAIMessage::Send(MessageTarget, FAIMessage(FScWAIMessage::AbilityCancelled, this, true));
+	}
 }
 
 void UScWGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo, const FGameplayAbilityActivationInfo InActivationInfo, bool bInReplicateEndAbility, bool bInWasCancelled) // UGameplayAbility
 {
 	Super::EndAbility(InHandle, InActorInfo, InActivationInfo, bInReplicateEndAbility, bInWasCancelled);
-	
 
+	UBrainComponent* MessageTarget = UScWAIFunctionLibrary::TryGetActorBrainComponent(InActorInfo->OwnerActor.Get());
+	if (!MessageTarget)
+	{
+		MessageTarget = UScWAIFunctionLibrary::TryGetActorBrainComponent(InActorInfo->AvatarActor.Get());
+	}
+	if (MessageTarget)
+	{
+		FAIMessage::Send(MessageTarget, FAIMessage(FScWAIMessage::AbilityEnded, this, true));
+	}
 }
 //~ End Events

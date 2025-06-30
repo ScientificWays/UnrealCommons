@@ -27,6 +27,25 @@ public:
 	virtual void InitFromASC(class UScWASC_Base* InInitASC, AActor* InOwnerActor, AActor* InAvatarActor) override; // IScWASC_InitInterface
 //~ End Initialize
 
+//~ Begin Rotation
+public:
+
+	//UFUNCTION(Category = "Rotation", BlueprintCallable, meta = (DefaultToSelf = "InSource"))
+	//bool HasPhysicsRotationBlockSource(UObject* InSource) const { return PhysicsRotationBlockSourceSet.Contains(InSource); }
+
+	//UFUNCTION(Category = "Rotation", BlueprintCallable, meta = (DefaultToSelf = "InSource"))
+	//void AddPhysicsRotationBlockSource(UObject* InSource) { PhysicsRotationBlockSourceSet.Add(InSource); }
+
+	//UFUNCTION(Category = "Rotation", BlueprintCallable, meta = (DefaultToSelf = "InSource"))
+	//void RemovePhysicsRotationBlockSource(UObject* InSource) { PhysicsRotationBlockSourceSet.Remove(InSource); }
+
+protected:
+	virtual void PhysicsRotation(float InDeltaTime) override; // UCharacterMovementComponent
+
+	//UPROPERTY(Transient)
+	//TSet<TObjectPtr<UObject>> PhysicsRotationBlockSourceSet;
+//~ End Rotation
+
 //~ Begin Attributes
 public:
 

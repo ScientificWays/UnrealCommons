@@ -39,4 +39,11 @@ public:
 	UFUNCTION(Category = "Navigation", BlueprintCallable)
 	static class AScWAIPatrolPoint* GetNearestPatrolPoint(const FVector& InReferenceLocation, const TArray<class AScWAIPatrolPoint*>& InPatrolPoints, const bool bInCheckMoveToLocations = true);
 //~ End Navigation
+
+//~ Begin Brain
+public:
+
+	UFUNCTION(Category = "Brain", BlueprintCallable)
+	static UBrainComponent* TryGetActorBrainComponent(const AActor* InActor);
+//~ End Brain
 };

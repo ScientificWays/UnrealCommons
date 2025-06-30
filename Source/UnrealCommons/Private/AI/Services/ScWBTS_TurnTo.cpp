@@ -54,7 +54,7 @@ void UScWBTS_TurnTo::OnBecomeRelevant(UBehaviorTreeComponent& InOwnerTree, uint8
 {
 	if (AScWAIController* OwnerController = Cast<AScWAIController>(InOwnerTree.GetAIOwner()))
 	{
-		OwnerController->AddControlRotationBlock(this);
+		UScWBTT_TurnTo::Common_Init(*this, InOwnerTree, InNodeMemory);
 
 		FThisTaskMemory* ThisNodeMemory = CastInstanceNodeMemory<FThisTaskMemory>(InNodeMemory);
 		ThisNodeMemory->UpdateTimeLeft = TargetRotationUpdateRate;
@@ -65,12 +65,8 @@ void UScWBTS_TurnTo::OnBecomeRelevant(UBehaviorTreeComponent& InOwnerTree, uint8
 
 void UScWBTS_TurnTo::OnCeaseRelevant(UBehaviorTreeComponent& InOwnerTree, uint8* InNodeMemory) // UBTAuxiliaryNode
 {
+	UScWBTT_TurnTo::Common_DeInit(*this, InOwnerTree, InNodeMemory);
 	Super::OnCeaseRelevant(InOwnerTree, InNodeMemory);
-	
-	if (AScWAIController* OwnerController = Cast<AScWAIController>(InOwnerTree.GetAIOwner()))
-	{
-		OwnerController->RemoveControlRotationBlock(this);
-	}
 }
 
 void UScWBTS_TurnTo::TickNode(UBehaviorTreeComponent& InOwnerTree, uint8* InNodeMemory, float InDeltaSeconds) // UBTAuxiliaryNode

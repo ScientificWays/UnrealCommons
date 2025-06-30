@@ -135,9 +135,17 @@ UActorComponent* AScWCharacter::FindComponentByClass(const TSubclassOf<UActorCom
 	{
 		return CharacterASC;
 	}
+	if (ScWCharacterMesh && ScWCharacterMesh->IsA(InComponentClass))
+	{
+		return ScWCharacterMesh;
+	}
 	if (ScWCharacterMovement && ScWCharacterMovement->IsA(InComponentClass))
 	{
 		return ScWCharacterMovement;
+	}
+	if (ScWCharacterCapsule && ScWCharacterCapsule->IsA(InComponentClass))
+	{
+		return ScWCharacterCapsule;
 	}
 	return Super::FindComponentByClass(InComponentClass);
 }
@@ -188,11 +196,13 @@ void AScWCharacter::UnPossessed() // APawn
 //~ Begin Attributes
 void AScWCharacter::OnDied()
 {
-	//DetachFromControllerPendingDestroy();
-
 	if (APlayerController* OwnerPlayerController = GetController<APlayerController>())
 	{
 		UScWGameplayFunctionLibrary::RemoveEnhancedInputMappingContextFrom(OwnerPlayerController, DefaultInputMappingContext, DefaultInputMappingContextOptions);
+	}
+	else
+	{
+		DetachFromControllerPendingDestroy();
 	}
 	bool bDestroyActor = true;
 

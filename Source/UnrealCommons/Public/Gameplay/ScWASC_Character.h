@@ -24,6 +24,6 @@ public:
 public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	static UScWASC_Character* TryGetCharacterAtaASCFromActor(const AActor* InActor, bool bInTryFindComponentIfNoInterface = true);
+	static UScWASC_Character* TryGetCharacterScWASCFromActor(const AActor* InActor, bool bInTryFindComponentIfNoInterface = true);
 //~ End Statics
 };

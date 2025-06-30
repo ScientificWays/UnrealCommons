@@ -55,4 +55,7 @@ namespace FScWGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(MovementMode_Falling);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(MovementMode_Swimming);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(MovementMode_Flying);
+
+	// Cues
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_Damage_Impact);
 }

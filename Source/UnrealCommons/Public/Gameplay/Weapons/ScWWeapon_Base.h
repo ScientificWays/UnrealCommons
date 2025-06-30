@@ -31,7 +31,7 @@ public:
 	UFUNCTION(Category = "Initialize", BlueprintCallable)
 	class UScWWeaponData_Base* GetDataAsset() const { return DataAsset; }
 
-	UFUNCTION(Category = "Initialize", BlueprintNativeEvent, BlueprintCallable)
+	UFUNCTION(Category = "Initialize", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Update from DataAsset"))
 	void BP_UpdateFromDataAsset();
 
 protected:

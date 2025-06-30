@@ -37,6 +37,8 @@ protected:
 	virtual void TickTask(UBehaviorTreeComponent& InOwnerTree, uint8* InNodeMemory, float InDeltaSeconds) override; // UBTTaskNode
 	virtual void OnTaskFinished(UBehaviorTreeComponent& InOwnerTree, uint8* InNodeMemory, EBTNodeResult::Type InTaskResult) override; // UBTTaskNode
 public:
+	static void Common_Init(UBTNode& InNode, UBehaviorTreeComponent& InOwnerTree, uint8* InNodeMemory);
+	static void Common_DeInit(UBTNode& InNode, UBehaviorTreeComponent& InOwnerTree, uint8* InNodeMemory);
 	static FString Common_GetStaticDescription(const UBTNode& InNode, const bool bInGetRotationFromTarget, const FBlackboardKeySelector& InBlackboardKey, const FRotator& InOffset, const float InConstantSpeed);
 	static void Common_DescribeRuntimeValues(const UBTNode& InNode, const UBehaviorTreeComponent& InOwnerTree, uint8* InNodeMemory, EBTDescriptionVerbosity::Type InVerbosity, TArray<FString>& OutValues);
 	static bool Common_UpdateTargetRotation(UBTNode& InNode, UBehaviorTreeComponent& InOwnerTree, uint8* InNodeMemory, const FBlackboardKeySelector& InBlackboardKey, const FRotator& InOffset, const bool bInGetRotationFromTarget, const bool bInTurnToPawnViewLocation);
