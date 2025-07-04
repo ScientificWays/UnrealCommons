@@ -7,8 +7,6 @@
 #include "Gameplay/ScWGameplayFunctionLibrary.h"
 #include "Gameplay/Weapons/ScWWeaponData_Melee.h"
 
-#include "World/ScWTypes_World.h"
-
 AScWWeapon_Melee::AScWWeapon_Melee(const FObjectInitializer& InObjectInitializer)
 	: Super(InObjectInitializer)
 {

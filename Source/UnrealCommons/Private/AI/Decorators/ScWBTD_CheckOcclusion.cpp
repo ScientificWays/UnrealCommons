@@ -4,8 +4,6 @@
 
 #include "AI/ScWTypes_AI.h"
 
-#include "World/ScWTypes_World.h"
-
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
 
 UScWBTD_CheckOcclusion::UScWBTD_CheckOcclusion()
