@@ -14,10 +14,10 @@ private:
 	TSet<ElementType> Set;
 public:
 
-	FORCEINLINE const TArray<ElementType>& GetConstArray() const { return Array; }
-	FORCEINLINE const TSet<ElementType>& GetConstSet() const { return Set; }
+	FORCEINLINE_DEBUGGABLE const TArray<ElementType>& GetConstArray() const { return Array; }
+	FORCEINLINE_DEBUGGABLE const TSet<ElementType>& GetConstSet() const { return Set; }
 
-	FORCEINLINE bool Add(const ElementType& InElement)
+	FORCEINLINE_DEBUGGABLE bool Add(const ElementType& InElement)
 	{
 		if (Contains(InElement))
 		{
@@ -32,7 +32,7 @@ public:
 		}
 	}
 
-	FORCEINLINE bool Remove(const ElementType& InElement)
+	FORCEINLINE_DEBUGGABLE bool Remove(const ElementType& InElement)
 	{
 		if (Contains(InElement))
 		{
@@ -47,7 +47,7 @@ public:
 		}
 	}
 
-	FORCEINLINE bool Replace(const ElementType& InPrevElement, const ElementType& InNewElement)
+	FORCEINLINE_DEBUGGABLE bool Replace(const ElementType& InPrevElement, const ElementType& InNewElement)
 	{
 		if (Contains(InPrevElement))
 		{
@@ -61,7 +61,7 @@ public:
 		}
 	}
 
-	FORCEINLINE void AddFromOther(const TArraySetPair<ElementType>& InOther)
+	FORCEINLINE_DEBUGGABLE void AddFromOther(const TArraySetPair<ElementType>& InOther)
 	{
 		for (const ElementType& SampleOtherItem : InOther.Array)
 		{
@@ -69,7 +69,7 @@ public:
 		}
 	}
 
-	FORCEINLINE void RemoveFromOther(const TArraySetPair<ElementType>& InOther)
+	FORCEINLINE_DEBUGGABLE void RemoveFromOther(const TArraySetPair<ElementType>& InOther)
 	{
 		for (const ElementType& SampleOtherItem : InOther.Array)
 		{
@@ -77,7 +77,7 @@ public:
 		}
 	}
 
-	FORCEINLINE void AddHeadTo(int32 InDesiredElementsNum, TArraySetPair<ElementType>& InOutOther, const bool bInPopElements = false)
+	FORCEINLINE_DEBUGGABLE void AddHeadTo(int32 InDesiredElementsNum, TArraySetPair<ElementType>& InOutOther, const bool bInPopElements = false)
 	{
 		int32 FirstIndex = 0;
 		int32 LastIndex = FMath::Min(InDesiredElementsNum, Array.Num()) - 1;
@@ -92,7 +92,7 @@ public:
 		}
 	}
 
-	FORCEINLINE void AddTailTo(int32 InDesiredElementsNum, TArraySetPair<ElementType>& InOutOther, const bool bInPopElements = false)
+	FORCEINLINE_DEBUGGABLE void AddTailTo(int32 InDesiredElementsNum, TArraySetPair<ElementType>& InOutOther, const bool bInPopElements = false)
 	{
 		int32 FirstIndex = Array.Num() - 1;
 		int32 LastIndex = Array.Num() - FMath::Min(InDesiredElementsNum, Array.Num());
@@ -107,17 +107,17 @@ public:
 		}
 	}
 
-	FORCEINLINE int32 Num() const { return Array.Num(); }
-	FORCEINLINE bool IsEmpty() const { return Array.IsEmpty(); }
-	FORCEINLINE bool Contains(const ElementType& InElement) const { return Set.Contains(InElement); }
+	FORCEINLINE_DEBUGGABLE int32 Num() const { return Array.Num(); }
+	FORCEINLINE_DEBUGGABLE bool IsEmpty() const { return Array.IsEmpty(); }
+	FORCEINLINE_DEBUGGABLE bool Contains(const ElementType& InElement) const { return Set.Contains(InElement); }
 
-	FORCEINLINE void Empty(int32 InSlack = 0)
+	FORCEINLINE_DEBUGGABLE void Empty(int32 InSlack = 0)
 	{
 		Array.Empty(InSlack);
 		Set.Empty(InSlack);
 	}
 
-	FORCEINLINE ElementType Pop(EAllowShrinking InAllowShrinking = EAllowShrinking::Default)
+	FORCEINLINE_DEBUGGABLE ElementType Pop(EAllowShrinking InAllowShrinking = EAllowShrinking::Default)
 	{
 		ElementType PoppedItem = Array.Pop(InAllowShrinking);
 		Set.Remove(PoppedItem);
@@ -133,10 +133,10 @@ private:
 	TMap<ValueType, KeyType> ValueKeyMap;
 public:
 
-	FORCEINLINE const TMap<KeyType, ValueType>& GetConstKeyValueMap() const { return KeyValueMap; }
-	FORCEINLINE const TMap<ValueType, KeyType>& GetConstValueKeyMap() const { return ValueKeyMap; }
+	FORCEINLINE_DEBUGGABLE const TMap<KeyType, ValueType>& GetConstKeyValueMap() const { return KeyValueMap; }
+	FORCEINLINE_DEBUGGABLE const TMap<ValueType, KeyType>& GetConstValueKeyMap() const { return ValueKeyMap; }
 
-	FORCEINLINE bool AddPair(const KeyType& InKey, const ValueType& InValue)
+	FORCEINLINE_DEBUGGABLE bool AddPair(const KeyType& InKey, const ValueType& InValue)
 	{
 		ensure(ContainsKey(InKey) == ContainsValue(InValue));
 
@@ -150,7 +150,7 @@ public:
 		return true;
 	}
 
-	FORCEINLINE bool RemoveByKey(const KeyType& InKey)
+	FORCEINLINE_DEBUGGABLE bool RemoveByKey(const KeyType& InKey)
 	{
 		if (ContainsKey(InKey))
 		{
@@ -162,7 +162,7 @@ public:
 		return false;
 	}
 
-	FORCEINLINE bool RemoveByValue(const ValueType& InValue)
+	FORCEINLINE_DEBUGGABLE bool RemoveByValue(const ValueType& InValue)
 	{
 		if (ContainsValue(InValue))
 		{
@@ -174,7 +174,7 @@ public:
 		return false;
 	}
 
-	FORCEINLINE bool ReplaceKey(const KeyType& InPrevKey, const KeyType& InNewKey)
+	FORCEINLINE_DEBUGGABLE bool ReplaceKey(const KeyType& InPrevKey, const KeyType& InNewKey)
 	{
 		if (ContainsKey(InPrevKey))
 		{
@@ -196,7 +196,7 @@ public:
 		return false;
 	}
 
-	FORCEINLINE bool ReplaceValue(const ValueType& InPrevValue, const ValueType& InNewValue)
+	FORCEINLINE_DEBUGGABLE bool ReplaceValue(const ValueType& InPrevValue, const ValueType& InNewValue)
 	{
 		if (ContainsValue(InPrevValue))
 		{
@@ -218,10 +218,10 @@ public:
 		return false;
 	}
 
-	FORCEINLINE ValueType* FindByKey(const KeyType& InKey) const { return const_cast<ValueType*>(KeyValueMap.Find(InKey)); }
-	FORCEINLINE KeyType* FindByValue(const ValueType& InValue) const { return const_cast<KeyType*>(ValueKeyMap.Find(InValue)); }
+	FORCEINLINE_DEBUGGABLE ValueType* FindByKey(const KeyType& InKey) const { return const_cast<ValueType*>(KeyValueMap.Find(InKey)); }
+	FORCEINLINE_DEBUGGABLE KeyType* FindByValue(const ValueType& InValue) const { return const_cast<KeyType*>(ValueKeyMap.Find(InValue)); }
 
-	FORCEINLINE ValueType& FindRefByKey(const KeyType& InKey, const ValueType& InDefaultValue) const
+	FORCEINLINE_DEBUGGABLE ValueType& FindRefByKey(const KeyType& InKey, const ValueType& InDefaultValue) const
 	{
 		if (const ValueType* FoundValuePtr = KeyValueMap.Find(InKey))
 		{
@@ -230,7 +230,7 @@ public:
 		return const_cast<ValueType&>(InDefaultValue);
 	}
 
-	FORCEINLINE KeyType& FindRefByValue(const ValueType& InValue, const KeyType& InDefaultKey) const
+	FORCEINLINE_DEBUGGABLE KeyType& FindRefByValue(const ValueType& InValue, const KeyType& InDefaultKey) const
 	{
 		if (const KeyType* FoundKeyPtr = ValueKeyMap.Find(InValue))
 		{
@@ -239,13 +239,13 @@ public:
 		return const_cast<KeyType&>(InDefaultKey);
 	}
 
-	FORCEINLINE int32 Num() const { return KeyValueMap.Num(); }
-	FORCEINLINE bool IsEmpty() const { return KeyValueMap.IsEmpty(); }
+	FORCEINLINE_DEBUGGABLE int32 Num() const { return KeyValueMap.Num(); }
+	FORCEINLINE_DEBUGGABLE bool IsEmpty() const { return KeyValueMap.IsEmpty(); }
 
-	FORCEINLINE bool ContainsKey(const KeyType& InKey) const { return KeyValueMap.Contains(InKey); }
-	FORCEINLINE bool ContainsValue(const ValueType& InValue) const { return ValueKeyMap.Contains(InValue); }
+	FORCEINLINE_DEBUGGABLE bool ContainsKey(const KeyType& InKey) const { return KeyValueMap.Contains(InKey); }
+	FORCEINLINE_DEBUGGABLE bool ContainsValue(const ValueType& InValue) const { return ValueKeyMap.Contains(InValue); }
 
-	FORCEINLINE void Empty(int32 InSlack = 0)
+	FORCEINLINE_DEBUGGABLE void Empty(int32 InSlack = 0)
 	{
 		KeyValueMap.Empty(InSlack);
 		ValueKeyMap.Empty(InSlack);
