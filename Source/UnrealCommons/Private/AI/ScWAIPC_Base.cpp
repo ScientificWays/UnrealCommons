@@ -46,7 +46,9 @@ UScWAIPC_Base::UScWAIPC_Base()
 void UScWAIPC_Base::BeginPlay() // UActorComponent
 {
 	Super::BeginPlay();
+
 	OnPerceptionUpdated.AddDynamic(this, &UScWAIPC_Base::OnPerceptionUpdatedCallback);
+	OnTargetPerceptionForgotten.AddDynamic(this, &UScWAIPC_Base::OnTargetPerceptionForgottenCallback);
 }
 //~ End Initialize
 
@@ -66,22 +68,33 @@ void UScWAIPC_Base::UnRegisterGetPerceptionTargetService(uint8* InNodeMemory)
 }
 //~ End Services
 
-//~ Begin Update
+//~ Begin Callbacks
 void UScWAIPC_Base::OnPerceptionUpdatedCallback(const TArray<AActor*>& InUpdatedActors)
 {
-	GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([this]
-	{
-		if (this == nullptr)
-		{
-			return;
-		}
-		for (const FPerceptionTargetServiceData& SampleData : PerceptionTargetServiceDataArray)
-		{
-			if (SampleData.Node && SampleData.OwnerTree && SampleData.NodeMemory)
-			{
-				SampleData.Node->OnPerceptionUpdatedCallback(*SampleData.OwnerTree, SampleData.NodeMemory/*, InUpdatedActors*/);
-			}
-		}
-	}));
+	UWorld* World = GetWorld();
+	ensureReturn(World);
+	World->GetTimerManager().SetTimerForNextTick(this, &UScWAIPC_Base::NotifyPerceptionTargetServices);
 }
-//~ End Update
+
+void UScWAIPC_Base::OnTargetPerceptionForgottenCallback(AActor* InForgottenActor)
+{
+	UWorld* World = GetWorld();
+	ensureReturn(World);
+	World->GetTimerManager().SetTimerForNextTick(this, &UScWAIPC_Base::NotifyPerceptionTargetServices);
+}
+
+void UScWAIPC_Base::NotifyPerceptionTargetServices()
+{
+	if (!IsValid(this))
+	{
+		return;
+	}
+	for (const FPerceptionTargetServiceData& SampleData : PerceptionTargetServiceDataArray)
+	{
+		if (SampleData.Node && SampleData.OwnerTree && SampleData.NodeMemory)
+		{
+			SampleData.Node->OnPerceptionUpdatedCallback(*SampleData.OwnerTree, SampleData.NodeMemory/*, InUpdatedActors*/);
+		}
+	}
+}
+//~ End Callbacks

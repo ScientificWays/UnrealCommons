@@ -401,7 +401,7 @@ void UScWASC_Base::OnAvatarTakePointDamage(AActor* InDamagedActor, float InDamag
 	ensure(ScWDamageType);
 	
 	FHitResult MinimalInfoHitResult;
-	UScWGameplayFunctionLibrary::MakeMinimalInfoDamageImpactHitResult(InDamageCauser, nullptr, InInstigator ? InInstigator->GetPawn() : nullptr, InDamagedActor, InHitComponent, MinimalInfoHitResult);
+	UScWGameplayFunctionLibrary::MakeMinimalInfoDamageImpactHitResult(InDamageCauser, nullptr, (InInstigator ? InInstigator->GetPawn() : nullptr), InDamagedActor, InHitComponent, MinimalInfoHitResult);
 	HandleTryReceiveDamage(InDamage, { MinimalInfoHitResult, ScWDamageType, InDamageCauser, InInstigator });
 }
 

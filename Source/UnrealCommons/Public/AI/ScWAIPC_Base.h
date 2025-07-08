@@ -50,10 +50,15 @@ protected:
 	TArray<FPerceptionTargetServiceData> PerceptionTargetServiceDataArray;
 //~ End Services
 
-//~ Begin Update
+//~ Begin Callbacks
 protected:
 
 	UFUNCTION()
 	void OnPerceptionUpdatedCallback(const TArray<AActor*>& InUpdatedActors);
-//~ End Update
+
+	UFUNCTION()
+	void OnTargetPerceptionForgottenCallback(AActor* InForgottenActor);
+
+	void NotifyPerceptionTargetServices();
+//~ End Callbacks
 };

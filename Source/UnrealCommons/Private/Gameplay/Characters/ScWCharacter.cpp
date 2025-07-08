@@ -191,6 +191,13 @@ void AScWCharacter::UnPossessed() // APawn
 	}
 	Super::UnPossessed();
 }
+
+void AScWCharacter::NotifyControllerChanged() // APawn
+{
+	Super::NotifyControllerChanged();
+
+	
+}
 //~ End Controller
 
 //~ Begin Attributes

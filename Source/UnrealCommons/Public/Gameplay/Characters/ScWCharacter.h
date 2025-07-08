@@ -91,6 +91,7 @@ protected:
 	virtual void SpawnDefaultController() override; // APawn
 	virtual void PossessedBy(AController* InController) override; // APawn
 	virtual void UnPossessed() override; // APawn
+	virtual void NotifyControllerChanged() override; // APawn
 //~ End Controller
 	
 //~ Begin Attributes

@@ -109,7 +109,7 @@ void UScWGameplayFunctionLibrary::MakeMinimalInfoDamageImpactHitResult(AActor* I
 	{
 		ensure(false);
 	}
-	OutHitResult = FHitResult(InDamagedActor, InDamagedComponent, ImpactLocation, (ImpactLocation - SourceLocation).GetSafeNormal());
+	OutHitResult = FHitResult(InDamagedActor, InDamagedComponent, ImpactLocation, (SourceLocation - ImpactLocation).GetSafeNormal());
 	OutHitResult.TraceStart = SourceLocation;
 	OutHitResult.TraceEnd = ImpactLocation;
 	OutHitResult.Time = 1.0f;

@@ -2,17 +2,24 @@
 
 #include "Framework/ScWLevelScriptActor.h"
 
+#include "Gameplay/Characters/ScWCharacter.h"
+
 AScWLevelScriptActor::AScWLevelScriptActor()
 {
 
 }
 
 //~ Begin Initialize
-void AScWLevelScriptActor::PreInitializeComponents() // AActor
+void AScWLevelScriptActor::PostInitializeComponents() // AActor
 {
-	Super::PreInitializeComponents();
+	Super::PostInitializeComponents();
 
+	APawn::OnPawnBeginPlay.AddUObject(this, &AScWLevelScriptActor::BP_OnPawnBeginPlay);
 
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		GameInstance->GetOnPawnControllerChanged().AddDynamic(this, &AScWLevelScriptActor::BP_OnPawnControllerChanged);
+	}
 }
 
 void AScWLevelScriptActor::BeginPlay() // AActor
@@ -40,6 +47,9 @@ const UScWCharacterData* AScWLevelScriptActor::BP_GetDataAssetForNewCharacter_Im
 	return nullptr;
 }
 //~ End DataAssets
+
+//~ Begin Pawns
+//~ End Pawns
 
 //~ Begin Levels
 void AScWLevelScriptActor::LoadStreamLevelArraySync(const UObject* InWCO, const TArray<TSoftObjectPtr<UWorld>>& InLevelArray, bool bInMakeVisibleAfterLoad)

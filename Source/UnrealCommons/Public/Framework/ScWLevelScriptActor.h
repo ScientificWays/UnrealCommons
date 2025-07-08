@@ -25,10 +25,20 @@ public:
 	//void BP_HandlePreGameSetup_PersistentLevel(class AIDGameMode* InIDGameMode, class AIDGameState* InIDGameState);
 	
 protected:
-	virtual void PreInitializeComponents() override; // AActor
+	virtual void PostInitializeComponents() override; // AActor
 	virtual void BeginPlay() override; // AActor
 //~ End Initialize
 	
+//~ Begin Pawns
+public:
+
+	UFUNCTION(Category = "Pawns", BlueprintImplementableEvent, meta = (DisplayName = "OnPawnBeginPlay", KeyWords = "OnCharacterBeginPlay"))
+	void BP_OnPawnBeginPlay(APawn* InPawn);
+
+	UFUNCTION(Category = "Pawns", BlueprintImplementableEvent, meta = (DisplayName = "OnPawnControllerChanged", KeyWords = "OnCharacterControllerChanged"))
+	void BP_OnPawnControllerChanged(APawn* InPawn, AController* InController);
+//~ End Pawns
+
 //~ Begin DataAssets
 public:
 
