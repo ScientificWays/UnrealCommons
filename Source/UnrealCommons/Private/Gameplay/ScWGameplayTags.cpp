@@ -5,6 +5,7 @@
 namespace FScWGameplayTags
 {
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Flashlight, "Ability.Flashlight", "[Native] TODO: Add description");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Movement_Jump, "Ability.Movement.Jump", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Movement_Sprint, "Ability.Movement.Sprint", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Movement_Crouch, "Ability.Movement.Crouch", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Movement_WalkSlow, "Ability.Movement.WalkSlow", "[Native] TODO: Add description");
@@ -16,6 +17,7 @@ namespace FScWGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Ladder, "Ability.Ladder", "[Native] TODO: Add description");*/
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_CancelBy_Stunned, "Ability.CancelBy.Stunned", "[Native] TODO: Add description");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_CancelBy_JumpActivate, "Ability.CancelBy.JumpActivate", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_CancelBy_SprintActivate, "Ability.CancelBy.SprintActivate", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_CancelBy_CrouchActivate, "Ability.CancelBy.CrouchActivate", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_CancelBy_WalkSlowActivate, "Ability.CancelBy.WalkSlowActivate", "[Native] TODO: Add description");
@@ -55,9 +57,9 @@ namespace FScWGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Cheat_NoTarget, "Cheat.NoTarget", "[Native] NoTarget cheat is active on the owner.");
 
 	// Movement states
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(State_Jumping, "State.Jumping", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(State_Sprinting, "State.Sprinting", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(State_Crouching, "State.Crouching", "[Native] TODO: Add description");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(State_Jumping, "State.Jumping", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(State_WalkingSlow, "State.WalkingSlow", "[Native] TODO: Add description");
 
 	// Capability states

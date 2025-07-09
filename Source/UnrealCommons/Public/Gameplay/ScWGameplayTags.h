@@ -9,12 +9,14 @@
 namespace FScWGameplayTags
 {
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Flashlight);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Movement_Jump);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Movement_Sprint);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Movement_Crouch);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Movement_WalkSlow);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Weapon_Swing);
 
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_CancelBy_Stunned);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_CancelBy_JumpActivate);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_CancelBy_SprintActivate);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_CancelBy_CrouchActivate);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_CancelBy_WalkSlowActivate);
@@ -28,9 +30,9 @@ namespace FScWGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cheat_NoTarget);
 	
 	// Movement states
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(State_Jumping);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(State_Sprinting);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(State_Crouching);
-	UE_DECLARE_GAMEPLAY_TAG_EXTERN(State_Jumping);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(State_WalkingSlow);
 
 	// Capability states
