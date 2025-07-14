@@ -6,6 +6,29 @@
 
 //#include "ScWTypes_Containers.generated.h"
 
+/*USTRUCT(BlueprintType)
+struct FUInt16Point3D
+{
+	GENERATED_BODY()
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	uint16 X;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	uint16 Y;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	uint16 Z;
+};
+
+uint32 GetTypeHash(const FUInt16Point3D& InPoint)
+{
+	// Note: this assumes there's no padding in Point that could contain uncompared data.
+	return FCrc::MemCrc32(&InPoint, sizeof(InPoint));
+}*/
+
+//using FVoxelPoint3D = FUInt16Point3D;
+
 template<typename ElementType>
 struct TArraySetPair
 {
@@ -122,6 +145,11 @@ public:
 		ElementType PoppedItem = Array.Pop(InAllowShrinking);
 		Set.Remove(PoppedItem);
 		return PoppedItem;
+	}
+
+	FORCEINLINE_DEBUGGABLE SIZE_T GetAllocatedSize() const
+	{
+		return Array.GetAllocatedSize() + Set.GetAllocatedSize();
 	}
 };
 
@@ -249,5 +277,10 @@ public:
 	{
 		KeyValueMap.Empty(InSlack);
 		ValueKeyMap.Empty(InSlack);
+	}
+
+	FORCEINLINE_DEBUGGABLE SIZE_T GetAllocatedSize() const
+	{
+		return KeyValueMap.GetAllocatedSize() + ValueKeyMap.GetAllocatedSize();
 	}
 };
