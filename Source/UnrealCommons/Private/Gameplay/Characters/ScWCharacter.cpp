@@ -196,7 +196,8 @@ void AScWCharacter::NotifyControllerChanged() // APawn
 {
 	Super::NotifyControllerChanged();
 
-	
+	ensureReturn(CharacterASC);
+	CharacterASC->RefreshAbilityActorInfo();
 }
 //~ End Controller
 

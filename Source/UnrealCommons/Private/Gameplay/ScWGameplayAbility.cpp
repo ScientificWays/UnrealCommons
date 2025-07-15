@@ -49,7 +49,7 @@ void UScWGameplayAbility::SetCurrentActorInfo(const FGameplayAbilitySpecHandle I
 }
 //~ End Initialize
 
-//~ Begin Events
+//~ Begin Ability
 void UScWGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo, const FGameplayAbilityActivationInfo InActivationInfo, const FGameplayEventData* InTriggerEventData) // UGameplayAbility
 {
 	Super::ActivateAbility(InHandle, InActorInfo, InActivationInfo, InTriggerEventData);
@@ -86,4 +86,4 @@ void UScWGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle InHandle, 
 		FAIMessage::Send(MessageTarget, FAIMessage(FScWAIMessage::AbilityEnded, this, true));
 	}
 }
-//~ End Events
+//~ End Ability
