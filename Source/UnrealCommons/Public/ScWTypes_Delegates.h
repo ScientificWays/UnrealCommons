@@ -18,6 +18,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBoolSignature, bool, bInSuccess);
 UDELEGATE()
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FAttributeChangedSignature, const FGameplayAttribute&, InAttribute, float, InPrevValue, float, InNewValue);
 
+UDELEGATE()
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBaseASCEventSignature, const class UScWASC_Base*, InTargetASC);
+
 //UDELEGATE()
 //DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FMovementInputEventSignature, float, InDeltaSeconds, float, InForwardValue, float, InRightValue);
 

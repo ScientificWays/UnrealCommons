@@ -37,24 +37,36 @@ void AScWPlayerController::EndPlay(const EEndPlayReason::Type InReason) // AActo
 }
 //~ End Initialize
 
+//~ Begin AbilitySystem
+UAbilitySystemComponent* AScWPlayerController::GetAbilitySystemComponent() const // IAbilitySystemInterface
+{
+	return UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPawn());
+}
+//~ End AbilitySystem
+
 //~ Begin Pawn
 void AScWPlayerController::OnPossess(APawn* InPawn) // AController
 {
 	Super::OnPossess(InPawn);
 
-	if (UScWASC_Base* PawnASC = UScWASC_Base::TryGetBaseScWASCFromActor(InPawn))
+	if (UScWASC_Base* PawnASC = UScWASC_Base::TryGetBaseScWASCFromActor(this))
 	{
 		PawnASC->OnHealthChanged.Add(OnPawnHealthChangedBind);
 		PawnASC->OnMaxHealthChanged.Add(OnPawnMaxHealthChangedBind);
 		PawnASC->OnDied.Add(OnPawnDiedBind);
+
+		OnPawnHealthChangedDelegate.Broadcast(PawnASC);
+		OnPawnMaxHealthChangedDelegate.Broadcast(PawnASC);
 	}
 }
 
 void AScWPlayerController::OnUnPossess() // AController
 {
+	UScWASC_Base* PawnASC = UScWASC_Base::TryGetBaseScWASCFromActor(this);
+
 	Super::OnUnPossess();
 
-	if (UScWASC_Base* PawnASC = UScWASC_Base::TryGetBaseScWASCFromActor(GetPawn()))
+	if (PawnASC)
 	{
 		PawnASC->OnHealthChanged.Remove(OnPawnHealthChangedBind);
 		PawnASC->OnMaxHealthChanged.Remove(OnPawnMaxHealthChangedBind);
@@ -73,17 +85,26 @@ void AScWPlayerController::PawnPendingDestroy(APawn* InPawn) // AController
 
 void AScWPlayerController::BroadcastPawnHealthChanged(const FGameplayAttribute& InAttribute, float InPrevValue, float InNewValue)
 {
-	OnPawnHealthChangedDelegate.Broadcast(InAttribute, InPrevValue, InNewValue);
+	if (UScWASC_Base* PawnASC = UScWASC_Base::TryGetBaseScWASCFromActor(this))
+	{
+		OnPawnHealthChangedDelegate.Broadcast(PawnASC);
+	}
 }
 
 void AScWPlayerController::BroadcastPawnMaxHealthChanged(const FGameplayAttribute& InAttribute, float InPrevValue, float InNewValue)
 {
-	OnPawnMaxHealthChangedDelegate.Broadcast(InAttribute, InPrevValue, InNewValue);
+	if (UScWASC_Base* PawnASC = UScWASC_Base::TryGetBaseScWASCFromActor(this))
+	{
+		OnPawnMaxHealthChangedDelegate.Broadcast(PawnASC);
+	}
 }
 
 void AScWPlayerController::BroadcastPawnDied()
 {
-	OnPawnDiedDelegate.Broadcast();
+	if (UScWASC_Base* PawnASC = UScWASC_Base::TryGetBaseScWASCFromActor(this))
+	{
+		OnPawnDiedDelegate.Broadcast(PawnASC);
+	}
 }
 //~ End Pawn
 

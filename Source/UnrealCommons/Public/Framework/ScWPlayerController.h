@@ -12,7 +12,7 @@
  * 
  */
 UCLASS(Abstract, meta = (DisplayName = "[ScW] Player Controller"))
-class UNREALCOMMONS_API AScWPlayerController : public APlayerController, public IGenericTeamAgentInterface
+class UNREALCOMMONS_API AScWPlayerController : public APlayerController, public IAbilitySystemInterface, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
@@ -26,18 +26,23 @@ protected:
 	virtual void BeginPlay() override; // AActor
 	virtual void EndPlay(const EEndPlayReason::Type InReason) override; // AActor
 //~ End Initialize
+	
+//~ Begin AbilitySystem
+public:
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override; // IAbilitySystemInterface
+//~ End AbilitySystem
 
 //~ Begin Pawn
 public:
 
 	UPROPERTY(Category = "Pawn", BlueprintAssignable)
-	FAttributeChangedSignature OnPawnHealthChangedDelegate;
+	FBaseASCEventSignature OnPawnHealthChangedDelegate;
 
 	UPROPERTY(Category = "Pawn", BlueprintAssignable)
-	FAttributeChangedSignature OnPawnMaxHealthChangedDelegate;
+	FBaseASCEventSignature OnPawnMaxHealthChangedDelegate;
 
 	UPROPERTY(Category = "Pawn", BlueprintAssignable)
-	FDefaultEventSignature OnPawnDiedDelegate;
+	FBaseASCEventSignature OnPawnDiedDelegate;
 
 protected:
 	virtual void OnPossess(APawn* InPawn) override; // AController

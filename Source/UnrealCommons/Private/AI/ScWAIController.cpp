@@ -60,11 +60,7 @@ AScWAIPatrolPoint* AScWAIController::BP_GetRelevantPatrolPoint_Implementation(co
 //~ Begin AbilitySystem
 UAbilitySystemComponent* AScWAIController::GetAbilitySystemComponent() const // IAbilitySystemInterface
 {
-	if (IAbilitySystemInterface* PawnAbilitySystemInterface = GetPawn<IAbilitySystemInterface>())
-	{
-		return PawnAbilitySystemInterface->GetAbilitySystemComponent();
-	}
-	return nullptr;
+	return UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPawn());
 }
 //~ End AbilitySystem
 

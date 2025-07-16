@@ -73,6 +73,8 @@ void AScWCharacter::PostInitializeComponents() // AActor
 	}
 	Super::PostInitializeComponents();
 
+	ensure((GetController() == nullptr) || (IsPlayerCharacter() == GetController()->IsPlayerController()));
+
 	if (World && World->IsGameWorld() && DataAsset)
 	{
 		DataAsset->BP_InitializeCharacterComponents(this);
@@ -212,17 +214,17 @@ void AScWCharacter::OnDied()
 	{
 		DetachFromControllerPendingDestroy();
 	}
-	bool bDestroyActor = true;
+	bool bDestroyActorNextTick = true;
 
 	if (DataAsset)
 	{
 		if (DataAsset->bRagdollOnDeath)
 		{
-			bDestroyActor = false;
+			bDestroyActorNextTick = false;
 		}
 		else if (DataAsset->DiedAnimInstanceClass)
 		{
-			bDestroyActor = false;
+			bDestroyActorNextTick = false;
 		}
 	}
 	if (Weapon)
@@ -239,9 +241,9 @@ void AScWCharacter::OnDied()
 			}
 		}
 	}
-	if (bDestroyActor)
+	if (bDestroyActorNextTick)
 	{
-		Destroy();
+		GetWorldTimerManager().SetTimerForNextTick(this, &ThisClass::K2_DestroyActor);
 	}
 }
 //~ End Attributes
