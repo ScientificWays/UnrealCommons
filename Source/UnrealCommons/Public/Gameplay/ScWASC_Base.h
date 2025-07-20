@@ -4,7 +4,7 @@
 
 #include "UnrealCommons.h"
 
-#include "ScWTypes_Delegates.h"
+#include "ScWTypes_CommonDelegates.h"
 
 #include "Gameplay/ScWTypes_Gameplay.h"
 

@@ -2,9 +2,20 @@
 
 #include "Framework/ScWGameMode.h"
 
+#include "Framework/ScWGameState.h"
+#include "Framework/ScWGameSession.h"
+#include "Framework/ScWPlayerState.h"
+#include "Framework/ScWPlayerController.h"
+
+#include "Gameplay/Characters/ScWCharacter.h"
+
 AScWGameMode::AScWGameMode()
 {
-	
+	GameStateClass = AScWGameState::StaticClass();
+	DefaultPawnClass = AScWCharacter::StaticClass();
+	PlayerStateClass = AScWPlayerState::StaticClass();
+	GameSessionClass = AScWGameSession::StaticClass();
+	PlayerControllerClass = AScWPlayerController::StaticClass();
 }
 
 AScWGameMode* AScWGameMode::TryGetScWGameMode(const UObject* InWCO)

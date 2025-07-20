@@ -31,7 +31,7 @@ struct FScWMeleeSwingPatternData
 /**
  *
  */
-UCLASS(const, Blueprintable, BlueprintType, meta = (DisplayName = "[ScW] Weapon Data Melee"))
+UCLASS(const, Blueprintable, BlueprintType, meta = (DisplayName = "[ScW] Weapon Data (Melee)"))
 class UNREALCOMMONS_API UScWWeaponData_Melee : public UScWWeaponData_Base
 {
 	GENERATED_BODY()

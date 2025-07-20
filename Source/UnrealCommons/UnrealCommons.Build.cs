@@ -29,6 +29,7 @@ public class UnrealCommons : ModuleRules
             "InputCore",
             "EnhancedInput",
             "UMG",
+            "SlateCore",
 
             "Niagara",
 

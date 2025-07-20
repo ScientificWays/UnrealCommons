@@ -30,6 +30,9 @@ public:
 
 	UPROPERTY(Category = "Owner", BlueprintReadOnly)
 	TObjectPtr<class AScWPlayerController> OwnerPlayerController;
+
+	UPROPERTY(Category = "Owner", BlueprintReadOnly)
+	TObjectPtr<class AScWPlayerState> OwnerPlayerState;
 //~ End Owner
 
 //~ Begin Input

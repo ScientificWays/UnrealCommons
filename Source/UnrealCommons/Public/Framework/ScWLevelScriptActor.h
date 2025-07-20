@@ -60,21 +60,6 @@ public:
 	//int32 BP_HandleCustomRequest(const FName& InRequestType, UObject* InOptionalObject = nullptr);
 //~ End Requests
 
-//~ Begin Events
-public:
-
-	// Call order: Ended->Started, AIDGameMode->AScWLevelScriptActor->AIDGameState
-	//UFUNCTION(Category = "Phases", BlueprintImplementableEvent, meta = (DisplayName = "OnPhaseStarted"))
-	//void BP_OnPhaseStarted(const FName& InPhase);
-
-	// Call order: Ended->Started, AIDGameMode->AScWLevelScriptActor->AIDGameState
-	//UFUNCTION(Category = "Phases", BlueprintImplementableEvent, meta = (DisplayName = "OnPhaseEnded"))
-	//void BP_OnPhaseEnded(const FName& InPhase);
-	
-	//UFUNCTION(Category = "Events", BlueprintImplementableEvent, meta = (DisplayName = "OnPlayerCharacterSpawn"))
-	//void BP_OnPlayerCharacterSpawn(class APlayerCharacter* InPlayerCharacter);
-//~ End Events
-
 //~ Begin Levels
 public:
 
@@ -84,4 +69,17 @@ public:
 	UFUNCTION(Category = "Levels", BlueprintCallable, meta = (WorldContext = "InWCO", DisplayName = "UnLoadStreamLevelArraySync (by Object Reference)"))
 	void UnLoadStreamLevelArraySync(const UObject* InWCO, const TArray<TSoftObjectPtr<UWorld>>& InLevelArray);
 //~ End Levels
+	
+//~ Begin Progression
+public:
+
+	UFUNCTION(Category = "Progression", BlueprintImplementableEvent)
+	void BP_OnPlayerProgressionTaskMeterValueChanged(class AScWPlayerState* InPlayerState, const class UScWProgressionTaskData* InTaskData, const FName& InMeterName, const int32 InValue);
+
+	UFUNCTION(Category = "Progression", BlueprintImplementableEvent)
+	void BP_OnPlayerCompletedProgressionTaskMeter(class AScWPlayerState* InPlayerState, const class UScWProgressionTaskData* InTaskData, const FName& InMeterName);
+
+	UFUNCTION(Category = "Progression", BlueprintImplementableEvent)
+	void BP_OnPlayerCompletedProgressionTask(class AScWPlayerState* InPlayerState, const class UScWProgressionTaskData* InTaskData);
+//~ End Progression
 };

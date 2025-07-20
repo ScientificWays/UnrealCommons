@@ -9,7 +9,7 @@
 /**
  *
  */
-UCLASS(Abstract, Blueprintable, meta = (DisplayName = "[ScW] Weapon Base"))
+UCLASS(Abstract, Blueprintable, meta = (DisplayName = "[ScW] Weapon (Base)"))
 class AScWWeapon_Base : public AActor, public IAbilitySystemInterface
 {
 	GENERATED_BODY()

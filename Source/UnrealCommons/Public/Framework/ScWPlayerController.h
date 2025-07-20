@@ -4,14 +4,14 @@
 
 #include "UnrealCommons.h"
 
-#include "ScWTypes_Delegates.h"
+#include "ScWTypes_CommonDelegates.h"
 
 #include "ScWPlayerController.generated.h"
 
 /**
  * 
  */
-UCLASS(Abstract, meta = (DisplayName = "[ScW] Player Controller"))
+UCLASS(meta = (DisplayName = "[ScW] Player Controller"))
 class UNREALCOMMONS_API AScWPlayerController : public APlayerController, public IAbilitySystemInterface, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()

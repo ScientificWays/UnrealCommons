@@ -2,6 +2,7 @@
 
 #include "UI/ScWUserWidget.h"
 
+#include "Framework/ScWPlayerState.h"
 #include "Framework/ScWPlayerController.h"
 
 #include "Gameplay/ScWGameplayFunctionLibrary.h"
@@ -38,6 +39,10 @@ void UScWUserWidget::NativePreConstruct() // UUserWidget
 			{
 				OwnerPlayerController->AddLookInputBlockSource(this);
 			}
+		}
+		if (OwningPlayer)
+		{
+			OwnerPlayerState = OwningPlayer->GetPlayerState<AScWPlayerState>();
 		}
 	}
 	Super::NativePreConstruct();

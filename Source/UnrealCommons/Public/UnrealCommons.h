@@ -14,6 +14,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/GameSession.h"
 #include "GameFramework/PlayerState.h"
 #include "GameFramework/GameModeBase.h"
 #include "GameFramework/GameStateBase.h"
