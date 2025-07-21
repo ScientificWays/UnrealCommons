@@ -138,14 +138,10 @@ protected:
 	void InputSprintReleased();
 	void InputWalkPressed();
 	void InputWalkReleased();
-	void InputShovePressed();
-	void InputShoveReleased();
 	void InputDropPressed();
 	void InputDropReleased();
 	void InputFlashlightPressed();
 	void InputFlashlightReleased();
-	void InputSpecialPressed();
-	void InputSpecialReleased();
 	void InputWeaponSwitchScrollPressed();
 	void InputWeaponSwitchScrollReleased();
 	void InputWeaponSwitchDirectPressed();
@@ -197,16 +193,10 @@ protected:
 	TObjectPtr<UInputAction> WalkAction;
 
 	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<UInputAction> ShoveAction;
-
-	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UInputAction> DropAction;
 
 	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UInputAction> FlashlightAction;
-
-	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<UInputAction> SpecialAction;
 
 	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UInputAction> WeaponSwitchScrollAction;

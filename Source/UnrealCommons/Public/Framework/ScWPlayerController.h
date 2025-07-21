@@ -62,6 +62,17 @@ protected:
 	FScriptDelegate OnPawnMaxHealthChangedBind;
 	FScriptDelegate OnPawnDiedBind;
 //~ End Pawn
+	
+//~ Begin Camera
+protected:
+	virtual void CalcCamera(float InDeltaSeconds, FMinimalViewInfo& InOutResult) override; // AActor
+
+	UPROPERTY(Category = "Camera", EditAnywhere, BlueprintReadOnly)
+	bool bTryFindCalcCameraComponentOnPostInitializeComponents;
+
+	UPROPERTY(Category = "Camera", EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UCameraComponent> CalcCameraComponent;
+//~ End Camera
 
 //~ Begin Input
 public:

@@ -175,7 +175,8 @@ public:
 	UFUNCTION(Category = "Effects", BlueprintCallable)
 	void ApplySpawnEffect();
 
-	UPROPERTY(Category = "Effects", BlueprintReadWrite, EditAnywhere)
+	//UPROPERTY(Category = "Effects", BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(Transient)
 	TSubclassOf<UGameplayEffect> SpawnEffectClass;
 //~ End Effects
 

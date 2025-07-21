@@ -7,7 +7,12 @@
 
 AScWPlayerController::AScWPlayerController()
 {
+	bTryFindCalcCameraComponentOnPostInitializeComponents = true;
+
 	MouseInputScale = 1.0f;
+
+	CONSTRUCTOR_TRY_LOAD_OBJECT(UInputMappingContext, DefaultInputMappingContext, "/UnrealCommons/Blueprints/Input/IMC_CommonPlayerController.IMC_CommonPlayerController");
+	CONSTRUCTOR_TRY_LOAD_OBJECT(UInputAction, MouseLookAction, "/UnrealCommons/Blueprints/Input/IA_MouseLook.IA_MouseLook");
 
 	TeamId = FGenericTeamId::NoTeam;
 }
@@ -20,6 +25,22 @@ void AScWPlayerController::PostInitializeComponents() // AActor
 	OnPawnHealthChangedBind.BindUFunction(this, TEXT("BroadcastPawnHealthChanged"));
 	OnPawnMaxHealthChangedBind.BindUFunction(this, TEXT("BroadcastPawnMaxHealthChanged"));
 	OnPawnDiedBind.BindUFunction(this, TEXT("BroadcastPawnDied"));
+
+	if (bTryFindCalcCameraComponentOnPostInitializeComponents && (CalcCameraComponent == nullptr))
+	{
+		// Look for the first active camera component and assign that to CalcCameraComponent
+		TInlineComponentArray<UCameraComponent*> CameraComponents;
+		GetComponents(CameraComponents);
+
+		for (UCameraComponent* SampleCameraComponent : CameraComponents)
+		{
+			if (SampleCameraComponent->IsActive())
+			{
+				CalcCameraComponent = SampleCameraComponent;
+				break;
+			}
+		}
+	}
 }
 
 void AScWPlayerController::BeginPlay() // AActor
@@ -43,6 +64,21 @@ UAbilitySystemComponent* AScWPlayerController::GetAbilitySystemComponent() const
 	return UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPawn());
 }
 //~ End AbilitySystem
+
+//~ Begin Camera
+void AScWPlayerController::CalcCamera(float InDeltaSeconds, FMinimalViewInfo& InOutResult) // AActor
+{
+	if (CalcCameraComponent)
+	{
+		InOutResult.Location = CalcCameraComponent->GetComponentLocation();
+		InOutResult.Rotation = CalcCameraComponent->GetComponentRotation();
+	}
+	else
+	{
+		Super::CalcCamera(InDeltaSeconds, InOutResult);
+	}
+}
+//~ End Camera
 
 //~ Begin Pawn
 void AScWPlayerController::OnPossess(APawn* InPawn) // AController

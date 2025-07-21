@@ -24,6 +24,8 @@ UScWCharacterData::UScWCharacterData()
 	SkeletalMeshRelativeTransform = FTransform(FRotator(0.0f, -90.0, 0.0f), FVector(0.0f, 0.0f, -90.0f), FVector::OneVector);
 	CapsuleRadiusHeight = FVector2D(34.0f, 90.0f);
 
+	CONSTRUCTOR_TRY_LOAD_CLASS(UGameplayEffect, SpawnEffectClass, "/UnrealCommons/Blueprints/GameplayEffects/GE_CommonCharacterInit");
+
 	DamageImpactParticlesColor = FColor::Red;
 
 	SightRadius = 2000.0f;

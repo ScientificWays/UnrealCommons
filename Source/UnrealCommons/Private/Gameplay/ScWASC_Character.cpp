@@ -7,6 +7,8 @@
 UScWASC_Character::UScWASC_Character()
 {
 	AttributeSetClass = UScWAS_Character::StaticClass();
+
+	//CONSTRUCTOR_TRY_LOAD_CLASS(UGameplayEffect, SpawnEffectClass, "/UnrealCommons/Blueprints/GameplayEffects/GE_CommonCharacterInit");
 }
 
 //~ Begin Statics

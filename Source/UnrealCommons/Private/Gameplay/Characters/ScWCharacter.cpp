@@ -36,6 +36,21 @@ AScWCharacter::AScWCharacter(const FObjectInitializer& InObjectInitializer)
 	CharacterASC->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
 	bHorizontalMovementAbsolute = false;
+
+	CONSTRUCTOR_TRY_LOAD_OBJECT(UInputMappingContext, DefaultInputMappingContext, "/UnrealCommons/Blueprints/Input/IMC_CommonPlayerCharacter.IMC_CommonPlayerCharacter");
+	CONSTRUCTOR_TRY_LOAD_OBJECT(UInputAction, HorizontalMovementAction, "/UnrealCommons/Blueprints/Input/IA_HorizontalMovement.IA_HorizontalMovement");
+	CONSTRUCTOR_TRY_LOAD_OBJECT(UInputAction, UsePrimaryAction, "/UnrealCommons/Blueprints/Input/IA_UsePrimary.IA_UsePrimary");
+	CONSTRUCTOR_TRY_LOAD_OBJECT(UInputAction, UseSecondaryAction, "/UnrealCommons/Blueprints/Input/IA_UseSecondary.IA_UseSecondary");
+	CONSTRUCTOR_TRY_LOAD_OBJECT(UInputAction, AbilityConfirmAction, "/UnrealCommons/Blueprints/Input/IA_UsePrimary.IA_UsePrimary");
+	CONSTRUCTOR_TRY_LOAD_OBJECT(UInputAction, AbilityCancelAction, "/UnrealCommons/Blueprints/Input/IA_UseSecondary.IA_UseSecondary");
+	CONSTRUCTOR_TRY_LOAD_OBJECT(UInputAction, JumpAction, "/UnrealCommons/Blueprints/Input/IA_Jump.IA_Jump");
+	CONSTRUCTOR_TRY_LOAD_OBJECT(UInputAction, CrouchAction, "/UnrealCommons/Blueprints/Input/IA_Crouch.IA_Crouch");
+	CONSTRUCTOR_TRY_LOAD_OBJECT(UInputAction, InteractAction, "/UnrealCommons/Blueprints/Input/IA_Interact.IA_Interact");
+	CONSTRUCTOR_TRY_LOAD_OBJECT(UInputAction, ReloadAction, "/UnrealCommons/Blueprints/Input/IA_Reload.IA_Reload");
+	CONSTRUCTOR_TRY_LOAD_OBJECT(UInputAction, SprintAction, "/UnrealCommons/Blueprints/Input/IA_Sprint.IA_Sprint");
+	CONSTRUCTOR_TRY_LOAD_OBJECT(UInputAction, WalkAction, "/UnrealCommons/Blueprints/Input/IA_Walk.IA_Walk");
+	CONSTRUCTOR_TRY_LOAD_OBJECT(UInputAction, DropAction, "/UnrealCommons/Blueprints/Input/IA_Drop.IA_Drop");
+	CONSTRUCTOR_TRY_LOAD_OBJECT(UInputAction, FlashlightAction, "/UnrealCommons/Blueprints/Input/IA_Flashlight.IA_Flashlight");
 }
 
 //~ Begin Statics
@@ -257,8 +272,7 @@ void AScWCharacter::SetupPlayerInputComponent(UInputComponent* InInputComponent)
 	{
 		return;
 	}
-	ensure(HorizontalMovementAction);
-	if (HorizontalMovementAction)
+	ensureIf(HorizontalMovementAction)
 	{
 		auto HorizontalMovementMethodPtr = bHorizontalMovementAbsolute ? &AScWCharacter::InputHorizontalMovement_Absolute : &AScWCharacter::InputHorizontalMovement;
 		EnhancedInputComponent->BindAction(HorizontalMovementAction, ETriggerEvent::Triggered, this, HorizontalMovementMethodPtr);
@@ -304,11 +318,6 @@ void AScWCharacter::SetupPlayerInputComponent(UInputComponent* InInputComponent)
 		EnhancedInputComponent->BindAction(WalkAction, ETriggerEvent::Started, this, &ThisClass::InputWalkPressed);
 		EnhancedInputComponent->BindAction(WalkAction, ETriggerEvent::Completed, this, &AScWCharacter::InputWalkReleased);
 	}
-	if (ShoveAction)
-	{
-		EnhancedInputComponent->BindAction(ShoveAction, ETriggerEvent::Started, this, &AScWCharacter::InputShovePressed);
-		EnhancedInputComponent->BindAction(ShoveAction, ETriggerEvent::Completed, this, &AScWCharacter::InputShoveReleased);
-	}
 	if (DropAction)
 	{
 		EnhancedInputComponent->BindAction(DropAction, ETriggerEvent::Started, this, &AScWCharacter::InputDropPressed);
@@ -318,11 +327,6 @@ void AScWCharacter::SetupPlayerInputComponent(UInputComponent* InInputComponent)
 	{
 		EnhancedInputComponent->BindAction(FlashlightAction, ETriggerEvent::Started, this, &AScWCharacter::InputFlashlightPressed);
 		EnhancedInputComponent->BindAction(FlashlightAction, ETriggerEvent::Completed, this, &AScWCharacter::InputFlashlightReleased);
-	}
-	if (SpecialAction)
-	{
-		EnhancedInputComponent->BindAction(SpecialAction, ETriggerEvent::Started, this, &AScWCharacter::InputSpecialPressed);
-		EnhancedInputComponent->BindAction(SpecialAction, ETriggerEvent::Completed, this, &AScWCharacter::InputSpecialReleased);
 	}
 	if (WeaponSwitchScrollAction)
 	{
@@ -480,16 +484,6 @@ void AScWCharacter::InputWalkReleased()
 	CharacterASC->ReleaseInputID(static_cast<int32>(EScWAbilityInputID::Walk));
 }
 
-void AScWCharacter::InputShovePressed()
-{
-	CharacterASC->PressInputID(static_cast<int32>(EScWAbilityInputID::Shove));
-}
-
-void AScWCharacter::InputShoveReleased()
-{
-	CharacterASC->ReleaseInputID(static_cast<int32>(EScWAbilityInputID::Shove));
-}
-
 void AScWCharacter::InputDropPressed()
 {
 	CharacterASC->PressInputID(static_cast<int32>(EScWAbilityInputID::Drop));
@@ -508,16 +502,6 @@ void AScWCharacter::InputFlashlightPressed()
 void AScWCharacter::InputFlashlightReleased()
 {
 	CharacterASC->ReleaseInputID(static_cast<int32>(EScWAbilityInputID::Flashlight));
-}
-
-void AScWCharacter::InputSpecialPressed()
-{
-	CharacterASC->PressInputID(static_cast<int32>(EScWAbilityInputID::Special));
-}
-
-void AScWCharacter::InputSpecialReleased()
-{
-	CharacterASC->ReleaseInputID(static_cast<int32>(EScWAbilityInputID::Special));
 }
 
 void AScWCharacter::InputWeaponSwitchScrollPressed()

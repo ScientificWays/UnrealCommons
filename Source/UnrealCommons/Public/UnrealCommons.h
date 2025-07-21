@@ -12,6 +12,7 @@
 #include "UObject/SparseDelegate.h"
 
 #include "Blueprint/UserWidget.h"
+#include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/GameSession.h"
@@ -46,6 +47,8 @@
 #include "Abilities/Tasks/AbilityTask.h"
 #include "GameplayCueInterface.h"
 
+#include "InputAction.h"
+#include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
@@ -77,6 +80,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogScWGameplay, Log, All);
 
 #define ensureContinue(InCondition) ensure(InCondition); if (!(InCondition)) continue;
 #define ensureBreak(InCondition) ensure(InCondition); if (!(InCondition)) break;
+#define ensureIf(InCondition) ensure(InCondition); if (InCondition)
 #define ensureReturn(InCondition, ...) ensure(InCondition); if (!(InCondition)) return __VA_ARGS__;
 
 #define TraceTypeQuery_Visibility				ETraceTypeQuery::TraceTypeQuery1
