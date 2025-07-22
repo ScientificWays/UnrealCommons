@@ -116,3 +116,21 @@ public:
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;
 };
+
+namespace FScWMath
+{
+	FORCEINLINE FIntVector MinIntVector(const FIntVector& InA, const FIntVector& InB)
+	{
+		return FIntVector(FMath::Min(InA.X, InB.X), FMath::Min(InA.Y, InB.Y), FMath::Min(InA.Z, InB.Z));
+	}
+
+	FORCEINLINE FIntVector MaxIntVector(const FIntVector& InA, const FIntVector& InB)
+	{
+		return FIntVector(FMath::Max(InA.X, InB.X), FMath::Max(InA.Y, InB.Y), FMath::Max(InA.Z, InB.Z));
+	}
+
+	FORCEINLINE FIntVector ClampIntVector(const FIntVector& InVector, const FIntVector& InMin, const FIntVector& InMax)
+	{
+		return FIntVector(FMath::Clamp(InVector.X, InMin.X, InMax.X), FMath::Clamp(InVector.Y, InMin.Y, InMax.Y), FMath::Clamp(InVector.Z, InMin.Z, InMax.Z));
+	}
+}
