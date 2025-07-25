@@ -20,14 +20,26 @@ public:
 //~ Begin Montages
 public:
 
-	UFUNCTION(Category = "Montages", BlueprintCallable, BlueprintPure, meta = (AdvancedDisplay = "InOptionalFallbackValue", KeyWords = "GetDuration"))
-	static float GetMontagePlayLength(const UAnimMontage* InMontage, float InTimeMul = 1.0f, float InOptionalFallbackValue = -1.0f);
+	UFUNCTION(Category = "Montages", BlueprintCallable, BlueprintPure, meta = (AdvancedDisplay = "InFallbackValue", KeyWords = "GetDuration"))
+	static float GetMontagePlayLength(const UAnimMontage* InMontage, float InTimeMul = 1.0f, float InFallbackValue = 0.0f);
 
-	UFUNCTION(Category = "Montages", BlueprintCallable, BlueprintPure, meta = (AdvancedDisplay = "InOptionalFallbackValue", KeyWords = "GetDuration, GetSectionLength"))
-	static float GetMontageSectionLengthByIndex(const UAnimMontage* InMontage, int32 InIndex, float InTimeMul = 1.0f, float InOptionalFallbackValue = -1.0f);
+	UFUNCTION(Category = "Montages", BlueprintCallable, BlueprintPure, meta = (AdvancedDisplay = "InFallbackValue", KeyWords = "GetDuration, GetSectionLength"))
+	static float GetMontageSectionLengthByIndex(const UAnimMontage* InMontage, int32 InIndex, float InTimeMul = 1.0f, float InFallbackValue = 0.0f);
 
-	UFUNCTION(Category = "Montages", BlueprintCallable, BlueprintPure, meta = (AutoCreateRefTerm = "InName", AdvancedDisplay = "InOptionalFallbackValue", KeyWords = "GetDuration, GetSectionLength"))
-	static float GetMontageSectionLengthByName(const UAnimMontage* InMontage, const FName& InName, float InTimeMul = 1.0f, float InOptionalFallbackValue = -1.0f);
+	UFUNCTION(Category = "Montages", BlueprintCallable, BlueprintPure, meta = (AutoCreateRefTerm = "InName", AdvancedDisplay = "InFallbackValue", KeyWords = "GetDuration, GetSectionLength"))
+	static float GetMontageSectionLengthByName(const UAnimMontage* InMontage, const FName& InName, float InTimeMul = 1.0f, float InFallbackValue = 0.0f);
+
+	UFUNCTION(Category = "Montages | Character Data", BlueprintCallable, BlueprintPure, meta = (AdvancedDisplay = "InFallbackValue", KeyWords = "GetDuration"))
+	static float GetMontagePlayLengthFromData(const struct FScWCharacterMontageData& InCharacterMontageData, float InFallbackValue = 0.0f);
+
+	UFUNCTION(Category = "Montages | Character Data", BlueprintCallable, BlueprintPure, meta = (AdvancedDisplay = "InFallbackValue", KeyWords = "GetDuration, GetSectionLength"))
+	static float GetMontageSectionLengthByIndexFromData(const struct FScWCharacterMontageData& InCharacterMontageData, int32 InIndex, float InFallbackValue = 0.0f);
+
+	UFUNCTION(Category = "Montages | Character Data", BlueprintCallable, BlueprintPure, meta = (AutoCreateRefTerm = "InName", AdvancedDisplay = "InFallbackValue", KeyWords = "GetDuration, GetSectionLength"))
+	static float GetMontageSectionLengthByNameFromData(const struct FScWCharacterMontageData& InCharacterMontageData, const FName& InName, float InFallbackValue = 0.0f);
+
+	UFUNCTION(Category = "Montages | Character Data", BlueprintCallable, meta = (ReturnDisplayName = "Out Max Duration", AdvancedDisplay = "bInPlayFirstPerson, bInPlayThirdPerson, bInPlayHandheld", KeyWords = "PlayMontageData, PlayCharacterMontageData"))
+	static float PlayCharacterMontagesFromData(class AScWCharacter* InCharacter, const struct FScWCharacterMontageData& InCharacterMontageData, const bool bInStopAllMontages = true, const bool bInPlayFirstPerson = true, const bool bInPlayThirdPerson = true, const bool bInPlayHandheld = true);
 //~ End Montages
 
 //~ Begin Static Data

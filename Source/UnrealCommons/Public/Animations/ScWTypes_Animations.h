@@ -6,21 +6,6 @@
 
 #include "ScWTypes_Animations.generated.h"
 
-USTRUCT(BlueprintType, meta = (DisplayName = "[ScW] Handheld StaticAnimationData"))
-struct FScWHandheldStaticAnimationData
-{
-	GENERATED_BODY()
-
-	UPROPERTY(Category = "Static", BlueprintReadOnly, EditAnywhere)
-	TObjectPtr<UAnimSequence> BasePose = nullptr;
-
-	UPROPERTY(Category = "Static", BlueprintReadOnly, EditAnywhere)
-	TObjectPtr<UAnimSequence> AlternativeBasePose = nullptr;
-
-	bool IsValid() const { return BasePose && AlternativeBasePose; }
-	static const FScWHandheldStaticAnimationData None;
-};
-
 USTRUCT(BlueprintType, meta = (DisplayName = "[ScW] FirstPerson StaticAnimationData"))
 struct FScWFirstPersonStaticAnimationData
 {
@@ -72,6 +57,29 @@ struct FScWThirdPersonStaticAnimationData
 	static const FScWThirdPersonStaticAnimationData None;
 };
 
+USTRUCT(BlueprintType, meta = (DisplayName = "[ScW] Handheld StaticAnimationData"))
+struct FScWHandheldStaticAnimationData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(Category = "Static", BlueprintReadOnly, EditAnywhere)
+	TObjectPtr<UAnimSequence> BasePose = nullptr;
+
+	UPROPERTY(Category = "Static", BlueprintReadOnly, EditAnywhere)
+	TObjectPtr<UAnimSequence> AlternativeBasePose = nullptr;
+
+	bool IsValid() const { return BasePose && AlternativeBasePose; }
+	static const FScWHandheldStaticAnimationData None;
+};
+
+UENUM(BlueprintType, meta = (DisplayName = "[ScW] Timing Montage Type"))
+enum class EScWTimingMontageType : uint8
+{
+	FirstPerson,
+	ThirdPerson,
+	ActiveHandheld
+};
+
 USTRUCT(BlueprintType, meta = (DisplayName = "[ScW] Character MontageData"))
 struct FScWCharacterMontageData
 {
@@ -80,17 +88,14 @@ struct FScWCharacterMontageData
 	UPROPERTY(Category = "Montage", EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "FP: Character Montage"))
 	TObjectPtr<UAnimMontage> FirstPersonMontage = nullptr;
 
-	UPROPERTY(Category = "Montage", EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "FP: Handheld Montage"))
-	TObjectPtr<UAnimMontage> FirstPersonActiveHandheldMontage = nullptr;
-
 	UPROPERTY(Category = "Montage", EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "TP: Character Montage"))
 	TObjectPtr<UAnimMontage> ThirdPersonMontage = nullptr;
 	
-	UPROPERTY(Category = "Montage", EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "TP: Handheld Montage"))
-	TObjectPtr<UAnimMontage> ThirdPersonActiveHandheldMontage = nullptr;
+	UPROPERTY(Category = "Montage", EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Handheld Montage"))
+	TObjectPtr<UAnimMontage> ActiveHandheldMontage = nullptr;
 
 	UPROPERTY(Category = "Montage", EditAnywhere, BlueprintReadWrite)
-	int32 TimingMontageIndex = 0;
+	EScWTimingMontageType TimingMontageType = EScWTimingMontageType::FirstPerson;
 
 	UPROPERTY(Category = "Shake", EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UCameraShakeBase> FirstPersonCameraShake = nullptr;

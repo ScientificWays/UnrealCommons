@@ -2,33 +2,26 @@
 
 #include "Animations/ScWTypes_Animations.h"
 
-const FScWHandheldStaticAnimationData FScWHandheldStaticAnimationData::None = FScWHandheldStaticAnimationData();
 const FScWFirstPersonStaticAnimationData FScWFirstPersonStaticAnimationData::None = FScWFirstPersonStaticAnimationData();
 const FScWThirdPersonStaticAnimationData FScWThirdPersonStaticAnimationData::None = FScWThirdPersonStaticAnimationData();
+const FScWHandheldStaticAnimationData FScWHandheldStaticAnimationData::None = FScWHandheldStaticAnimationData();
 
 UAnimMontage* FScWCharacterMontageData::GetRelevantTimingMontage() const
 {
-	switch (TimingMontageIndex)
+	switch (TimingMontageType)
 	{
-		case 0:
+		case EScWTimingMontageType::FirstPerson:
 		{
 			return FirstPersonMontage;
 		}
-		case 1:
-		{
-			return FirstPersonActiveHandheldMontage;
-		}
-		case 2:
+		case EScWTimingMontageType::ThirdPerson:
 		{
 			return ThirdPersonMontage;
 		}
-		case 3:
+		case EScWTimingMontageType::ActiveHandheld:
 		{
-			return ThirdPersonActiveHandheldMontage;
-		}
-		default:
-		{
-			ensureReturn(false, nullptr);
+			return ActiveHandheldMontage;
 		}
 	}
+	ensureReturn(false, nullptr);
 }

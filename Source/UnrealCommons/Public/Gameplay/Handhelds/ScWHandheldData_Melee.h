@@ -4,6 +4,8 @@
 
 #include "UnrealCommons.h"
 
+#include "Animations/ScWTypes_Animations.h"
+
 #include "Gameplay/Handhelds/ScWHandheldData.h"
 
 #include "ScWHandheldData_Melee.generated.h"
@@ -26,6 +28,9 @@ struct FScWMeleeSwingPatternData
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float TraceShapeRadius = 32.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FScWCharacterMontageData SwingMontageData;
 };
 
 /**

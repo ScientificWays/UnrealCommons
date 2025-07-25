@@ -12,42 +12,73 @@
 const FName UScWAnimationsFunctionLibrary::MontageDefaultGroupName = FName(TEXT("DefaultGroup"));
 
 //~ Begin Montages
-float UScWAnimationsFunctionLibrary::GetMontagePlayLength(const UAnimMontage* InMontage, float InTimeMul, float InOptionalFallbackValue)
+float UScWAnimationsFunctionLibrary::GetMontagePlayLength(const UAnimMontage* InMontage, float InTimeMul, float InFallbackValue)
 {
-	if (InMontage)
-	{
-		return FMath::Max(InMontage->GetPlayLength() * InTimeMul, InOptionalFallbackValue);
-	}
-	else
-	{
-		return FMath::Max(0.0f, InOptionalFallbackValue);
-	}
+	ensureReturn(InMontage, FMath::Max(0.0f, InFallbackValue));
+	return FMath::Max(InMontage->GetPlayLength() * InTimeMul, InFallbackValue);
 }
 
-float UScWAnimationsFunctionLibrary::GetMontageSectionLengthByIndex(const UAnimMontage* InMontage, int32 InIndex, float InTimeMul, float InOptionalFallbackValue)
+float UScWAnimationsFunctionLibrary::GetMontageSectionLengthByIndex(const UAnimMontage* InMontage, int32 InIndex, float InTimeMul, float InFallbackValue)
 {
-	if (InMontage)
-	{
-		return (!InMontage->IsValidSectionIndex(InIndex) && InOptionalFallbackValue >= 0.0f)
-			? (InOptionalFallbackValue)
-			: (InMontage->GetSectionLength(InIndex) * InTimeMul);
-	}
-	else
-	{
-		return FMath::Max(0.0f, InOptionalFallbackValue);
-	}
+	ensureReturn(InMontage, FMath::Max(0.0f, InFallbackValue));
+	return (!InMontage->IsValidSectionIndex(InIndex) && InFallbackValue >= 0.0f)
+		? (InFallbackValue)
+		: (InMontage->GetSectionLength(InIndex) * InTimeMul);
 }
 
-float UScWAnimationsFunctionLibrary::GetMontageSectionLengthByName(const UAnimMontage* InMontage, const FName& InName, float InTimeMul, float InOptionalFallbackValue)
+float UScWAnimationsFunctionLibrary::GetMontageSectionLengthByName(const UAnimMontage* InMontage, const FName& InName, float InTimeMul, float InFallbackValue)
 {
-	if (InMontage)
+	ensureReturn(InMontage, FMath::Max(0.0f, InFallbackValue));
+	return UScWAnimationsFunctionLibrary::GetMontageSectionLengthByIndex(InMontage, InMontage->GetSectionIndex(InName));
+}
+
+float UScWAnimationsFunctionLibrary::GetMontagePlayLengthFromData(const FScWCharacterMontageData& InCharacterMontageData, float InFallbackValue)
+{
+	return GetMontagePlayLength(InCharacterMontageData.GetRelevantTimingMontage(), InCharacterMontageData.TimeMul, InFallbackValue);
+}
+
+float UScWAnimationsFunctionLibrary::GetMontageSectionLengthByIndexFromData(const FScWCharacterMontageData& InCharacterMontageData, int32 InIndex, float InFallbackValue)
+{
+	return GetMontageSectionLengthByIndex(InCharacterMontageData.GetRelevantTimingMontage(), InIndex, InCharacterMontageData.TimeMul, InFallbackValue);
+}
+
+float UScWAnimationsFunctionLibrary::GetMontageSectionLengthByNameFromData(const FScWCharacterMontageData& InCharacterMontageData, const FName& InName, float InFallbackValue)
+{
+	return GetMontageSectionLengthByName(InCharacterMontageData.GetRelevantTimingMontage(), InName, InCharacterMontageData.TimeMul, InFallbackValue);
+}
+
+float UScWAnimationsFunctionLibrary::PlayCharacterMontagesFromData(AScWCharacter* InCharacter, const FScWCharacterMontageData& InCharacterMontageData, const bool bInStopAllMontages, const bool bInPlayFirstPerson, const bool bInPlayThirdPerson, const bool bInPlayHandheld)
+{
+	ensureReturn(InCharacter, 0.0f);
+
+	float PlayRateInv = 1.0f / FMath::Max(InCharacterMontageData.TimeMul, FLT_EPSILON);
+	float OutMaxDuration = 0.0f;
+
+	if (bInPlayFirstPerson)
 	{
-		return UScWAnimationsFunctionLibrary::GetMontageSectionLengthByIndex(InMontage, InMontage->GetSectionIndex(InName));
+		if (UScWAnimInstance_FirstPerson* FirstPersonAnimInstance = InCharacter->GetScWFirstPersonAnimInstance())
+		{
+			ensure(InCharacterMontageData.FirstPersonMontage);
+			OutMaxDuration = FMath::Max(FirstPersonAnimInstance->Montage_Play(InCharacterMontageData.FirstPersonMontage, PlayRateInv, EMontagePlayReturnType::Duration, 0.0f, bInStopAllMontages), 0.0f);
+		}
 	}
-	else
+	if (bInPlayThirdPerson)
 	{
-		return FMath::Max(0.0f, InOptionalFallbackValue);
+		if (UScWAnimInstance_ThirdPerson* ThirdPersonAnimInstance = InCharacter->GetScWThirdPersonAnimInstance())
+		{
+			ensure(InCharacterMontageData.ThirdPersonMontage);
+			OutMaxDuration = FMath::Max(ThirdPersonAnimInstance->Montage_Play(InCharacterMontageData.ThirdPersonMontage, PlayRateInv, EMontagePlayReturnType::Duration, 0.0f, bInStopAllMontages), 0.0f);
+		}
 	}
+	if (bInPlayHandheld)
+	{
+		if (UScWAnimInstance_Handheld* HandheldAnimInstance = InCharacter->GetScWHandheldAnimInstance())
+		{
+			ensure(InCharacterMontageData.ActiveHandheldMontage);
+			OutMaxDuration = FMath::Max(HandheldAnimInstance->Montage_Play(InCharacterMontageData.ActiveHandheldMontage, PlayRateInv, EMontagePlayReturnType::Duration, 0.0f, bInStopAllMontages), 0.0f);
+		}
+	}
+	return OutMaxDuration;
 }
 //~ End Montages
 
