@@ -2,6 +2,7 @@
 
 #include "Gameplay/Tasks/ScWAT_WaitOverlap.h"
 
+//~ Begin Initialize
 UScWAT_WaitOverlap* UScWAT_WaitOverlap::IDWaitOverlap(UGameplayAbility* InOwningAbility, UPrimitiveComponent* InCheckComponent, UClass* InOverlapClassFilter)
 {
 	UScWAT_WaitOverlap* OutTaskObject = NewAbilityTask<UScWAT_WaitOverlap>(InOwningAbility);
@@ -29,7 +30,9 @@ void UScWAT_WaitOverlap::OnDestroy(bool bInAbilityIsEnding)
 
 	Super::OnDestroy(bInAbilityIsEnding);
 }
+//~ End Initialize
 
+//~ Begin Task
 void UScWAT_WaitOverlap::OnOverlapCallback(UPrimitiveComponent* InOverlappedComponent, AActor* InOtherActor, UPrimitiveComponent* InOtherComponent, int32 InOtherBodyIndex, bool bFromSweep, const FHitResult& InSweepResult)
 {
 	if (InOtherActor->IsA(OverlapClassFilter))
@@ -39,3 +42,4 @@ void UScWAT_WaitOverlap::OnOverlapCallback(UPrimitiveComponent* InOverlappedComp
 		EndTask();
 	}
 }
+//~ End Task

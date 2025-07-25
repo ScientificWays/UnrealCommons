@@ -1,6 +1,6 @@
 // Scientific Ways
 
-#include "Gameplay/ScWGameplayAbility.h"
+#include "Gameplay/Abilities/ScWGameplayAbility.h"
 
 #include "AI/ScWTypes_AI.h"
 #include "AI/ScWAIFunctionLibrary.h"
@@ -11,10 +11,15 @@
 #include "Gameplay/ScWGameplayTags.h"
 #include "Gameplay/Characters/ScWCharacter.h"
 
+#include "AbilitySystemLog.h"
+
 UScWGameplayAbility::UScWGameplayAbility()
 {
-	SetAssetTags(FGameplayTagContainer(FScWGameplayTags::Ability_CancelBy_Stunned));
-
+	{
+		auto Tags = GetAssetTags();
+		Tags.AddTag(FScWGameplayTags::Ability_CancelBy_Stunned);
+		SetAssetTags(Tags);
+	}
 	ActivationBlockedTags.AddTag(FScWGameplayTags::State_Stunned);
 	ActivationBlockedTags.AddTag(FScWGameplayTags::State_Dead);
 
@@ -52,9 +57,28 @@ void UScWGameplayAbility::SetCurrentActorInfo(const FGameplayAbilitySpecHandle I
 //~ Begin Ability
 void UScWGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo, const FGameplayAbilityActivationInfo InActivationInfo, const FGameplayEventData* InTriggerEventData) // UGameplayAbility
 {
-	Super::ActivateAbility(InHandle, InActorInfo, InActivationInfo, InTriggerEventData);
-
-
+	// Based on UGameplayAbility::ActivateAbility() implementation in UE 5.6.0
+	if (InTriggerEventData && bHasBlueprintActivateFromEvent)
+	{
+		// A Blueprinted ActivateAbility function must call CommitAbility somewhere in its execution chain.
+		K2_ActivateAbilityFromEvent(*InTriggerEventData);
+	}
+	else if (bHasBlueprintActivate)
+	{
+		// A Blueprinted ActivateAbility function must call CommitAbility somewhere in its execution chain.
+		K2_ActivateAbility();
+	}
+	else if (bHasBlueprintActivateFromEvent)
+	{
+		UE_LOG(LogAbilitySystem, Warning, TEXT("Ability %s expects event data but none is being supplied. Use 'Activate Ability' instead of 'Activate Ability From Event' in the Blueprint."), *GetName());
+		constexpr bool bReplicateEndAbility = false;
+		constexpr bool bWasCancelled = true;
+		EndAbility(InHandle, InActorInfo, InActivationInfo, bReplicateEndAbility, bWasCancelled);
+	}
+	else
+	{
+		NativeActivateAbility(InHandle, InActorInfo, InActivationInfo, InTriggerEventData);
+	}
 }
 
 void UScWGameplayAbility::CancelAbility(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo, const FGameplayAbilityActivationInfo InActivationInfo, bool bInReplicateCancelAbility) // UGameplayAbility

@@ -101,7 +101,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogScWGameplay, Log, All);
 
 //#define ECC_Shoot								ECollisionChannel::ECC_GameTraceChannel1
 //#define ECC_Interact							ECollisionChannel::ECC_GameTraceChannel2
-//#define ECC_OnlyCharacterIgnore					ECollisionChannel::ECC_GameTraceChannel5
+//#define ECC_OnlyCharacterIgnore				ECollisionChannel::ECC_GameTraceChannel5
 //#define ECC_OverlapAllShapes					ECollisionChannel::ECC_GameTraceChannel10
 
 #define ObjectTypeQuery_WorldStatic				EObjectTypeQuery::ObjectTypeQuery1

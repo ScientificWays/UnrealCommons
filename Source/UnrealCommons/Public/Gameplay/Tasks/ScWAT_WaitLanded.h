@@ -14,6 +14,8 @@ class UNREALCOMMONS_API UScWAT_WaitLanded : public UAbilityTask
 {
 	GENERATED_BODY()
 
+public:
+
 	UPROPERTY(BlueprintAssignable)
 	FLandedSignature OnPlayerLanded;
 	

@@ -82,16 +82,26 @@ void AScWHandheld::UpdateAttachmentToOwner()
 	if (OwnerCharacter->IsInFirstPersonView())
 	{
 		UScWCharacterMesh_FirstPerson* OwnerFirstPersonMesh = OwnerCharacter->GetScWFirstPersonCharacterMesh();
-		ensureReturn(OwnerFirstPersonMesh);
-
-		AttachToComponent(OwnerFirstPersonMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, DataAsset->FP_OwnerMeshAttachmentSocketName);
+		ensureIf(OwnerFirstPersonMesh)
+		{
+			AttachToComponent(OwnerFirstPersonMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, DataAsset->FP_OwnerMeshAttachmentSocketName);
+		}
+		ensureIf(Mesh)
+		{
+			Mesh->SetFirstPersonPrimitiveType(EFirstPersonPrimitiveType::FirstPerson);
+		}
 	}
 	else
 	{
 		UScWCharacterMesh_ThirdPerson* OwnerThirdPersonMesh = OwnerCharacter->GetScWThirdPersonCharacterMesh();
-		ensureReturn(OwnerThirdPersonMesh);
-
-		AttachToComponent(OwnerThirdPersonMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, DataAsset->TP_OwnerMeshAttachmentSocketName);
+		ensureIf(OwnerThirdPersonMesh)
+		{
+			AttachToComponent(OwnerThirdPersonMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, DataAsset->TP_OwnerMeshAttachmentSocketName);
+		}
+		ensureIf(Mesh)
+		{
+			Mesh->SetFirstPersonPrimitiveType(EFirstPersonPrimitiveType::WorldSpaceRepresentation);
+		}
 	}
 }
 

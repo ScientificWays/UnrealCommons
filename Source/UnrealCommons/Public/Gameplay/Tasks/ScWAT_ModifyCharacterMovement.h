@@ -16,15 +16,15 @@ class UNREALCOMMONS_API UScWAT_ModifyCharacterMovement : public UAbilityTask
 
 public:
 
-	UScWAT_ModifyCharacterMovement();
-	
 	UPROPERTY(BlueprintAssignable, meta = (DisplayName = "On Time Out"))
 	FGenericGameplayTaskDelegate OnTimeOutExec;
 
+//~ Begin Initialize
+public:
+
 	UFUNCTION(BlueprintCallable, Category = "Ability | Tasks", meta = (HidePin = "InOwningAbility", DefaultToSelf = "InOwningAbility", BlueprintInternalUseOnly = "true"))
 	static UScWAT_ModifyCharacterMovement* ModifyCharacterMovement(UGameplayAbility* InOwningAbility, class UScWCharacterMovement* InTarget, FVector InMagnitude, const bool bInApplyAsForce = false, float InTimeOut = -1.0f);
-	
-//~ Begin Initialize
+
 protected:
 	virtual void Activate() override; // UGameplayTask
 	virtual void OnDestroy(bool bInAbilityIsEnding) override; // UGameplayTask

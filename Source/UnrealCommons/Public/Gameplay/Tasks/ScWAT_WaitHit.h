@@ -16,6 +16,8 @@ class UNREALCOMMONS_API UScWAT_WaitHit : public UAbilityTask
 {
 	GENERATED_BODY()
 
+public:
+
 	UPROPERTY(BlueprintAssignable)
 	FTaskWaitHitSignature OnHit;
 	

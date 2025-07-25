@@ -13,7 +13,9 @@ UCLASS(meta = (DisplayName = "[ScW] AT_WaitInput"))
 class UNREALCOMMONS_API UScWAT_WaitInput : public UAbilityTask
 {
 	GENERATED_BODY()
-	
+
+public:
+
 	UPROPERTY(BlueprintAssignable)
 	FGenericGameplayTaskDelegate OnTrigger;
 	

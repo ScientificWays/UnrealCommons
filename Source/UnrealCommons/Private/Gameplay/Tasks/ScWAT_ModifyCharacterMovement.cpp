@@ -4,15 +4,13 @@
 
 #include "Gameplay/Characters/ScWCharacterMovement.h"
 
-UScWAT_ModifyCharacterMovement::UScWAT_ModifyCharacterMovement()
-{
-	bTickingTask = true;
-	bSimulatedTask = true;
-}
-
+//~ Begin Initialize
 UScWAT_ModifyCharacterMovement* UScWAT_ModifyCharacterMovement::ModifyCharacterMovement(UGameplayAbility* InOwningAbility, UScWCharacterMovement* InTarget, FVector InMagnitude, const bool bInApplyAsForce, float InTimeOut)
 {
 	UScWAT_ModifyCharacterMovement* OutTaskObject = NewAbilityTask<UScWAT_ModifyCharacterMovement>(InOwningAbility);
+
+	OutTaskObject->bTickingTask = true;
+	OutTaskObject->bSimulatedTask = true;
 
 	OutTaskObject->TargetCMC = InTarget;
 	OutTaskObject->Magnitude = InMagnitude;
@@ -22,7 +20,6 @@ UScWAT_ModifyCharacterMovement* UScWAT_ModifyCharacterMovement::ModifyCharacterM
 	return OutTaskObject;
 }
 
-//~ Begin Initialize
 void UScWAT_ModifyCharacterMovement::Activate() // UGameplayTask
 {
 	if (TimeOut > 0.0f)

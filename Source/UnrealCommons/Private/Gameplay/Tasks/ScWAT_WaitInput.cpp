@@ -4,6 +4,7 @@
 
 #include "Gameplay/ScWASC_Base.h"
 
+//~ Begin Initialize
 UScWAT_WaitInput* UScWAT_WaitInput::WaitInputPressByInputID(UGameplayAbility* InOwningAbility, EScWAbilityInputID InInputID, float InExpireTime, const bool bCheckAlreadyPressed)
 {
 	ThisClass* OutTaskObject = NewAbilityTask<ThisClass>(InOwningAbility);
@@ -84,7 +85,6 @@ UScWAT_WaitInput* UScWAT_WaitInput::WaitInputReleaseByInputID_Multi(UGameplayAbi
 	return OutTaskObject;
 }
 
-//~ Begin Initialize
 void UScWAT_WaitInput::Activate() // UGameplayTask
 {
 	BaseASC = Cast<UScWASC_Base>(AbilitySystemComponent);

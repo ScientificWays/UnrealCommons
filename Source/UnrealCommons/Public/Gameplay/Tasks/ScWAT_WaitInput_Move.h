@@ -14,6 +14,8 @@ class UNREALCOMMONS_API UScWAT_WaitInput_Move : public UAbilityTask
 {
 	GENERATED_BODY()
 
+public:
+
 	UPROPERTY(Category = "Callbacks", BlueprintAssignable)
 	FGenericGameplayTaskDelegate OnInputTriggered;
 	

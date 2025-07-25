@@ -14,6 +14,8 @@ class UNREALCOMMONS_API UScWAT_WaitDied : public UAbilityTask
 {
 	GENERATED_BODY()
 
+public:
+
 	UPROPERTY(BlueprintAssignable)
 	FGenericGameplayTaskDelegate OnDied;
 	

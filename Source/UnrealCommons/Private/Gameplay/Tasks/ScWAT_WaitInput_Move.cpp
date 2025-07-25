@@ -4,6 +4,7 @@
 
 #include "Gameplay/Characters/ScWCharacter.h"
 
+//~ Begin Initialize
 UScWAT_WaitInput_Move* UScWAT_WaitInput_Move::WaitInput_Move(UGameplayAbility* InOwningAbility, AScWCharacter* InTargetCharacter, bool bTriggerOnForward, bool bTriggerOnBackward, bool bTriggerOnRight, bool bTriggerOnLeft, bool bOnce)
 {
 	ThisClass* OutTaskObject = NewAbilityTask<ThisClass>(InOwningAbility);
@@ -20,7 +21,6 @@ UScWAT_WaitInput_Move* UScWAT_WaitInput_Move::WaitInput_Move(UGameplayAbility* I
 	return OutTaskObject;
 }
 
-//~ Begin Initialize
 void UScWAT_WaitInput_Move::Activate() // UGameplayTask
 {
 	ensure(TargetCharacter);

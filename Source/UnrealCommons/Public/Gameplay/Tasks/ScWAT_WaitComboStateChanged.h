@@ -16,8 +16,6 @@ class UNREALCOMMONS_API UScWAT_WaitComboStateChanged : public UAbilityTask
 
 public:
 
-	UScWAT_WaitComboStateChanged();
-
 	UPROPERTY(BlueprintAssignable)
 	FGenericGameplayTaskDelegate OnComboStateChanged;
 

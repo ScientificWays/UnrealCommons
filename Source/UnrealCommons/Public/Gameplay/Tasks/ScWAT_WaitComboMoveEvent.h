@@ -16,12 +16,11 @@ class UNREALCOMMONS_API UScWAT_WaitComboMoveEvent : public UAbilityTask
 
 public:
 
-	UScWAT_WaitComboMoveEvent();
-
 	UPROPERTY(BlueprintAssignable)
 	FGenericGameplayTaskDelegate OnComboMoveEvent;
 
-	static UScWAT_WaitComboMoveEvent* WaitComboMoveCommonInit(UGameplayAbility* InOwningAbility, int32 InEventType);
+//~ Begin Initialize
+public:
 
 	UFUNCTION(BlueprintCallable, Category = "Ability | Tasks", meta = (HidePin = "InOwningAbility", DefaultToSelf = "InOwningAbility", BlueprintInternalUseOnly = "true"))
 	static UScWAT_WaitComboMoveEvent* WaitComboMoveQueued(UGameplayAbility* InOwningAbility) { return WaitComboMoveCommonInit(InOwningAbility, EVENT_TYPE_QUEUED); }
@@ -35,8 +34,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Ability | Tasks", meta = (HidePin = "InOwningAbility", DefaultToSelf = "InOwningAbility", BlueprintInternalUseOnly = "true"))
 	static UScWAT_WaitComboMoveEvent* WaitComboMoveAdded(UGameplayAbility* InOwningAbility) { return WaitComboMoveCommonInit(InOwningAbility, EVENT_TYPE_ADDED); }
 
-//~ Begin Initialize
 protected:
+	static UScWAT_WaitComboMoveEvent* WaitComboMoveCommonInit(UGameplayAbility* InOwningAbility, int32 InEventType);
+
 	virtual void Activate() override; // UGameplayTask
 	virtual void OnDestroy(bool bInAbilityIsEnding) override; // UGameplayTask
 //~ End Initialize

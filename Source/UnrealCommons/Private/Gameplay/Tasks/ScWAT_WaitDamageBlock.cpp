@@ -4,6 +4,7 @@
 
 #include "Gameplay/ScWASC_Base.h"
 
+//~ Begin Initialize
 UScWAT_WaitDamageBlock* UScWAT_WaitDamageBlock::WaitDamageBlock(UGameplayAbility* InOwningAbility, UScWASC_Base* InTargetASC, TSubclassOf<UDamageType> InDamageTypeClass, const bool bOnce)
 {
 	UScWAT_WaitDamageBlock* OutTaskObject = NewAbilityTask<UScWAT_WaitDamageBlock>(InOwningAbility);
@@ -38,7 +39,9 @@ void UScWAT_WaitDamageBlock::OnDestroy(bool bInAbilityIsEnding)
 	}
 	Super::OnDestroy(bInAbilityIsEnding);
 }
+//~ End Initialize
 
+//~ Begin Task
 void UScWAT_WaitDamageBlock::OnDamageBlockedCallback(float InDamage, const FReceivedDamageData& InData)
 {
 	if (!DamageTypeClass || (InData.DamageType && InData.DamageType->IsA(DamageTypeClass)))
@@ -51,3 +54,4 @@ void UScWAT_WaitDamageBlock::OnDamageBlockedCallback(float InDamage, const FRece
 		}
 	}
 }
+//~ End Task

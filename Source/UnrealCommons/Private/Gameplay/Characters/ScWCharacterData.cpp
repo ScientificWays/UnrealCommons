@@ -7,6 +7,7 @@
 
 #include "Gameplay/Characters/ScWCharacter.h"
 #include "Gameplay/Handhelds/ScWHandheld_Melee.h"
+#include "Gameplay/Abilities/ScWGameplayAbility_CommonJump.h"
 #include "Gameplay/Characters/ScWCharacterData_InitInterface.h"
 
 #include "Framework/ScWGameState.h"
@@ -25,6 +26,7 @@ UScWCharacterData::UScWCharacterData()
 	CapsuleRadiusHeight = FVector2D(34.0f, 90.0f);
 
 	CONSTRUCTOR_TRY_LOAD_CLASS(UGameplayEffect, SpawnEffectClass, "/UnrealCommons/Blueprints/GameplayEffects/GE_CommonCharacterInit");
+	DefaultAbilitiesGiveData.Add(FScWGameplayGiveAbilityData(UScWGameplayAbility_CommonJump::StaticClass(), 0, true, EScWAbilityInputID::Jump));
 
 	DamageImpactParticlesColor = FColor::Red;
 

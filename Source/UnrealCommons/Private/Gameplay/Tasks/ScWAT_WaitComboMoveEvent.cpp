@@ -4,11 +4,7 @@
 
 #include "Gameplay/ScWASC_Base.h"
 
-UScWAT_WaitComboMoveEvent::UScWAT_WaitComboMoveEvent()
-{
-	
-}
-
+//~ Begin Initialize
 UScWAT_WaitComboMoveEvent* UScWAT_WaitComboMoveEvent::WaitComboMoveCommonInit(UGameplayAbility* InOwningAbility, int32 InEventType)
 {
 	ThisClass* OutTaskObject = NewAbilityTask<ThisClass>(InOwningAbility);
@@ -17,7 +13,6 @@ UScWAT_WaitComboMoveEvent* UScWAT_WaitComboMoveEvent::WaitComboMoveCommonInit(UG
 	return OutTaskObject;
 }
 
-//~ Begin Initialize
 void UScWAT_WaitComboMoveEvent::Activate() // UGameplayTask
 {
 	if (UScWASC_Base* TargetASC = Cast<UScWASC_Base>(AbilitySystemComponent))

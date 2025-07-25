@@ -16,24 +16,24 @@ class UNREALCOMMONS_API UScWAT_WaitDelay : public UAbilityTask
 
 public:
 
-	UScWAT_WaitDelay();
-
 	UPROPERTY(BlueprintAssignable)
 	FGenericGameplayTaskDelegate OnFinish;
 
+//~ Begin Initialize
+public:
+
 	UFUNCTION(BlueprintCallable, Category = "Ability | Tasks", meta = (DisplayName = "[ScW] WaitDelayOrFinishImmediately", HidePin = "InOwningAbility", DefaultToSelf = "InOwningAbility", BlueprintInternalUseOnly = "true"))
 	static UScWAT_WaitDelay* WaitDelayOrFinishImmediately(UGameplayAbility* InOwningAbility, float InTime);
+
+protected:
+	virtual void Activate() override; // UGameplayTask
+	virtual void OnDestroy(bool bInAbilityIsEnding) override; // UGameplayTask
+//~ End Initialize
 	
 //~ Begin Debug
 public:
 	virtual FString GetDebugString() const override; // UGameplayTask
 //~ End Debug
-
-//~ Begin Initialize
-protected:
-	virtual void Activate() override; // UGameplayTask
-	virtual void OnDestroy(bool bInAbilityIsEnding) override; // UGameplayTask
-//~ End Initialize
 
 //~ Begin Callbacks
 protected:

@@ -14,17 +14,24 @@ class UNREALCOMMONS_API UScWAT_WaitDamageBlock : public UAbilityTask
 {
 	GENERATED_BODY()
 
+public:
+
 	UPROPERTY(BlueprintAssignable)
 	FGenericGameplayTaskDelegate OnDamageBlocked;
 
+//~ Begin Initialize
+public:
+
 	UFUNCTION(BlueprintCallable, Category = "Ability | Tasks", meta = (HidePin = "InOwningAbility", DefaultToSelf = "InOwningAbility", BlueprintInternalUseOnly = "true"))
 	static UScWAT_WaitDamageBlock* WaitDamageBlock(UGameplayAbility* InOwningAbility, class UScWASC_Base* InTargetASC, TSubclassOf<UDamageType> InDamageTypeClass, const bool bOnce = true);
-	
-//~ Begin Common
+
 protected:
 	virtual void Activate() override; // UGameplayTask
 	virtual void OnDestroy(bool bInAbilityIsEnding) override; // UGameplayTask
-//~ End Common
+//~ End Initialize
+
+//~ Begin Task
+protected:
 
 	UFUNCTION()
 	void OnDamageBlockedCallback(float InDamage, const struct FReceivedDamageData& InData);
@@ -35,4 +42,5 @@ protected:
 	TObjectPtr<class UScWASC_Base> TargetASC;
 	bool bOnce;
 	TSubclassOf<UDamageType> DamageTypeClass;
+//~ End Task
 };

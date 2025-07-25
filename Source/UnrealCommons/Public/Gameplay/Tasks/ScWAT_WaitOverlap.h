@@ -16,6 +16,8 @@ class UNREALCOMMONS_API UScWAT_WaitOverlap : public UAbilityTask
 {
 	GENERATED_BODY()
 
+public:
+
 	UPROPERTY(BlueprintAssignable)
 	FTaskWaitOverlapDelegate OnOverlap;
 	

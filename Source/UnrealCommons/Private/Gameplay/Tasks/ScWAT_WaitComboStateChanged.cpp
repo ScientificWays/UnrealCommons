@@ -4,11 +4,7 @@
 
 #include "Gameplay/ScWASC_Base.h"
 
-UScWAT_WaitComboStateChanged::UScWAT_WaitComboStateChanged()
-{
-	
-}
-
+//~ Begin Initialize
 UScWAT_WaitComboStateChanged* UScWAT_WaitComboStateChanged::WaitComboStateChanged(UGameplayAbility* InOwningAbility)
 {
 	UScWAT_WaitComboStateChanged* OutTaskObject = NewAbilityTask<UScWAT_WaitComboStateChanged>(InOwningAbility);
@@ -16,7 +12,6 @@ UScWAT_WaitComboStateChanged* UScWAT_WaitComboStateChanged::WaitComboStateChange
 	return OutTaskObject;
 }
 
-//~ Begin Initialize
 void UScWAT_WaitComboStateChanged::Activate() // UGameplayTask
 {
 	if (UScWASC_Base* TargetASC = Cast<UScWASC_Base>(AbilitySystemComponent))

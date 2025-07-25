@@ -2,37 +2,16 @@
 
 #include "Gameplay/Tasks/ScWAT_WaitDelay.h"
 
-UScWAT_WaitDelay::UScWAT_WaitDelay()
-{
-	TimerHandle = FTimerHandle();
-
-	Time = 0.0f;
-	TimeStarted = 0.0f;
-}
-
+//~ Begin Initialize
 UScWAT_WaitDelay* UScWAT_WaitDelay::WaitDelayOrFinishImmediately(UGameplayAbility* InOwningAbility, float InTime)
 {
 	UScWAT_WaitDelay* OutTaskObject = NewAbilityTask<UScWAT_WaitDelay>(InOwningAbility);
 	OutTaskObject->Time = InTime;
+	OutTaskObject->TimeStarted = 0.0f;
+	OutTaskObject->TimerHandle = FTimerHandle();
 	return OutTaskObject;
 }
 
-//~ Begin Debug
-FString UScWAT_WaitDelay::GetDebugString() const // UGameplayTask
-{
-	if (UWorld* World = GetWorld())
-	{
-		const float TimeLeft = Time - World->TimeSince(TimeStarted);
-		return FString::Printf(TEXT("WaitDelay. Time: %.2f. TimeLeft: %.2f"), Time, TimeLeft);
-	}
-	else
-	{
-		return FString::Printf(TEXT("WaitDelay. Time: %.2f. Time Started: %.2f"), Time, TimeStarted);
-	}
-}
-//~ End Debug
-
-//~ Begin Initialize
 void UScWAT_WaitDelay::Activate() // UGameplayTask
 {
 	if (Time > 0.0f)
@@ -57,6 +36,21 @@ void UScWAT_WaitDelay::OnDestroy(bool bInAbilityIsEnding)
 	Super::OnDestroy(bInAbilityIsEnding);
 }
 //~ End Initialize
+
+//~ Begin Debug
+FString UScWAT_WaitDelay::GetDebugString() const // UGameplayTask
+{
+	if (UWorld* World = GetWorld())
+	{
+		const float TimeLeft = Time - World->TimeSince(TimeStarted);
+		return FString::Printf(TEXT("WaitDelay. Time: %.2f. TimeLeft: %.2f"), Time, TimeLeft);
+	}
+	else
+	{
+		return FString::Printf(TEXT("WaitDelay. Time: %.2f. Time Started: %.2f"), Time, TimeStarted);
+	}
+}
+//~ End Debug
 
 //~ Begin Callbacks
 void UScWAT_WaitDelay::OnTimeFinish()
