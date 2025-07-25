@@ -1,13 +1,13 @@
 // Scientific Ways
 
-#include "Gameplay/Weapons/ScWWeapon_Melee.h"
+#include "Gameplay/Handhelds/ScWHandheld_Melee.h"
 
 #include "Gameplay/Characters/ScWCharacter.h"
 
 #include "Gameplay/ScWGameplayFunctionLibrary.h"
-#include "Gameplay/Weapons/ScWWeaponData_Melee.h"
+#include "Gameplay/Handhelds/ScWHandheldData_Melee.h"
 
-AScWWeapon_Melee::AScWWeapon_Melee(const FObjectInitializer& InObjectInitializer)
+AScWHandheld_Melee::AScWHandheld_Melee(const FObjectInitializer& InObjectInitializer)
 	: Super(InObjectInitializer)
 {
 	CollisionComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Collision"));
@@ -16,21 +16,21 @@ AScWWeapon_Melee::AScWWeapon_Melee(const FObjectInitializer& InObjectInitializer
 }
 
 //~ Begin Initialize
-UScWWeaponData_Melee* AScWWeapon_Melee::GetMeleeDataAsset() const
+UScWHandheldData_Melee* AScWHandheld_Melee::GetMeleeDataAsset() const
 {
-	return Cast<UScWWeaponData_Melee>(DataAsset);
+	return Cast<UScWHandheldData_Melee>(DataAsset);
 }
 
-void AScWWeapon_Melee::BP_UpdateFromDataAsset_Implementation() // AScWWeapon_Base
+void AScWHandheld_Melee::BP_UpdateFromDataAsset_Implementation() // AScWHandheld
 {
 	Super::BP_UpdateFromDataAsset_Implementation();
 
-	UScWWeaponData_Melee* WeaponDataAsset = GetMeleeDataAsset();
-	ensureReturn(WeaponDataAsset);
+	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
+	ensureReturn(MeleeDataAsset);
 
 	if (CollisionComponent)
 	{
-		if (WeaponDataAsset->bIsUsingPatterns)
+		if (MeleeDataAsset->bIsUsingPatterns)
 		{
 			CollisionComponent->SetAutoActivate(false);
 			CollisionComponent->SetActive(false);
@@ -40,12 +40,12 @@ void AScWWeapon_Melee::BP_UpdateFromDataAsset_Implementation() // AScWWeapon_Bas
 			CollisionComponent->SetAutoActivate(true);
 			CollisionComponent->SetActive(true);
 		}
-		CollisionComponent->SetCapsuleSize(WeaponDataAsset->CapsuleRadiusHeight.X, WeaponDataAsset->CapsuleRadiusHeight.Y);
-		CollisionComponent->SetRelativeTransform(WeaponDataAsset->CapsuleRelativeTransform);
+		CollisionComponent->SetCapsuleSize(MeleeDataAsset->CapsuleRadiusHeight.X, MeleeDataAsset->CapsuleRadiusHeight.Y);
+		CollisionComponent->SetRelativeTransform(MeleeDataAsset->CapsuleRelativeTransform);
 	}
 }
 
-void AScWWeapon_Melee::OnConstruction(const FTransform& InTransform) // AActor
+void AScWHandheld_Melee::OnConstruction(const FTransform& InTransform) // AActor
 {
 	Super::OnConstruction(InTransform);
 
@@ -58,14 +58,14 @@ void AScWWeapon_Melee::OnConstruction(const FTransform& InTransform) // AActor
 	}
 }
 
-void AScWWeapon_Melee::BeginPlay() // AActor
+void AScWHandheld_Melee::BeginPlay() // AActor
 {
-	UScWWeaponData_Melee* WeaponDataAsset = GetMeleeDataAsset();
-	ensureReturn(WeaponDataAsset);
+	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
+	ensureReturn(MeleeDataAsset);
 
 	if (CollisionComponent)
 	{
-		if (WeaponDataAsset->bIsUsingPatterns)
+		if (MeleeDataAsset->bIsUsingPatterns)
 		{
 			
 		}
@@ -74,7 +74,7 @@ void AScWWeapon_Melee::BeginPlay() // AActor
 			CollisionComponent->ClearMoveIgnoreActors();
 			CollisionComponent->IgnoreActorWhenMoving(OwnerCharacter, true);
 
-			CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AScWWeapon_Melee::OnCollisionComponentBeginOverlap);
+			CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AScWHandheld_Melee::OnCollisionComponentBeginOverlap);
 		}
 	}
 	SwingCounter = 0;
@@ -88,7 +88,7 @@ void AScWWeapon_Melee::BeginPlay() // AActor
 //~ End Initialize
 
 //~ Begin Owner
-void AScWWeapon_Melee::HandleDrop() // AScWWeapon_Base
+void AScWHandheld_Melee::HandleDrop() // AScWHandheld
 {
 	Super::HandleDrop();
 
@@ -100,7 +100,7 @@ void AScWWeapon_Melee::HandleDrop() // AScWWeapon_Base
 //~ End Owner
 
 //~ Begin Components
-void AScWWeapon_Melee::OnCollisionComponentBeginOverlap(UPrimitiveComponent* InOverlappedComponent, AActor* InOtherActor, UPrimitiveComponent* InOtherComponent, int32 InOtherBodyIndex, bool bInFromSweep, const FHitResult& InSweepHitResult)
+void AScWHandheld_Melee::OnCollisionComponentBeginOverlap(UPrimitiveComponent* InOverlappedComponent, AActor* InOtherActor, UPrimitiveComponent* InOtherComponent, int32 InOtherBodyIndex, bool bInFromSweep, const FHitResult& InSweepHitResult)
 {
 	if (bInFromSweep)
 	{
@@ -116,7 +116,7 @@ void AScWWeapon_Melee::OnCollisionComponentBeginOverlap(UPrimitiveComponent* InO
 //~ End Components
 
 //~ Begin Swing
-void AScWWeapon_Melee::BP_BeginSwing_Implementation(float InSwingDamage, TSubclassOf<UDamageType> InSwingDamageTypeClass)
+void AScWHandheld_Melee::BP_BeginSwing_Implementation(float InSwingDamage, TSubclassOf<UDamageType> InSwingDamageTypeClass)
 {
 	++SwingCounter;
 
@@ -124,10 +124,10 @@ void AScWWeapon_Melee::BP_BeginSwing_Implementation(float InSwingDamage, TSubcla
 	LastSwingDamageTypeClass = InSwingDamageTypeClass;
 	LastSwingAffectedActorArray.Empty();
 
-	UScWWeaponData_Melee* WeaponDataAsset = GetMeleeDataAsset();
-	ensureReturn(WeaponDataAsset);
+	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
+	ensureReturn(MeleeDataAsset);
 
-	if (WeaponDataAsset->bIsUsingPatterns)
+	if (MeleeDataAsset->bIsUsingPatterns)
 	{
 		BP_BeginPatternTraces();
 	}
@@ -138,12 +138,12 @@ void AScWWeapon_Melee::BP_BeginSwing_Implementation(float InSwingDamage, TSubcla
 	}
 }
 
-void AScWWeapon_Melee::BP_EndSwing_Implementation()
+void AScWHandheld_Melee::BP_EndSwing_Implementation()
 {
-	UScWWeaponData_Melee* WeaponDataAsset = GetMeleeDataAsset();
-	ensureReturn(WeaponDataAsset);
+	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
+	ensureReturn(MeleeDataAsset);
 
-	if (WeaponDataAsset->bIsUsingPatterns)
+	if (MeleeDataAsset->bIsUsingPatterns)
 	{
 
 	}
@@ -154,7 +154,7 @@ void AScWWeapon_Melee::BP_EndSwing_Implementation()
 	}
 }
 
-void AScWWeapon_Melee::BP_HandleSwingHit_Implementation(const FHitResult& InHitResult)
+void AScWHandheld_Melee::BP_HandleSwingHit_Implementation(const FHitResult& InHitResult)
 {
 	ensureReturn(OwnerCharacter);
 
@@ -176,27 +176,27 @@ void AScWWeapon_Melee::BP_HandleSwingHit_Implementation(const FHitResult& InHitR
 //~ End Swing
 
 //~ Begin Patterns
-FVector AScWWeapon_Melee::BP_GetPatternStartLocation_Implementation(const FScWMeleeSwingPatternData& InPatternData, int32 InPatternIndex) const
+FVector AScWHandheld_Melee::BP_GetPatternStartLocation_Implementation(const FScWMeleeSwingPatternData& InPatternData, int32 InPatternIndex) const
 {
 	ensureReturn(OwnerCharacter, GetActorLocation());
 	return OwnerCharacter->GetPawnViewLocation() + OwnerCharacter->GetViewRotation().Vector() * InPatternData.TraceOffsetLocation;
 }
 
-void AScWWeapon_Melee::BP_BeginPatternTraces_Implementation()
+void AScWHandheld_Melee::BP_BeginPatternTraces_Implementation()
 {
-	UScWWeaponData_Melee* WeaponDataAsset = GetMeleeDataAsset();
-	ensureReturn(WeaponDataAsset);
+	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
+	ensureReturn(MeleeDataAsset);
 
-	ensureReturn(!WeaponDataAsset->Patterns.IsEmpty());
-	BP_HandlePatternTrace(WeaponDataAsset->Patterns[0], 0);
+	ensureReturn(!MeleeDataAsset->Patterns.IsEmpty());
+	BP_HandlePatternTrace(MeleeDataAsset->Patterns[0], 0);
 }
 
-void AScWWeapon_Melee::BP_HandlePatternTrace_Implementation(const FScWMeleeSwingPatternData& InPatternData, int32 InPatternIndex)
+void AScWHandheld_Melee::BP_HandlePatternTrace_Implementation(const FScWMeleeSwingPatternData& InPatternData, int32 InPatternIndex)
 {
 	ensureReturn(OwnerCharacter);
 
-	UScWWeaponData_Melee* WeaponDataAsset = GetMeleeDataAsset();
-	ensureReturn(WeaponDataAsset);
+	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
+	ensureReturn(MeleeDataAsset);
 
 	UWorld* World = GetWorld();
 	ensureReturn(World);
@@ -220,13 +220,13 @@ void AScWWeapon_Melee::BP_HandlePatternTrace_Implementation(const FScWMeleeSwing
 		BP_HandleSwingHit(SampleHitResult);
 	}
 	int32 NextPatternIndex = InPatternIndex + 1;
-	if (WeaponDataAsset->Patterns.IsValidIndex(NextPatternIndex))
+	if (MeleeDataAsset->Patterns.IsValidIndex(NextPatternIndex))
 	{
-		float NextPatternDelayTime = WeaponDataAsset->GetNextPatternDelayTime(NextPatternIndex);
+		float NextPatternDelayTime = MeleeDataAsset->GetNextPatternDelayTime(NextPatternIndex);
 		if (NextPatternDelayTime > 0.0f)
 		{
 			FTimerDelegate NextPatternMethodDelegate;
-			NextPatternMethodDelegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED_TwoParams(AScWWeapon_Melee, BP_HandlePatternTrace, const FScWMeleeSwingPatternData&, int32), InPatternData, NextPatternIndex);
+			NextPatternMethodDelegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED_TwoParams(AScWHandheld_Melee, BP_HandlePatternTrace, const FScWMeleeSwingPatternData&, int32), InPatternData, NextPatternIndex);
 			World->GetTimerManager().SetTimer(NextPatternDelayHandle, NextPatternMethodDelegate, NextPatternDelayTime, false);
 		}
 		else

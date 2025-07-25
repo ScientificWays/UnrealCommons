@@ -4,32 +4,32 @@
 
 #include "UnrealCommons.h"
 
-#include "ScWWeapon_Base.generated.h"
+#include "ScWHandheld.generated.h"
 
 /**
  *
  */
-UCLASS(Abstract, Blueprintable, meta = (DisplayName = "[ScW] Weapon (Base)"))
-class AScWWeapon_Base : public AActor, public IAbilitySystemInterface
+UCLASS(Abstract, Blueprintable, meta = (DisplayName = "[ScW] Handheld (Base)"))
+class UNREALCOMMONS_API AScWHandheld : public AActor, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
 public:
 
-	AScWWeapon_Base(const FObjectInitializer& InObjectInitializer = FObjectInitializer::Get());
+	AScWHandheld(const FObjectInitializer& InObjectInitializer = FObjectInitializer::Get());
 	
 //~ Begin Statics
 public:
 
 	UFUNCTION(Category = "Statics", BlueprintCallable, meta = (WorldContext = "InWCO"))
-	static AScWWeapon_Base* SpawnWeapon(AScWCharacter* InOwner, UScWWeaponData_Base* InData);
+	static AScWHandheld* SpawnHandheldFor(AScWCharacter* InOwner, UScWHandheldData* InData);
 //~ End Statics
 
 //~ Begin Initialize
 public:
 
 	UFUNCTION(Category = "Initialize", BlueprintCallable)
-	class UScWWeaponData_Base* GetDataAsset() const { return DataAsset; }
+	class UScWHandheldData* GetDataAsset() const { return DataAsset; }
 
 	UFUNCTION(Category = "Initialize", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Update from DataAsset"))
 	void BP_UpdateFromDataAsset();
@@ -39,7 +39,7 @@ protected:
 	virtual void BeginPlay() override; // AActor
 
 	UPROPERTY(Category = "Initialize", EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<class UScWWeaponData_Base> DataAsset;
+	TObjectPtr<class UScWHandheldData> DataAsset;
 //~ End Initialize
 	
 //~ Begin Owner
@@ -48,10 +48,11 @@ public:
 	UFUNCTION(Category = "Owner", BlueprintCallable)
 	class AScWCharacter* GetOwnerCharacter() const { return OwnerCharacter; }
 
+	virtual void UpdateAttachmentToOwner();
 	virtual void HandleDrop();
 protected:
 
-	UPROPERTY(Category = "Owner", EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(Transient)
 	TObjectPtr<class AScWCharacter> OwnerCharacter;
 //~ End Owner
 	
@@ -60,11 +61,14 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override; // IAbilitySystemInterface
 
 	UFUNCTION(Category = "Components", BlueprintCallable)
-	UStaticMeshComponent* GetMesh() const { return Mesh; }
+	USkeletalMeshComponent* GetMesh() const { return Mesh; }
+
+	UFUNCTION(Category = "Handheld", BlueprintCallable, meta = (KeyWords = "GetAnimInstance", DisplayName = "Get Anim Instance (Mesh)"))
+	class UScWAnimInstance_Handheld* GetMeshAnimInstance() const;
 
 protected:
 
 	UPROPERTY(Category = "Components", VisibleAnywhere, BlueprintReadOnly)
-	TObjectPtr<UStaticMeshComponent> Mesh;
+	TObjectPtr<USkeletalMeshComponent> Mesh;
 //~ End Components
 };

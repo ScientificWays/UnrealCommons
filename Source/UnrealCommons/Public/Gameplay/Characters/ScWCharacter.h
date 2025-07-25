@@ -8,8 +8,8 @@
 
 #include "ScWCharacter.generated.h"
 
-//UDELEGATE()
-//DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE(FScWCharacterInputTriggeredEventSignature, AScWCharacter, OnInputTriggered);
+UDELEGATE()
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FScWHandheldSignature, class AScWHandheld*, InPrevHandheld, class AScWHandheld*, InNewHandheld);
 
 /**
  *
@@ -49,6 +49,9 @@ protected:
 	bool bIsPlayerCharacter;
 
 	UPROPERTY(Category = "Initialize", EditAnywhere, BlueprintReadOnly)
+	bool bStartInFirstPersonView;
+
+	UPROPERTY(Category = "Initialize", EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<const class UScWCharacterData> DataAsset;
 //~ End Initialize
 
@@ -60,8 +63,17 @@ public:
 	UFUNCTION(Category = "Components", BlueprintCallable, meta = (KeyWords = "GetAbilitySystemComponent"))
 	class UScWASC_Character* GetCharacterASC() const { return CharacterASC; }
 
-	UFUNCTION(Category = "Components", BlueprintCallable, meta = (KeyWords = "GetCharacterMesh, GetMesh", DisplayName = "Get ScW Character Mesh"))
-	class UScWCharacterMesh* GetScWCharacterMesh() const { return ScWCharacterMesh; }
+	UFUNCTION(Category = "Components", BlueprintCallable, meta = (KeyWords = "GetCharacterMesh, GetMesh, GetCharacterMesh, GetFirstPerson", DisplayName = "Get ScW Character Mesh (FirstPerson)"))
+	class UScWCharacterMesh_FirstPerson* GetScWFirstPersonCharacterMesh() const { return ScWFirstPersonCharacterMesh; }
+
+	UFUNCTION(Category = "Components", BlueprintCallable, meta = (KeyWords = "GetAnimInstance, GetFirstPerson", DisplayName = "Get ScW Anim Instance (FirstPerson)"))
+	class UScWAnimInstance_FirstPerson* GetScWFirstPersonAnimInstance() const;
+
+	UFUNCTION(Category = "Components", BlueprintCallable, meta = (KeyWords = "GetCharacterMesh, GetMesh, GetCharacterMesh, GetThirdPerson", DisplayName = "Get ScW Character Mesh (ThirdPerson)"))
+	class UScWCharacterMesh_ThirdPerson* GetScWThirdPersonCharacterMesh() const { return ScWThirdPersonCharacterMesh; }
+
+	UFUNCTION(Category = "Components", BlueprintCallable, meta = (KeyWords = "GetAnimInstance, GetThirdPerson", DisplayName = "Get ScW Anim Instance (FirstPerson)"))
+	class UScWAnimInstance_ThirdPerson* GetScWThirdPersonAnimInstance() const;
 
 	UFUNCTION(Category = "Components", BlueprintCallable, meta = (KeyWords = "GetCharacterMovementComponent, GetCMC", DisplayName = "Get ScW Character Movement"))
 	class UScWCharacterMovement* GetScWCharacterMovement() const { return ScWCharacterMovement; }
@@ -71,16 +83,19 @@ public:
 
 protected:
 
-	UPROPERTY(Category = "Components", VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(Transient, VisibleAnywhere)
 	TObjectPtr<class UScWASC_Character> CharacterASC;
 
-	UPROPERTY(Category = "Components", BlueprintReadOnly, meta = (DisplayName = "ScW Character Mesh"))
-	TObjectPtr<class UScWCharacterMesh> ScWCharacterMesh;
+	UPROPERTY(Transient)
+	TObjectPtr<class UScWCharacterMesh_FirstPerson> ScWFirstPersonCharacterMesh;
 
-	UPROPERTY(Category = "Components", BlueprintReadOnly, meta = (DisplayName = "ScW Character Movement"))
+	UPROPERTY(Transient)
+	TObjectPtr<class UScWCharacterMesh_ThirdPerson> ScWThirdPersonCharacterMesh;
+
+	UPROPERTY(Transient)
 	TObjectPtr<class UScWCharacterMovement> ScWCharacterMovement;
 
-	UPROPERTY(Category = "Components", BlueprintReadOnly, meta = (DisplayName = "ScW Character Capsule"))
+	UPROPERTY(Transient)
 	TObjectPtr<class UScWCharacterCapsule> ScWCharacterCapsule;
 //~ End Components
 
@@ -94,6 +109,36 @@ protected:
 	virtual void NotifyControllerChanged() override; // APawn
 //~ End Controller
 	
+//~ Begin View
+public:
+	virtual void CalcCamera(float InDeltaSeconds, FMinimalViewInfo& InOutResult) override; // AActor
+	virtual bool HasActiveCameraComponent(bool bInForceFindCamera = false) const override; // AActor
+	virtual bool HasActivePawnControlCameraComponent() const override; // AActor
+
+	UFUNCTION(Category = "View", BlueprintCallable)
+	bool IsInFirstPersonView() const { return bIsInFirstPersonView; }
+
+	UFUNCTION(Category = "View", BlueprintCallable)
+	void SetInFirstPersonView(const bool bInIsInFirstPersonView);
+
+	UPROPERTY(Category = "View", BlueprintAssignable)
+	FBoolSignature OnIsInFirstPersonViewChangedDelegate;
+
+protected:
+
+	UFUNCTION()
+	virtual void HandleSetInFirstPersonViewChanged(bool bInIsInFirstPersonView);
+
+	UPROPERTY(Transient)
+	bool bIsInFirstPersonView;
+
+	UPROPERTY(Transient)
+	TObjectPtr<UCameraComponent> CachedCameraComponent;
+
+	UPROPERTY(Transient)
+	TObjectPtr<USpringArmComponent> CachedCameraSpringArmComponent;
+//~ End View
+
 //~ Begin Attributes
 protected:
 
@@ -142,10 +187,10 @@ protected:
 	void InputDropReleased();
 	void InputFlashlightPressed();
 	void InputFlashlightReleased();
-	void InputWeaponSwitchScrollPressed();
-	void InputWeaponSwitchScrollReleased();
-	void InputWeaponSwitchDirectPressed();
-	void InputWeaponSwitchDirectReleased();
+	void InputHandheldSwitchScrollPressed();
+	void InputHandheldSwitchScrollReleased();
+	void InputHandheldSwitchDirectPressed();
+	void InputHandheldSwitchDirectReleased();
 
 	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UInputMappingContext> DefaultInputMappingContext;
@@ -199,10 +244,10 @@ protected:
 	TObjectPtr<UInputAction> FlashlightAction;
 
 	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<UInputAction> WeaponSwitchScrollAction;
+	TObjectPtr<UInputAction> HandheldSwitchScrollAction;
 
 	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<UInputAction> WeaponSwitchDirectAction;
+	TObjectPtr<UInputAction> HandheldSwitchDirectAction;
 //~ End Input
 	
 //~ Begin Team
@@ -224,30 +269,34 @@ public:
 	virtual void HandleGameplayCue(UObject* InSelf, FGameplayTag InGameplayCueTag, EGameplayCueEvent::Type InEventType, const FGameplayCueParameters& InParameters) override; // IGameplayCueInterface
 //~ End GameplayCue
 
-//~ Begin Weapon
+//~ Begin Handheld
 public:
 
-	UFUNCTION(Category = "Weapon", BlueprintCallable, meta = (KeyWords = "GetCurrentWeapon"))
-	class AScWWeapon_Base* GetWeapon() const { return Weapon; }
+	UFUNCTION(Category = "Handheld", BlueprintCallable, meta = (KeyWords = "GetCurrentHandheld, GetWeapon, GetCurrentWeapon"))
+	class AScWHandheld* GetHandheld() const { return Handheld; }
 
-	UFUNCTION(Category = "Weapon", BlueprintCallable)
-	class AScWWeapon_Base* GiveWeapon(class UScWWeaponData_Base* InWeaponData, const bool bInDropPrevious = true);
+	UFUNCTION(Category = "Handheld", BlueprintCallable, meta = (KeyWords = "GetAnimInstance, GetHandheld", DisplayName = "Get ScW Anim Instance (Handheld)"))
+	class UScWAnimInstance_Handheld* GetScWHandheldAnimInstance() const;
 
-	UFUNCTION(Category = "Weapon", BlueprintCallable)
-	void DropWeapon() { GiveWeapon(nullptr, true); }
+	UFUNCTION(Category = "Handheld", BlueprintCallable, meta = (KeyWords = "GiveWeapon"))
+	class AScWHandheld* GiveHandheld(class UScWHandheldData* InHandheldData, const bool bInDropPrevious = true);
 
-	UFUNCTION(Category = "Weapon", BlueprintCallable)
-	void RemoveWeapon() { GiveWeapon(nullptr, false); }
+	UFUNCTION(Category = "Handheld", BlueprintCallable, meta = (KeyWords = "DropWeapon"))
+	void DropHandheld() { GiveHandheld(nullptr, true); }
 
-	UPROPERTY(Category = "Weapon", BlueprintAssignable)
-	FDefaultEventSignature OnWeaponChanged;
+	UFUNCTION(Category = "Handheld", BlueprintCallable, meta = (KeyWords = "RemoveWeapon"))
+	void RemoveHandheld() { GiveHandheld(nullptr, false); }
+
+	UPROPERTY(Category = "Handheld", BlueprintAssignable, meta = (KeyWords = "OnWeaponChanged"))
+	FScWHandheldSignature OnHandheldChanged;
 
 protected:
+	virtual void UpdateHandheldAttachment();
 
-	UPROPERTY(Category = "Weapon", BlueprintReadOnly)
-	TObjectPtr<class AScWWeapon_Base> Weapon;
+	UPROPERTY(Category = "Handheld", BlueprintReadOnly, meta = (KeyWords = "OnWeaponChanged"))
+	TObjectPtr<class AScWHandheld> Handheld;
 
-	UPROPERTY(Category = "Weapon", BlueprintReadOnly)
-	TArray<FGameplayAbilitySpecHandle> WeaponAbilitiesHandleArray;
-//~ End Weapon
+	UPROPERTY(Category = "Handheld", BlueprintReadOnly, meta = (KeyWords = "WeaponAbilitiesHandleArray"))
+	TArray<FGameplayAbilitySpecHandle> HandheldAbilitiesHandleArray;
+//~ End Handheld
 };

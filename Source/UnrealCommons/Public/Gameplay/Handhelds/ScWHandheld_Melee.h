@@ -4,29 +4,29 @@
 
 #include "UnrealCommons.h"
 
-#include "Gameplay/Weapons/ScWWeapon_Base.h"
+#include "Gameplay/Handhelds/ScWHandheld.h"
 
-#include "ScWWeapon_Melee.generated.h"
+#include "ScWHandheld_Melee.generated.h"
 
 /**
  *
  */
-UCLASS(Abstract, Blueprintable, meta = (DisplayName = "[ScW] Weapon (Melee)"))
-class UNREALCOMMONS_API AScWWeapon_Melee : public AScWWeapon_Base
+UCLASS(Abstract, Blueprintable, meta = (DisplayName = "[ScW] Handheld (Melee)"))
+class UNREALCOMMONS_API AScWHandheld_Melee : public AScWHandheld
 {
 	GENERATED_BODY()
 
 public:
 
-	AScWWeapon_Melee(const FObjectInitializer& InObjectInitializer = FObjectInitializer::Get());
+	AScWHandheld_Melee(const FObjectInitializer& InObjectInitializer = FObjectInitializer::Get());
 	
 //~ Begin Initialize
 public:
 
-	UFUNCTION(Category = "Initialize", BlueprintCallable, meta = (KeyWords = "GetWeaponDataAsset, GetWeaponAsset, GetAsset"))
-	class UScWWeaponData_Melee* GetMeleeDataAsset() const;
+	UFUNCTION(Category = "Initialize", BlueprintCallable, meta = (KeyWords = "GetHandheldDataAsset, GetHandheldAsset, GetWeaponDataAsset, GetWeaponAsset, GetAsset"))
+	class UScWHandheldData_Melee* GetMeleeDataAsset() const;
 
-	virtual void BP_UpdateFromDataAsset_Implementation() override; // AScWWeapon_Base
+	virtual void BP_UpdateFromDataAsset_Implementation() override; // AScWHandheld
 protected:
 	virtual void OnConstruction(const FTransform& InTransform) override; // AActor
 	virtual void BeginPlay() override; // AActor
@@ -34,7 +34,7 @@ protected:
 	
 //~ Begin Owner
 public:
-	virtual void HandleDrop() override; // AScWWeapon_Base
+	virtual void HandleDrop() override; // AScWHandheld
 //~ End Owner
 
 //~ Begin Components

@@ -3,7 +3,7 @@
 #include "Gameplay/Combo/ScWComboData.h"
 
 #include "Gameplay/ScWDamageType.h"
-#include "Gameplay/Weapons/ScWWeaponData_Base.h"
+#include "Gameplay/Handhelds/ScWHandheldData.h"
 
 UScWComboData::UScWComboData()
 {
@@ -15,12 +15,12 @@ UScWComboData::UScWComboData()
 }
 
 //~ Begin Damage
-float UScWComboData::BP_ModifyWeaponDamage_Implementation(const UScWWeaponData_Base* InWeaponData, float InDamage) const
+float UScWComboData::BP_ModifyHandheldDamage_Implementation(const UScWHandheldData* InHandheldData, float InDamage) const
 {
 	return InDamage * DamageMul + DamageAdditive;
 }
 
-TSubclassOf<UScWDamageType> UScWComboData::BP_ModifyWeaponDamageTypeClass_Implementation(const UScWWeaponData_Base* InWeaponData, TSubclassOf<UScWDamageType> InDamageTypeClass) const
+TSubclassOf<UScWDamageType> UScWComboData::BP_ModifyHandheldDamageTypeClass_Implementation(const UScWHandheldData* InHandheldData, TSubclassOf<UScWDamageType> InDamageTypeClass) const
 {
 	return OverrideDamageTypeClass ? OverrideDamageTypeClass : InDamageTypeClass;
 }

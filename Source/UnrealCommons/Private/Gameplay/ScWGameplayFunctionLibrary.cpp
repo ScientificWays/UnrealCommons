@@ -185,3 +185,28 @@ bool UScWGameplayFunctionLibrary::GetActionMappedKeyDisplayName(APlayerControlle
 	return false;
 }
 //~ End Input
+
+//~ Begin Visibility
+bool UScWGameplayFunctionLibrary::IsComponentRenderedFor(UPrimitiveComponent* InComponent, AActor* ForActor)
+{
+	if (!InComponent->IsVisible())
+	{
+		return false;
+	}
+	else
+	{
+		if (APawn* OwnerPawn = Cast<APawn>(ForActor))
+		{
+			if (InComponent->bOwnerNoSee && OwnerPawn->IsLocallyViewed())
+			{
+				return false;
+			}
+			else if (InComponent->bOnlyOwnerSee && !OwnerPawn->IsLocallyViewed())
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+}
+//~ End Visibility

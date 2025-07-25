@@ -9,11 +9,11 @@ namespace FScWGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Movement_Sprint, "Ability.Movement.Sprint", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Movement_Crouch, "Ability.Movement.Crouch", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Movement_WalkSlow, "Ability.Movement.WalkSlow", "[Native] TODO: Add description");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Weapon_Swing, "Ability.Weapon.Swing", "[Native] TODO: Melee weapon swing ability");
-	/*UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Weapon, "Ability.Weapon", "[Native] TODO: Add description");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Handheld_Swing, "Ability.Handheld.Swing", "[Native] TODO: Melee weapon swing ability");
+	/*UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Handheld, "Ability.Handheld", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Cling, "Ability.Cling", "[Native] TODO: Add description");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Weapon_Aim, "Ability.Weapon.Aim", "[Native] TODO: Add description");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Weapon_Reload, "Ability.Weapon.Reload", "[Native] TODO: Add description");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Handheld_Aim, "Ability.Handheld.Aim", "[Native] TODO: Add description");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Handheld_Reload, "Ability.Handheld.Reload", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Ladder, "Ability.Ladder", "[Native] TODO: Add description");*/
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_CancelBy_Stunned, "Ability.CancelBy.Stunned", "[Native] TODO: Add description");
@@ -69,18 +69,18 @@ namespace FScWGameplayTags
 	//UE_DEFINE_GAMEPLAY_TAG_COMMENT(State_Dead_Started, "State.Dead.Started", "[Native] TODO: Add description");
 	//UE_DEFINE_GAMEPLAY_TAG_COMMENT(State_Dead_Finished, "State.Dead.Finished", "[Native] TODO: Add description");
 
-	// Damage
+	// Damage states
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(State_IgnoreAnyDamage, "State.IgnoreAnyDamage", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(State_BlockAnyDamage, "State.BlockAnyDamage", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(State_EvadeAnyDamage, "State.EvadeAnyDamage", "[Native] TODO: Add description");
 
 	// Ability-driven states
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(State_Swinging, "State.Swinging", "[Native] Melee swing state");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(State_Aiming, "State.Aiming", "[Native] Weapon aim state");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(State_FlashlightOn, "State.FlashlightOn", "[Native] TODO: Add description");
 
 	// Unsused states
-	/*UE_DEFINE_GAMEPLAY_TAG_COMMENT(State_Aiming, "State.Aiming", "[Native] Weapon aim state");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(State_BeingRevived, "State.BeingRevived", "[Native] TODO: Add description");
+	/*UE_DEFINE_GAMEPLAY_TAG_COMMENT(State_BeingRevived, "State.BeingRevived", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(State_Blocking, "State.Blocking", "[Native] Melee block state");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(State_Captured, "State.Captured", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(State_Capturing, "State.Capturing", "[Native] TODO: Add description");

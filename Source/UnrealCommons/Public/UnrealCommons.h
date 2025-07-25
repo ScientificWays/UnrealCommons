@@ -9,10 +9,12 @@
 #include "Engine/World.h"
 #include "Engine/DamageEvents.h"
 #include "Engine/LevelScriptActor.h"
+#include "Misc/UObjectToken.h"
 #include "UObject/SparseDelegate.h"
 
 #include "Blueprint/UserWidget.h"
 #include "Camera/CameraComponent.h"
+#include "Camera/PlayerCameraManager.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/GameSession.h"
@@ -20,6 +22,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerController.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -55,6 +58,11 @@
 #include "NiagaraSystem.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+
+#include "Animation/AnimMontage.h"
+#include "Animation/AnimSequence.h"
+#include "Animation/AimOffsetBlendSpace.h"
+#include "Animation/AnimNotifies/AnimNotify.h"
 
 #include "Net/UnrealNetwork.h"
 

@@ -4,6 +4,8 @@
 
 #include "UnrealCommons.h"
 
+#include "Animations/ScWTypes_Animations.h"
+
 #include "Gameplay/ScWTypes_Gameplay.h"
 
 #include "ScWCharacterData.generated.h"
@@ -57,23 +59,50 @@ public:
 //~ Begin Mesh
 public:
 
-	UPROPERTY(Category = "Mesh", EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(Category = "Mesh | FirstPerson", EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<USkeletalMesh> FP_SkeletalMesh;
+
+	UPROPERTY(Category = "Mesh | FirstPerson", EditDefaultsOnly, BlueprintReadOnly)
+	FTransform FP_SkeletalMeshRelativeTransform;
+
+	UPROPERTY(Category = "Mesh | ThirdPerson", EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<USkeletalMesh> TP_SkeletalMesh;
+
+	UPROPERTY(Category = "Mesh | ThirdPerson", EditDefaultsOnly, BlueprintReadOnly)
+	FTransform TP_SkeletalMeshRelativeTransform;
+
+	UPROPERTY(Category = "Mesh | ThirdPerson", EditDefaultsOnly, BlueprintReadOnly, meta = (DeprecatedProperty, DeprecationMessage = "Use TP_SkeletalMesh instead"))
 	TObjectPtr<USkeletalMesh> SkeletalMesh;
 
-	UPROPERTY(Category = "Mesh", EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(Category = "Mesh | ThirdPerson", EditDefaultsOnly, BlueprintReadOnly, meta = (DeprecatedProperty, DeprecationMessage = "Use TP_SkeletalMeshRelativeTransform instead"))
 	FTransform SkeletalMeshRelativeTransform;
 
-	UPROPERTY(Category = "Mesh", EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(Category = "Mesh | ThirdPerson", EditDefaultsOnly, BlueprintReadOnly)
 	bool bRagdollOnDeath;
 //~ End Mesh
 
 //~ Begin Animations
 public:
 
-	UPROPERTY(Category = "Animations", EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(Category = "Animations | FirstPerson", EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<class UScWAnimInstance_FirstPerson> FP_AnimInstanceClass;
+
+	UPROPERTY(Category = "Animations | FirstPerson", EditAnywhere, BlueprintReadOnly)
+	FScWFirstPersonStaticAnimationData FP_DefaultStaticAnimationData;
+
+	UPROPERTY(Category = "Animations | ThirdPerson", EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<class UScWAnimInstance_ThirdPerson> TP_AnimInstanceClass;
+
+	UPROPERTY(Category = "Animations | ThirdPerson", EditAnywhere, BlueprintReadOnly)
+	FScWThirdPersonStaticAnimationData TP_DefaultStaticAnimationData;
+
+	UPROPERTY(Category = "Animations | ThirdPerson", EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "!bRagdollOnDeath"))
+	TSubclassOf<UAnimInstance> TP_DiedAnimInstanceClass;
+
+	UPROPERTY(Category = "Animations | ThirdPerson", EditDefaultsOnly, BlueprintReadOnly, meta = (DeprecatedProperty, DeprecationMessage = "Use TP_AnimInstanceClass instead"))
 	TSubclassOf<UAnimInstance> AnimInstanceClass;
 
-	UPROPERTY(Category = "Animations", EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "!bRagdollOnDeath"))
+	UPROPERTY(Category = "Animations | ThirdPerson", EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "!bRagdollOnDeath", DeprecatedProperty, DeprecationMessage = "Use TP_DiedAnimInstanceClass instead"))
 	TSubclassOf<UAnimInstance> DiedAnimInstanceClass;
 //~ End Animations
 	
@@ -94,7 +123,7 @@ public:
 	TArray<FScWGameplayGiveAbilityData> DefaultAbilitiesGiveData;
 
 	UPROPERTY(Category = "Gameplay", EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<class UScWWeaponData_Base> DefaultWeaponData;
+	TObjectPtr<class UScWHandheldData> DefaultHandheldData;
 //~ End Gameplay
 	
 //~ Begin FX

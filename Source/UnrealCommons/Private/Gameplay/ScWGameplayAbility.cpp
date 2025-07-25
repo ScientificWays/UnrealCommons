@@ -87,3 +87,12 @@ void UScWGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle InHandle, 
 	}
 }
 //~ End Ability
+
+//~ Begin Input
+bool UScWGameplayAbility::IsAbilityInputPressed() const
+{
+	FGameplayAbilitySpec* AbilitySpec = GetCurrentAbilitySpec();
+	ensureReturn(AbilitySpec, false);
+	return AbilitySpec->InputPressed;
+}
+//~ End Input

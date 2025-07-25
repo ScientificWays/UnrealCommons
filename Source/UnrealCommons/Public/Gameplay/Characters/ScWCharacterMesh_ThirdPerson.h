@@ -4,28 +4,35 @@
 
 #include "UnrealCommons.h"
 
-#include "Gameplay/ScWASC_InitInterface.h"
-#include "Gameplay/Characters/ScWCharacterData_InitInterface.h"
+#include "Gameplay/Characters/ScWCharacterMesh_Base.h"
 
-#include "ScWCharacterMesh.generated.h"
+#include "ScWCharacterMesh_ThirdPerson.generated.h"
 
 /**
  *
  */
-UCLASS(meta = (DisplayName = "[ScW] Character Mesh (Component)"))
-class UNREALCOMMONS_API UScWCharacterMesh : public USkeletalMeshComponent, public IScWCharacterData_InitInterface, public IScWASC_InitInterface
+UCLASS(ClassGroup = ("Character"), meta = (DisplayName = "[ScW] ThirdPerson Character Mesh (Component)", BlueprintSpawnableComponent))
+class UNREALCOMMONS_API UScWCharacterMesh_ThirdPerson : public UScWCharacterMesh_Base
 {
 	GENERATED_BODY()
 	
 public:	
 	
-	UScWCharacterMesh();
+	UScWCharacterMesh_ThirdPerson();
 	
 //~ Begin Initialize
+protected:
+	virtual void BeginPlay() override; // UActorComponent
 public:
 	virtual void InitFromCharacterData(const class UScWCharacterData* InInitCharacterData) override; // IScWCharacterData_InitInterface
 	virtual void InitFromASC(class UScWASC_Base* InInitASC, AActor* InOwnerActor, AActor* InAvatarActor) override; // IScWASC_InitInterface
 //~ End Initialize
+	
+//~ Begin Updates
+protected:
+	virtual void UpdateFromIsInFirstPersonView(bool bInIsInFirstPersonView) override; // UScWCharacterMesh_Base
+	virtual void UpdateFromHandheld(class AScWHandheld* InHandheld) override; // UScWCharacterMesh_Base
+//~ End Updates
 
 //~ Begin Damage
 public:

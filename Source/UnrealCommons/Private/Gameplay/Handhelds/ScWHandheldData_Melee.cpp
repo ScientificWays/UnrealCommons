@@ -1,15 +1,19 @@
 // Scientific Ways
 
-#include "Gameplay/Weapons/ScWWeaponData_Melee.h"
+#include "Gameplay/Handhelds/ScWHandheldData_Melee.h"
 
-UScWWeaponData_Melee::UScWWeaponData_Melee()
+#include "Gameplay/ScWDamageType.h"
+
+UScWHandheldData_Melee::UScWHandheldData_Melee()
 {
-	DisplayName = FText::FromString(TEXT("Unnamed Melee Weapon"));
+	DisplayName = FText::FromString(TEXT("Common Melee"));
 
 	CapsuleRadiusHeight = FVector2D(14.0f, 45.0f);
 	CapsuleRelativeTransform = FTransform(FRotator::ZeroRotator, FVector(0.0f, 0.0f, -20.0f), FVector::OneVector);
 
 	SwingBaseDamage = 10.0f;
+	SwingBaseDamageTypeClass = UScWDamageType::StaticClass();
+
 	PostSwingComboTimeWindow = 0.4f;
 	SwingAIMaxRange = 128.0f;
 	SwingAIMaxRange_BlackboardKeyName = TEXT("MeleeRangeMax");
@@ -19,7 +23,7 @@ UScWWeaponData_Melee::UScWWeaponData_Melee()
 }
 
 //~ Begin Patterns
-float UScWWeaponData_Melee::GetNextPatternDelayTime(int32 InNextPatternIndex) const
+float UScWHandheldData_Melee::GetNextPatternDelayTime(int32 InNextPatternIndex) const
 {
 	return (Patterns.Num() < 2) ? (0.0f) : (PatternsTriggerTime / (float)Patterns.Num());
 }

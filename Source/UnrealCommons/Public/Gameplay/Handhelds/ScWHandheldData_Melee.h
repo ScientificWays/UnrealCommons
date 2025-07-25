@@ -4,9 +4,9 @@
 
 #include "UnrealCommons.h"
 
-#include "Gameplay/Weapons/ScWWeaponData_Base.h"
+#include "Gameplay/Handhelds/ScWHandheldData.h"
 
-#include "ScWWeaponData_Melee.generated.h"
+#include "ScWHandheldData_Melee.generated.h"
 
 //DECLARE_DELEGATE_RetVal_OneParam(bool, FScWMeleeSwingPatternFireEvent, int32);
 
@@ -31,14 +31,14 @@ struct FScWMeleeSwingPatternData
 /**
  *
  */
-UCLASS(const, Blueprintable, BlueprintType, meta = (DisplayName = "[ScW] Weapon Data (Melee)"))
-class UNREALCOMMONS_API UScWWeaponData_Melee : public UScWWeaponData_Base
+UCLASS(const, Blueprintable, BlueprintType, meta = (DisplayName = "[ScW] Handheld Data (Melee)"))
+class UNREALCOMMONS_API UScWHandheldData_Melee : public UScWHandheldData
 {
 	GENERATED_BODY()
 
 public:	
 
-	UScWWeaponData_Melee();
+	UScWHandheldData_Melee();
 	
 //~ Begin Physics
 public:
@@ -90,4 +90,11 @@ public:
 //protected:
 	//void HandlePatternFire();
 //~ End Patterns
+
+//~ Begin Animations
+public:
+
+	UPROPERTY(Category = "Animations", EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UAnimMontage> SwingMontage;
+//~ End Animations
 };

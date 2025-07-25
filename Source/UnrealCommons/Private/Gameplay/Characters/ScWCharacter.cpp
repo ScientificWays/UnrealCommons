@@ -8,17 +8,18 @@
 
 #include "Gameplay/ScWASC_Character.h"
 #include "Gameplay/ScWTypes_Gameplay.h"
-#include "Gameplay/Weapons/ScWWeapon_Base.h"
+#include "Gameplay/Handhelds/ScWHandheld.h"
+#include "Gameplay/Handhelds/ScWHandheldData.h"
 #include "Gameplay/ScWGameplayFunctionLibrary.h"
-#include "Gameplay/Weapons/ScWWeaponData_Base.h"
-#include "Gameplay/Characters/ScWCharacterMesh.h"
 #include "Gameplay/Characters/ScWCharacterData.h"
 #include "Gameplay/Characters/ScWCharacterCapsule.h"
 #include "Gameplay/Characters/ScWCharacterMovement.h"
+#include "Gameplay/Characters/ScWCharacterMesh_FirstPerson.h"
+#include "Gameplay/Characters/ScWCharacterMesh_ThirdPerson.h"
 
 AScWCharacter::AScWCharacter(const FObjectInitializer& InObjectInitializer)
 	: Super(InObjectInitializer
-		.SetDefaultSubobjectClass<UScWCharacterMesh>(ACharacter::MeshComponentName)
+		.SetDefaultSubobjectClass<UScWCharacterMesh_ThirdPerson>(ACharacter::MeshComponentName)
 		.SetDefaultSubobjectClass<UScWCharacterMovement>(ACharacter::CharacterMovementComponentName)
 		.SetDefaultSubobjectClass<UScWCharacterCapsule>(ACharacter::CapsuleComponentName))
 {
@@ -27,7 +28,7 @@ AScWCharacter::AScWCharacter(const FObjectInitializer& InObjectInitializer)
 	AIControllerClass = AScWAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
-	ScWCharacterMesh = Cast<UScWCharacterMesh>(GetMesh());
+	ScWThirdPersonCharacterMesh = Cast<UScWCharacterMesh_ThirdPerson>(GetMesh());
 	ScWCharacterMovement = Cast<UScWCharacterMovement>(GetCharacterMovement());
 	ScWCharacterCapsule = Cast<UScWCharacterCapsule>(GetCapsuleComponent());
 
@@ -90,6 +91,26 @@ void AScWCharacter::PostInitializeComponents() // AActor
 
 	ensure((GetController() == nullptr) || (IsPlayerCharacter() == GetController()->IsPlayerController()));
 
+	ForEachComponent(false, [this](UActorComponent* InComponent)
+	{
+		if (UCameraComponent* SampleCameraComponent = Cast<UCameraComponent>(InComponent))
+		{
+			ensureReturn(CachedCameraComponent == nullptr);
+			CachedCameraComponent = SampleCameraComponent;
+
+			if (USpringArmComponent* SampleSpringArmComponent = Cast<USpringArmComponent>(CachedCameraComponent->GetAttachParent()))
+			{
+				ensureReturn(CachedCameraSpringArmComponent == nullptr);
+				CachedCameraSpringArmComponent = SampleSpringArmComponent;
+			}
+		}
+		else if (UScWCharacterMesh_FirstPerson* SampleFirstPersonMeshComponent = Cast<UScWCharacterMesh_FirstPerson>(InComponent))
+		{
+			ensureReturn(ScWFirstPersonCharacterMesh == nullptr);
+			ScWFirstPersonCharacterMesh = SampleFirstPersonMeshComponent;
+		}
+	});
+
 	if (World && World->IsGameWorld() && DataAsset)
 	{
 		DataAsset->BP_InitializeCharacterComponents(this);
@@ -123,19 +144,21 @@ void AScWCharacter::BeginPlay() // AActor
 	}
 	if (DataAsset)
 	{
-		GiveWeapon(DataAsset->DefaultWeaponData);
+		GiveHandheld(DataAsset->DefaultHandheldData);
 	}
 	else
 	{
 		UKismetSystemLibrary::PrintString(this, GetName() + " has invalid DataAsset on BeginPlay()!", true, true, FLinearColor::Red, 30.0f);
 	}
+	OnIsInFirstPersonViewChangedDelegate.AddDynamic(this, &ThisClass::HandleSetInFirstPersonViewChanged);
+	SetInFirstPersonView(bStartInFirstPersonView);
 }
 
 void AScWCharacter::EndPlay(const EEndPlayReason::Type InReason) // AActor
 {
-	if (Weapon)
+	if (Handheld)
 	{
-		Weapon->Destroy();
+		Handheld->Destroy();
 	}
 	Super::EndPlay(InReason);
 }
@@ -152,9 +175,13 @@ UActorComponent* AScWCharacter::FindComponentByClass(const TSubclassOf<UActorCom
 	{
 		return CharacterASC;
 	}
-	if (ScWCharacterMesh && ScWCharacterMesh->IsA(InComponentClass))
+	if (ScWThirdPersonCharacterMesh && ScWThirdPersonCharacterMesh->IsA(InComponentClass))
 	{
-		return ScWCharacterMesh;
+		return ScWThirdPersonCharacterMesh;
+	}
+	if (ScWFirstPersonCharacterMesh && ScWFirstPersonCharacterMesh->IsA(InComponentClass))
+	{
+		return ScWFirstPersonCharacterMesh;
 	}
 	if (ScWCharacterMovement && ScWCharacterMovement->IsA(InComponentClass))
 	{
@@ -170,6 +197,18 @@ UActorComponent* AScWCharacter::FindComponentByClass(const TSubclassOf<UActorCom
 UAbilitySystemComponent* AScWCharacter::GetAbilitySystemComponent() const // IAbilitySystemInterface
 {
 	return CharacterASC;
+}
+
+UScWAnimInstance_FirstPerson* AScWCharacter::GetScWFirstPersonAnimInstance() const
+{
+	ensureReturn(ScWFirstPersonCharacterMesh, nullptr);
+	return Cast<UScWAnimInstance_FirstPerson>(ScWFirstPersonCharacterMesh->GetAnimInstance());
+}
+
+UScWAnimInstance_ThirdPerson* AScWCharacter::GetScWThirdPersonAnimInstance() const
+{
+	ensureReturn(ScWThirdPersonCharacterMesh, nullptr);
+	return Cast<UScWAnimInstance_ThirdPerson>(ScWThirdPersonCharacterMesh->GetAnimInstance());
 }
 //~ End Components
 
@@ -218,6 +257,49 @@ void AScWCharacter::NotifyControllerChanged() // APawn
 }
 //~ End Controller
 
+//~ Begin View
+void AScWCharacter::CalcCamera(float InDeltaSeconds, FMinimalViewInfo& InOutResult) // AActor
+{
+	if (CachedCameraComponent && CachedCameraComponent->IsActive())
+	{
+		CachedCameraComponent->GetCameraView(InDeltaSeconds, InOutResult);
+	}
+	else
+	{
+		Super::CalcCamera(InDeltaSeconds, InOutResult);
+	}
+}
+
+bool AScWCharacter::HasActiveCameraComponent(bool bInForceFindCamera) const // AActor
+{
+	if (CachedCameraComponent && CachedCameraComponent->IsActive())
+	{
+		return true;
+	}
+	return Super::HasActiveCameraComponent(bInForceFindCamera);
+}
+
+bool AScWCharacter::HasActivePawnControlCameraComponent() const // AActor
+{
+	if (CachedCameraComponent&& CachedCameraComponent->IsActive() && (CachedCameraComponent->bUsePawnControlRotation || (CachedCameraSpringArmComponent && CachedCameraSpringArmComponent->bUsePawnControlRotation)))
+	{
+		return true;
+	}
+	return Super::HasActivePawnControlCameraComponent();
+}
+
+void AScWCharacter::SetInFirstPersonView(const bool bInIsInFirstPersonView)
+{
+	bIsInFirstPersonView = bInIsInFirstPersonView;
+	OnIsInFirstPersonViewChangedDelegate.Broadcast(bIsInFirstPersonView);
+}
+
+void AScWCharacter::HandleSetInFirstPersonViewChanged(bool bInIsInFirstPersonView)
+{
+	UpdateHandheldAttachment();
+}
+//~ End View
+
 //~ Begin Attributes
 void AScWCharacter::OnDied()
 {
@@ -242,17 +324,17 @@ void AScWCharacter::OnDied()
 			bDestroyActorNextTick = false;
 		}
 	}
-	if (Weapon)
+	if (Handheld)
 	{
-		if (UScWWeaponData_Base* WeaponDataAsset = Weapon->GetDataAsset())
+		if (UScWHandheldData* HandheldDataAsset = Handheld->GetDataAsset())
 		{
-			if (WeaponDataAsset->bDropOnDeath)
+			if (HandheldDataAsset->bDropOnDeath)
 			{
-				DropWeapon();
+				DropHandheld();
 			}
 			else
 			{
-				RemoveWeapon();
+				RemoveHandheld();
 			}
 		}
 	}
@@ -328,15 +410,15 @@ void AScWCharacter::SetupPlayerInputComponent(UInputComponent* InInputComponent)
 		EnhancedInputComponent->BindAction(FlashlightAction, ETriggerEvent::Started, this, &AScWCharacter::InputFlashlightPressed);
 		EnhancedInputComponent->BindAction(FlashlightAction, ETriggerEvent::Completed, this, &AScWCharacter::InputFlashlightReleased);
 	}
-	if (WeaponSwitchScrollAction)
+	if (HandheldSwitchScrollAction)
 	{
-		EnhancedInputComponent->BindAction(WeaponSwitchScrollAction, ETriggerEvent::Started, this, &AScWCharacter::InputWeaponSwitchScrollPressed);
-		EnhancedInputComponent->BindAction(WeaponSwitchScrollAction, ETriggerEvent::Completed, this, &AScWCharacter::InputWeaponSwitchScrollPressed);
+		EnhancedInputComponent->BindAction(HandheldSwitchScrollAction, ETriggerEvent::Started, this, &AScWCharacter::InputHandheldSwitchScrollPressed);
+		EnhancedInputComponent->BindAction(HandheldSwitchScrollAction, ETriggerEvent::Completed, this, &AScWCharacter::InputHandheldSwitchScrollPressed);
 	}
-	if (WeaponSwitchDirectAction)
+	if (HandheldSwitchDirectAction)
 	{
-		EnhancedInputComponent->BindAction(WeaponSwitchDirectAction, ETriggerEvent::Started, this, &AScWCharacter::InputWeaponSwitchDirectPressed);
-		EnhancedInputComponent->BindAction(WeaponSwitchDirectAction, ETriggerEvent::Completed, this, &AScWCharacter::InputWeaponSwitchDirectPressed);
+		EnhancedInputComponent->BindAction(HandheldSwitchDirectAction, ETriggerEvent::Started, this, &AScWCharacter::InputHandheldSwitchDirectPressed);
+		EnhancedInputComponent->BindAction(HandheldSwitchDirectAction, ETriggerEvent::Completed, this, &AScWCharacter::InputHandheldSwitchDirectPressed);
 	}
 }
 
@@ -504,22 +586,22 @@ void AScWCharacter::InputFlashlightReleased()
 	CharacterASC->ReleaseInputID(static_cast<int32>(EScWAbilityInputID::Flashlight));
 }
 
-void AScWCharacter::InputWeaponSwitchScrollPressed()
+void AScWCharacter::InputHandheldSwitchScrollPressed()
 {
 	
 }
 
-void AScWCharacter::InputWeaponSwitchScrollReleased()
+void AScWCharacter::InputHandheldSwitchScrollReleased()
 {
 	
 }
 
-void AScWCharacter::InputWeaponSwitchDirectPressed()
+void AScWCharacter::InputHandheldSwitchDirectPressed()
 {
 	
 }
 
-void AScWCharacter::InputWeaponSwitchDirectReleased()
+void AScWCharacter::InputHandheldSwitchDirectReleased()
 {
 	
 }
@@ -576,39 +658,53 @@ void AScWCharacter::HandleGameplayCue(UObject* InSelf, FGameplayTag InGameplayCu
 }
 //~ End GameplayCue
 
-//~ Begin Weapon
-AScWWeapon_Base* AScWCharacter::GiveWeapon(UScWWeaponData_Base* InWeaponData, const bool bInDropPrevious)
+//~ Begin Handheld
+UScWAnimInstance_Handheld* AScWCharacter::GetScWHandheldAnimInstance() const
 {
-	AScWWeapon_Base* PrevWeapon = Weapon;
-	Weapon = nullptr;
+	ensureReturn(Handheld, nullptr);
+	return Handheld->GetMeshAnimInstance();
+}
 
-	CharacterASC->ClearAbilities(WeaponAbilitiesHandleArray, true);
+AScWHandheld* AScWCharacter::GiveHandheld(UScWHandheldData* InHandheldData, const bool bInDropPrevious)
+{
+	AScWHandheld* PrevHandheld = Handheld;
+	Handheld = nullptr;
 
-	if (PrevWeapon)
+	CharacterASC->ClearAbilities(HandheldAbilitiesHandleArray, true);
+
+	if (PrevHandheld)
 	{
-		UScWWeaponData_Base* WeaponDataAsset = PrevWeapon->GetDataAsset();
-		if (bInDropPrevious && WeaponDataAsset && WeaponDataAsset->bCanDrop)
+		UScWHandheldData* PrevHandheldData = PrevHandheld->GetDataAsset();
+		if (bInDropPrevious && PrevHandheldData && PrevHandheldData->bCanDrop)
 		{
-			PrevWeapon->HandleDrop();
+			PrevHandheld->HandleDrop();
 		}
 		else
 		{
-			PrevWeapon->Destroy();
+			PrevHandheld->Destroy();
 		}
 	}
-	if (InWeaponData)
+	if (InHandheldData)
 	{
-		Weapon = AScWWeapon_Base::SpawnWeapon(this, InWeaponData);
+		Handheld = AScWHandheld::SpawnHandheldFor(this, InHandheldData);
 
-		if (Weapon)
+		if (Handheld)
 		{
-			CharacterASC->GiveAbilitiesFromGiveData(InWeaponData->WeaponAbilitiesGiveData, WeaponAbilitiesHandleArray);
+			CharacterASC->GiveAbilitiesFromGiveData(InHandheldData->HandheldAbilitiesGiveData, HandheldAbilitiesHandleArray);
 		}
 	}
-	if (Weapon != PrevWeapon)
+	if (Handheld != PrevHandheld)
 	{
-		OnWeaponChanged.Broadcast();
+		OnHandheldChanged.Broadcast(PrevHandheld, Handheld);
 	}
-	return Weapon;
+	return Handheld;
 }
-//~ End Weapon
+
+void AScWCharacter::UpdateHandheldAttachment()
+{
+	if (Handheld)
+	{
+		Handheld->UpdateAttachmentToOwner();
+	}
+}
+//~ End Handheld

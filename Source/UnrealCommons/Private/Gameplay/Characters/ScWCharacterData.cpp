@@ -5,8 +5,8 @@
 #include "AI/ScWAIPC_Base.h"
 #include "AI/ScWAIController.h"
 
-#include "Gameplay/Weapons/ScWWeapon_Melee.h"
 #include "Gameplay/Characters/ScWCharacter.h"
+#include "Gameplay/Handhelds/ScWHandheld_Melee.h"
 #include "Gameplay/Characters/ScWCharacterData_InitInterface.h"
 
 #include "Framework/ScWGameState.h"
@@ -19,9 +19,9 @@ UScWCharacterData::UScWCharacterData()
 
 	DefaultTeamName = TEXT("NoTeam");
 
+	TP_SkeletalMeshRelativeTransform = FTransform(FRotator(0.0f, -90.0, 0.0f), FVector(0.0f, 0.0f, -90.0f), FVector::OneVector);
 	bRagdollOnDeath = true;
 
-	SkeletalMeshRelativeTransform = FTransform(FRotator(0.0f, -90.0, 0.0f), FVector(0.0f, 0.0f, -90.0f), FVector::OneVector);
 	CapsuleRadiusHeight = FVector2D(34.0f, 90.0f);
 
 	CONSTRUCTOR_TRY_LOAD_CLASS(UGameplayEffect, SpawnEffectClass, "/UnrealCommons/Blueprints/GameplayEffects/GE_CommonCharacterInit");
@@ -85,9 +85,9 @@ UNiagaraComponent* UScWCharacterData::BP_SpawnDamageImpactParticlesFromGameplayC
 
 	int32 GlowVariant = 0;
 
-	if (AScWWeapon_Melee* SourceMeleeWeapon = Cast<AScWWeapon_Melee>(InParams.GetEffectCauser()))
+	if (AScWHandheld_Melee* SourceMeleeHandheld = Cast<AScWHandheld_Melee>(InParams.GetEffectCauser()))
 	{
-		GlowVariant = SourceMeleeWeapon->GetSwingCounter() % 2;
+		GlowVariant = SourceMeleeHandheld->GetSwingCounter() % 2;
 	}
 	else
 	{

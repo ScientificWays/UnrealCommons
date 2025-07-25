@@ -38,11 +38,11 @@ public:
 //~ Begin Damage
 public:
 
-	UFUNCTION(Category = "Damage", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "ModifyWeaponDamage"))
-	float BP_ModifyWeaponDamage(const class UScWWeaponData_Base* InWeaponData, float InDamage) const;
+	UFUNCTION(Category = "Damage", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "ModifyHandheldDamage"))
+	float BP_ModifyHandheldDamage(const class UScWHandheldData* InHandheldData, float InDamage) const;
 
-	UFUNCTION(Category = "Damage", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "ModifyWeaponDamageTypeClass"))
-	TSubclassOf<class UScWDamageType> BP_ModifyWeaponDamageTypeClass(const class UScWWeaponData_Base* InWeaponData, TSubclassOf<class UScWDamageType> InDamageTypeClass) const;
+	UFUNCTION(Category = "Damage", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "ModifyHandheldDamageTypeClass"))
+	TSubclassOf<class UScWDamageType> BP_ModifyHandheldDamageTypeClass(const class UScWHandheldData* InHandheldData, TSubclassOf<class UScWDamageType> InDamageTypeClass) const;
 
 	UPROPERTY(Category = "Damage", EditDefaultsOnly, BlueprintReadOnly)
 	float DamageMul;

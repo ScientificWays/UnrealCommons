@@ -102,4 +102,11 @@ public:
 	UFUNCTION(Category = "Input", BlueprintCallable, BlueprintCosmetic, BlueprintPure)
 	static bool GetActionMappedKeyDisplayName(APlayerController* InPlayerController, const UInputAction* InInputAction, const bool bInLongDisplayName, FText& OutDisplayName);
 //~ End Input
+	
+//~ Begin Visibility
+public:
+
+	UFUNCTION(Category = "Visibility", BlueprintCallable, BlueprintPure)
+	static bool IsComponentRenderedFor(UPrimitiveComponent* InComponent, AActor* ForActor);
+//~ End Visibility
 };
