@@ -275,6 +275,9 @@ public:
 	UFUNCTION(Category = "Handheld", BlueprintCallable, meta = (KeyWords = "GetCurrentHandheld, GetWeapon, GetCurrentWeapon"))
 	class AScWHandheld* GetHandheld() const { return Handheld; }
 
+	template<class InClass>
+	InClass* GetHandheld() const { return Cast<InClass>(GetHandheld()); }
+
 	UFUNCTION(Category = "Handheld", BlueprintCallable, meta = (KeyWords = "GetAnimInstance, GetHandheld", DisplayName = "Get ScW Anim Instance (Handheld)"))
 	class UScWAnimInstance_Handheld* GetScWHandheldAnimInstance() const;
 

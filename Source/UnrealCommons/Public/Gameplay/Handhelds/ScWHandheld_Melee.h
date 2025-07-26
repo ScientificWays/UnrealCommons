@@ -58,6 +58,9 @@ public:
 	UFUNCTION(Category = "Swing", BlueprintCallable)
 	int32 GetSwingCounter() const { return SwingCounter; }
 
+	UFUNCTION(Category = "Swing", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "PreSwing"))
+	void BP_PreSwing();
+
 	UFUNCTION(Category = "Swing", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "BeginSwing"))
 	void BP_BeginSwing(float InSwingDamage, TSubclassOf<UDamageType> InSwingDamageTypeClass);
 
@@ -99,9 +102,6 @@ protected:
 	UFUNCTION(Category = "Patterns", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "HandleTracePattern"))
 	void BP_HandleTracePattern(const struct FScWMeleeSwingVariantData_TracePattern& InPatternData, int32 InPatternIndex);
 
-	UPROPERTY(Category = "Patterns", EditAnywhere, BlueprintReadWrite)
-	TEnumAsByte<EDrawDebugTrace::Type> TracePatternDebugType;
-
 	UPROPERTY(Category = "Patterns", BlueprintReadWrite)
 	TArray<TObjectPtr<AActor>> DefaultTracePatternIgnoredActorArray;
 
@@ -111,4 +111,11 @@ protected:
 	UPROPERTY(Transient)
 	FTimerHandle NextPatternDelayHandle;
 //~ End Patterns
+
+//~ Begin Debug
+public:
+
+	UPROPERTY(Category = "Debug", EditAnywhere, BlueprintReadWrite)
+	TEnumAsByte<EDrawDebugTrace::Type> TracePatternDebugType;
+//~ End Debug
 };

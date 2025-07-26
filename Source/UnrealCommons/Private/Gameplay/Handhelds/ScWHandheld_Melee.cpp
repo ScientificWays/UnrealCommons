@@ -117,18 +117,24 @@ void AScWHandheld_Melee::OnCollisionComponentBeginOverlap(UPrimitiveComponent* I
 //~ End Components
 
 //~ Begin Swing
-void AScWHandheld_Melee::BP_BeginSwing_Implementation(float InSwingDamage, TSubclassOf<UDamageType> InSwingDamageTypeClass)
+void AScWHandheld_Melee::BP_PreSwing_Implementation()
 {
 	++SwingCounter;
 
+	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
+	ensureReturn(MeleeDataAsset);
+
+	CurrentSwingVariantIndex = MeleeDataAsset->BP_GetNewSwingVariantIndexFor(this);
+}
+
+void AScWHandheld_Melee::BP_BeginSwing_Implementation(float InSwingDamage, TSubclassOf<UDamageType> InSwingDamageTypeClass)
+{
 	LastSwingDamage = InSwingDamage;
 	LastSwingDamageTypeClass = InSwingDamageTypeClass;
 	LastSwingAffectedActorArray.Empty();
 
 	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
 	ensureReturn(MeleeDataAsset);
-
-	CurrentSwingVariantIndex = MeleeDataAsset->BP_GetNewSwingVariantIndexFor(this);
 
 	if (MeleeDataAsset->bIsUsingCollisionComponent)
 	{

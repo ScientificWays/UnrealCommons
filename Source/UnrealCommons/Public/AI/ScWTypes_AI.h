@@ -18,22 +18,23 @@ enum class EScWAIFocusPriority : uint8
 
 namespace FScWBlackboard
 {
-	const FName KeyTargetActor = TEXT("TargetActor");
-	const FName KeyTargetLocation = TEXT("TargetLocation");
+	static const FName KeyTargetActor = TEXT("TargetActor");
+	static const FName KeyTargetLocation = TEXT("TargetLocation");
 
-	const FName KeyFollowActor = TEXT("FollowActor");
-	const FName KeyInteractActor = TEXT("InteractActor");
+	static const FName KeyFollowActor = TEXT("FollowActor");
+	static const FName KeyInteractActor = TEXT("InteractActor");
 
-	const FName KeyHintActor = TEXT("HintActor");
+	static const FName KeyHintActor = TEXT("HintActor");
 
-	const FName MeleeRangeMax = TEXT("MeleeRangeMax");
+	static const FName MeleeRangeMax = TEXT("MeleeRangeMax");
 
-	const FName FirearmShootDelay = TEXT("FirearmShootDelay");
-	const FName FirearmShootDuration = TEXT("FirearmShootDuration");
+	static const FName FirearmShootDelay = TEXT("FirearmShootDelay");
+	static const FName FirearmShootDuration = TEXT("FirearmShootDuration");
 }
 
 namespace FScWAIMessage
 {
-	static FName AbilityEnded = TEXT("AbilityEnded");
-	static FName AbilityCancelled = TEXT("AbilityCancelled");
+	static const FName AbilityEnded = TEXT("AbilityEnded");
+	static const FName AbilityCancelled = TEXT("AbilityCancelled");
+	static const FName SwingEnded = TEXT("SwingEnded");
 }

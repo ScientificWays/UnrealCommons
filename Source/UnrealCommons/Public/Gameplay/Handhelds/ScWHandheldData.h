@@ -82,8 +82,5 @@ public:
 
 	UPROPERTY(Category = "Abilities", EditDefaultsOnly, BlueprintReadOnly)
 	TArray<FScWGameplayGiveAbilityData> HandheldAbilitiesGiveData;
-
-	UPROPERTY(Category = "Abilities", EditDefaultsOnly, BlueprintReadOnly, meta = (DeprecatedProperty, DeprecationMessage = "Use HandheldAbilitiesGiveData instead"))
-	TArray<FScWGameplayGiveAbilityData> WeaponAbilitiesGiveData;
 //~ End Abilities
 };

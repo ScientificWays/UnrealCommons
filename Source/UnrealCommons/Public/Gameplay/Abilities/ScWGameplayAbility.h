@@ -6,6 +6,8 @@
 
 #include "ScWGameplayAbility.generated.h"
 
+#define ensureCancelAbilityReturn(InCondition, ...) ensure(InCondition); if (!(InCondition)) { K2_CancelAbility(); return __VA_ARGS__; };
+
 /**
  * 
  */
@@ -52,4 +54,32 @@ public:
 	UFUNCTION(Category = "Input", BlueprintCallable, meta = (KeyWords = "IsInputPressed"))
 	bool IsAbilityInputPressed() const;
 //~ End Input
+	
+//~ Begin Effects
+public:
+
+	UPROPERTY(Category = "Effects", BlueprintReadOnly)
+	TArray<TSubclassOf<UGameplayEffect>> DefaultGameplayEffectsClasses;
+
+	UPROPERTY(Category = "Effects", BlueprintReadOnly)
+	bool bRemoveDefaultGameplayEffectsOnAbilityEnd;
+
+protected:
+
+	UFUNCTION(Category = "Effects", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Apply DefaultGameplayEffects"))
+	void BP_ApplyDefaultGameplayEffects();
+
+	UFUNCTION(Category = "Effects", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Remove DefaultGameplayEffects"))
+	void BP_RemoveDefaultGameplayEffects();
+
+	UPROPERTY(Category = "Effects", BlueprintReadOnly)
+	TArray<FActiveGameplayEffectHandle> AppliedDefaultGameplayEffectsHandles;
+//~ End Effects
+	
+//~ Begin AI
+public:
+
+	UFUNCTION(Category = "AI", BlueprintCallable, meta = (AutoCreateRefTerm = "InMessage", KeyWords = "TrySendOwnerAIMessage"))
+	bool TrySendAIMessageToOwner(const FName& InMessage, bool bInAsSuccess = true);
+//~ End AI
 };

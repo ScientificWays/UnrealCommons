@@ -79,6 +79,7 @@ void UScWGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle InHan
 	{
 		if (CommitAbility(InHandle, InActorInfo, InActivationInfo))
 		{
+			BP_ApplyDefaultGameplayEffects();
 			NativeActivateAbility_Commited(InHandle, InActorInfo, InActivationInfo, InTriggerEventData);
 		}
 		else
@@ -94,30 +95,18 @@ void UScWGameplayAbility::CancelAbility(const FGameplayAbilitySpecHandle InHandl
 {
 	Super::CancelAbility(InHandle, InActorInfo, InActivationInfo, bInReplicateCancelAbility);
 
-	UBrainComponent* MessageTarget = UScWAIFunctionLibrary::TryGetActorBrainComponent(InActorInfo->OwnerActor.Get());
-	if (!MessageTarget)
-	{
-		MessageTarget = UScWAIFunctionLibrary::TryGetActorBrainComponent(InActorInfo->AvatarActor.Get());
-	}
-	if (MessageTarget)
-	{
-		FAIMessage::Send(MessageTarget, FAIMessage(FScWAIMessage::AbilityCancelled, this, true));
-	}
+	TrySendAIMessageToOwner(FScWAIMessage::AbilityCancelled, true);
 }
 
 void UScWGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo, const FGameplayAbilityActivationInfo InActivationInfo, bool bInReplicateEndAbility, bool bInWasCancelled) // UGameplayAbility
 {
 	Super::EndAbility(InHandle, InActorInfo, InActivationInfo, bInReplicateEndAbility, bInWasCancelled);
 
-	UBrainComponent* MessageTarget = UScWAIFunctionLibrary::TryGetActorBrainComponent(InActorInfo->OwnerActor.Get());
-	if (!MessageTarget)
+	if (bRemoveDefaultGameplayEffectsOnAbilityEnd)
 	{
-		MessageTarget = UScWAIFunctionLibrary::TryGetActorBrainComponent(InActorInfo->AvatarActor.Get());
+		BP_RemoveDefaultGameplayEffects();
 	}
-	if (MessageTarget)
-	{
-		FAIMessage::Send(MessageTarget, FAIMessage(FScWAIMessage::AbilityEnded, this, true));
-	}
+	TrySendAIMessageToOwner(FScWAIMessage::AbilityEnded, !bInWasCancelled);
 }
 //~ End Ability
 
@@ -129,3 +118,48 @@ bool UScWGameplayAbility::IsAbilityInputPressed() const
 	return AbilitySpec->InputPressed;
 }
 //~ End Input
+
+//~ Begin Effects
+void UScWGameplayAbility::BP_ApplyDefaultGameplayEffects_Implementation()
+{
+	ensureReturn(OwnerASC);
+	ensure(AppliedDefaultGameplayEffectsHandles.IsEmpty());
+
+	for (TSubclassOf<UGameplayEffect> SampleEffectClass : DefaultGameplayEffectsClasses)
+	{
+		auto SampleEffectHandle = OwnerASC->TryApplyGameplayEffectByClass(SampleEffectClass);
+		AppliedDefaultGameplayEffectsHandles.Add(SampleEffectHandle);
+	}
+}
+
+void UScWGameplayAbility::BP_RemoveDefaultGameplayEffects_Implementation()
+{
+	ensureReturn(OwnerASC);
+
+	for (const auto& SampleEffectHandle : AppliedDefaultGameplayEffectsHandles)
+	{
+		OwnerASC->RemoveActiveGameplayEffect(SampleEffectHandle);
+	}
+	AppliedDefaultGameplayEffectsHandles.Empty();
+}
+//~ End Effects
+
+	
+//~ Begin AI
+bool UScWGameplayAbility::TrySendAIMessageToOwner(const FName& InMessage, bool bInAsSuccess)
+{
+	ensureReturn(CurrentActorInfo, false);
+
+	UBrainComponent* MessageTarget = UScWAIFunctionLibrary::TryGetActorBrainComponent(CurrentActorInfo->OwnerActor.Get());
+	if (!MessageTarget)
+	{
+		MessageTarget = UScWAIFunctionLibrary::TryGetActorBrainComponent(CurrentActorInfo->AvatarActor.Get());
+	}
+	if (MessageTarget)
+	{
+		FAIMessage::Send(MessageTarget, FAIMessage(InMessage, this, bInAsSuccess));
+		return true;
+	}
+	return false;
+}
+//~ End AI

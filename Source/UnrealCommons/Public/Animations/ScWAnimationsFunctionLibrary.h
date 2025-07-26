@@ -38,8 +38,8 @@ public:
 	UFUNCTION(Category = "Montages | Character Data", BlueprintCallable, BlueprintPure, meta = (AutoCreateRefTerm = "InName", AdvancedDisplay = "InFallbackValue", KeyWords = "GetDuration, GetSectionLength"))
 	static float GetMontageSectionLengthByNameFromData(const struct FScWCharacterMontageData& InCharacterMontageData, const FName& InName, float InFallbackValue = 0.0f);
 
-	UFUNCTION(Category = "Montages | Character Data", BlueprintCallable, meta = (ReturnDisplayName = "Out Max Duration", AdvancedDisplay = "bInPlayFirstPerson, bInPlayThirdPerson, bInPlayHandheld", KeyWords = "PlayMontageData, PlayCharacterMontageData"))
-	static float PlayCharacterMontagesFromData(class AScWCharacter* InCharacter, const struct FScWCharacterMontageData& InCharacterMontageData, const bool bInStopAllMontages = true, const bool bInPlayFirstPerson = true, const bool bInPlayThirdPerson = true, const bool bInPlayHandheld = true);
+	UFUNCTION(Category = "Montages | Character Data", BlueprintCallable, meta = (ReturnDisplayName = "Out Max Duration", KeyWords = "PlayMontageData, PlayCharacterMontageData"))
+	static float PlayCharacterMontagesFromData(class AScWCharacter* InCharacter, const struct FScWCharacterMontageData& InCharacterMontageData, const bool bInStopAllMontages = true);
 //~ End Montages
 
 //~ Begin Static Data

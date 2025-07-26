@@ -11,7 +11,7 @@
 /**
  * 
  */
-UCLASS(meta = (DisplayName = "[ScW] Common Jump Gameplay Ability"))
+UCLASS(meta = (DisplayName = "[ScW] Common Swing Gameplay Ability"))
 class UNREALCOMMONS_API UScWGameplayAbility_CommonSwing : public UScWGameplayAbility
 {
 
@@ -24,21 +24,57 @@ public:
 //~ Begin Ability
 protected:
 	virtual void NativeActivateAbility_Commited(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo, const FGameplayAbilityActivationInfo InActivationInfo, const FGameplayEventData* InTriggerEventData) override; // UGameplayAbility
+	virtual void BeginSwingSequence();
+
+	UFUNCTION()
+	void OnPreSwingDelayFinished();
+
+	UFUNCTION()
+	void OnSwingFinished();
+
+	UFUNCTION()
+	void OnPostSwingDelayFinished();
+
 	virtual void EndAbility(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo, const FGameplayAbilityActivationInfo InActivationInfo, bool bInReplicateEndAbility, bool bInWasCancelled) override; // UGameplayAbility
 //~ End Ability
 
-//~ Begin Jump
-public:
-
-	UPROPERTY(Category = "Jump", EditAnywhere, BlueprintReadWrite)
-	bool bStopJumpingOnAbilityEnd;
-
+//~ Begin Swing
 protected:
 
-	UFUNCTION()
-	void OnPlayerLandedCallback(const FHitResult& InHitResult);
+	UFUNCTION(Category = "Swing", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Handle PreSwing", ReturnDisplayName = "Out PreSwingDelay"))
+	float BP_HandlePreSwing();
 
-	UFUNCTION()
-	void OnAbilityInputReleaseCallback(float InTimeHeld);
-//~ End Jump
+	UFUNCTION(Category = "Swing", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Handle BeginSwing", ReturnDisplayName = "Out SwingDuration"))
+	float BP_HandleBeginSwing();
+
+	UFUNCTION(Category = "Swing", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Handle EndSwing", ReturnDisplayName = "Out PostSwingDelay"))
+	float BP_HandleEndSwing();
+
+	UFUNCTION(Category = "Swing", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Handle PostSwing"))
+	void BP_HandlePostSwing();
+
+	UFUNCTION(Category = "Swing", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Get SwingDamage"))
+	float BP_GetSwingDamage() const;
+
+	UFUNCTION(Category = "Swing", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Get SwingDamageTypeClass"))
+	TSubclassOf<class UScWDamageType> BP_GetSwingDamageTypeClass() const;
+
+	UPROPERTY(Category = "Swing", BlueprintReadWrite)
+	int32 PreSwingMontageSectionIndex;
+
+	UPROPERTY(Category = "Swing", BlueprintReadWrite)
+	int32 SwingMontageSectionIndex;
+
+	UPROPERTY(Category = "Swing", BlueprintReadWrite)
+	int32 PostSwingMontageSectionIndex;
+
+	UPROPERTY(Category = "Swing", BlueprintReadWrite)
+	bool bLoopIfInputIsPressed;
+
+	UPROPERTY(Category = "Swing", BlueprintReadOnly)
+	TObjectPtr<class AScWHandheld_Melee> OwnerMelee;
+
+	UPROPERTY(Category = "Swing", BlueprintReadOnly)
+	TObjectPtr<class UScWHandheldData_Melee> OwnerMeleeData;
+//~ End Swing
 };

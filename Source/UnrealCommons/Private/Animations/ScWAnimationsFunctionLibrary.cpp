@@ -47,34 +47,31 @@ float UScWAnimationsFunctionLibrary::GetMontageSectionLengthByNameFromData(const
 	return GetMontageSectionLengthByName(InCharacterMontageData.GetRelevantTimingMontage(), InName, InCharacterMontageData.TimeMul, InFallbackValue);
 }
 
-float UScWAnimationsFunctionLibrary::PlayCharacterMontagesFromData(AScWCharacter* InCharacter, const FScWCharacterMontageData& InCharacterMontageData, const bool bInStopAllMontages, const bool bInPlayFirstPerson, const bool bInPlayThirdPerson, const bool bInPlayHandheld)
+float UScWAnimationsFunctionLibrary::PlayCharacterMontagesFromData(AScWCharacter* InCharacter, const FScWCharacterMontageData& InCharacterMontageData, const bool bInStopAllMontages)
 {
 	ensureReturn(InCharacter, 0.0f);
 
 	float PlayRateInv = 1.0f / FMath::Max(InCharacterMontageData.TimeMul, FLT_EPSILON);
 	float OutMaxDuration = 0.0f;
 
-	if (bInPlayFirstPerson)
+	if (InCharacterMontageData.FirstPersonMontage)
 	{
 		if (UScWAnimInstance_FirstPerson* FirstPersonAnimInstance = InCharacter->GetScWFirstPersonAnimInstance())
 		{
-			ensure(InCharacterMontageData.FirstPersonMontage);
 			OutMaxDuration = FMath::Max(FirstPersonAnimInstance->Montage_Play(InCharacterMontageData.FirstPersonMontage, PlayRateInv, EMontagePlayReturnType::Duration, 0.0f, bInStopAllMontages), 0.0f);
 		}
 	}
-	if (bInPlayThirdPerson)
+	if (InCharacterMontageData.ThirdPersonMontage)
 	{
 		if (UScWAnimInstance_ThirdPerson* ThirdPersonAnimInstance = InCharacter->GetScWThirdPersonAnimInstance())
 		{
-			ensure(InCharacterMontageData.ThirdPersonMontage);
 			OutMaxDuration = FMath::Max(ThirdPersonAnimInstance->Montage_Play(InCharacterMontageData.ThirdPersonMontage, PlayRateInv, EMontagePlayReturnType::Duration, 0.0f, bInStopAllMontages), 0.0f);
 		}
 	}
-	if (bInPlayHandheld)
+	if (InCharacterMontageData.ActiveHandheldMontage)
 	{
 		if (UScWAnimInstance_Handheld* HandheldAnimInstance = InCharacter->GetScWHandheldAnimInstance())
 		{
-			ensure(InCharacterMontageData.ActiveHandheldMontage);
 			OutMaxDuration = FMath::Max(HandheldAnimInstance->Montage_Play(InCharacterMontageData.ActiveHandheldMontage, PlayRateInv, EMontagePlayReturnType::Duration, 0.0f, bInStopAllMontages), 0.0f);
 		}
 	}

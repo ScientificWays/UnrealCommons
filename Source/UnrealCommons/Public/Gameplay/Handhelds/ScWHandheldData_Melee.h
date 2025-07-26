@@ -38,7 +38,7 @@ struct FScWMeleeSwingVariantData
 	TArray<FScWMeleeSwingVariantData_TracePattern> TracePatterns;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FScWCharacterMontageData SwingMontageData;
+	FScWCharacterMontageData MontageData;
 
 	static const FScWMeleeSwingVariantData Invalid;
 };
