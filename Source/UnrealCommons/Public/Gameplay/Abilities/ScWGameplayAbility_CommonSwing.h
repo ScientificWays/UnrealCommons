@@ -6,20 +6,20 @@
 
 #include "Gameplay/Abilities/ScWGameplayAbility.h"
 
-#include "ScWGameplayAbility_CommonJump.generated.h"
+#include "ScWGameplayAbility_CommonSwing.generated.h"
 
 /**
  * 
  */
 UCLASS(meta = (DisplayName = "[ScW] Common Jump Gameplay Ability"))
-class UNREALCOMMONS_API UScWGameplayAbility_CommonJump : public UScWGameplayAbility
+class UNREALCOMMONS_API UScWGameplayAbility_CommonSwing : public UScWGameplayAbility
 {
 
 	GENERATED_BODY()
 
 public:
 
-	UScWGameplayAbility_CommonJump();
+	UScWGameplayAbility_CommonSwing();
 
 //~ Begin Ability
 protected:

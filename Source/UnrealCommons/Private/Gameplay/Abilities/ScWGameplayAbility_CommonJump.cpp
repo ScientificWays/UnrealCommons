@@ -24,14 +24,8 @@ UScWGameplayAbility_CommonJump::UScWGameplayAbility_CommonJump()
 }
 
 //~ Begin Ability
-void UScWGameplayAbility_CommonJump::NativeActivateAbility(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo, const FGameplayAbilityActivationInfo InActivationInfo, const FGameplayEventData* InTriggerEventData) // UGameplayAbility
+void UScWGameplayAbility_CommonJump::NativeActivateAbility_Commited(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo, const FGameplayAbilityActivationInfo InActivationInfo, const FGameplayEventData* InTriggerEventData) // UGameplayAbility
 {
-	if (!CommitAbility(InHandle, InActorInfo, InActivationInfo))
-	{			
-		constexpr bool bReplicateEndAbility = true;
-		constexpr bool bWasCancelled = true;
-		EndAbility(InHandle, InActorInfo, InActivationInfo, bReplicateEndAbility, bWasCancelled);
-	}
 	ensureReturn(OwnerCharacter);
 	OwnerCharacter->Jump();
 

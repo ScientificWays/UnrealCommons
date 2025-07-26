@@ -21,6 +21,7 @@ namespace FScWGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_CancelBy_SprintActivate, "Ability.CancelBy.SprintActivate", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_CancelBy_CrouchActivate, "Ability.CancelBy.CrouchActivate", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_CancelBy_WalkSlowActivate, "Ability.CancelBy.WalkSlowActivate", "[Native] TODO: Add description");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_CancelBy_SwingActivate, "Ability.CancelBy.SwingActivate", "[Native] TODO: Add description");
 	/*UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_CancelBy_AimActivate, "Ability.CancelBy.AimActivate", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_CancelBy_EquipHolster, "Ability.CancelBy.EquipHolster", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_CancelBy_MeleeActivate, "Ability.CancelBy.MeleeActivate", "[Native] TODO: Add description");

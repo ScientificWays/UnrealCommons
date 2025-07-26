@@ -10,27 +10,37 @@
 
 #include "ScWHandheldData_Melee.generated.h"
 
-//DECLARE_DELEGATE_RetVal_OneParam(bool, FScWMeleeSwingPatternFireEvent, int32);
-
-USTRUCT(BlueprintType, meta = (DisplayName = "[ScW] Melee Swing Pattern Data"))
-struct FScWMeleeSwingPatternData
+USTRUCT(BlueprintType, meta = (DisplayName = "[ScW] Melee Swing Variant Data: Trace Pattern"))
+struct FScWMeleeSwingVariantData_TracePattern
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "bIsUsingTraces"))
 	FRotator TraceOffsetRotation = FRotator::ZeroRotator;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "bIsUsingTraces"))
 	FVector TraceOffsetLocation = FVector::ZeroVector;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "bIsUsingTraces"))
 	float TraceLength = 128.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "bIsUsingTraces"))
 	float TraceShapeRadius = 32.0f;
+};
+
+USTRUCT(BlueprintType, meta = (DisplayName = "[ScW] Melee Swing Variant Data"))
+struct FScWMeleeSwingVariantData
+{
+	GENERATED_BODY()
+
+	// Can be empty if no traces needed
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FScWMeleeSwingVariantData_TracePattern> TracePatterns;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FScWCharacterMontageData SwingMontageData;
+
+	static const FScWMeleeSwingVariantData Invalid;
 };
 
 /**
@@ -49,9 +59,12 @@ public:
 public:
 
 	UPROPERTY(Category = "Physics", EditDefaultsOnly, BlueprintReadOnly)
+	bool bIsUsingCollisionComponent;
+
+	UPROPERTY(Category = "Physics", EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "bIsUsingCollisionComponent"))
 	FVector2D CapsuleRadiusHeight;
 
-	UPROPERTY(Category = "Physics", EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(Category = "Physics", EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "bIsUsingCollisionComponent"))
 	FTransform CapsuleRelativeTransform;
 //~ End Physics
 	
@@ -74,32 +87,19 @@ public:
 	FName SwingAIMaxRange_BlackboardKeyName;
 //~ End Swing
 
-//~ Begin Patterns
+//~ Begin Variants
 public:
 
-	//UFUNCTION(Category = "Patterns", BlueprintCallable)
-	//void BeginFireTraces(FScWMeleeSwingPatternFireEvent InPatternFireEvent);
+	UFUNCTION(Category = "Patterns", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "GetNewSwingVariantIndexFor"))
+	int32 BP_GetNewSwingVariantIndexFor(const class AScWHandheld_Melee* InMeleeHandheld) const;
 
-	UPROPERTY(Category = "Patterns", EditDefaultsOnly, BlueprintReadOnly)
-	bool bIsUsingPatterns;
+	UPROPERTY(Category = "Variants", EditDefaultsOnly, BlueprintReadOnly)
+	TArray<FScWMeleeSwingVariantData> Variants;
 
-	UPROPERTY(Category = "Patterns", EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "bIsUsingPatterns"))
-	TArray<FScWMeleeSwingPatternData> Patterns;
+	UPROPERTY(Category = "Variants", EditDefaultsOnly, BlueprintReadOnly)
+	float VariantBaseDuration;
 
-	UPROPERTY(Category = "Patterns", EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "bIsUsingPatterns"))
-	float PatternsTriggerTime;
-
-	UFUNCTION(Category = "Patterns", BlueprintCallable)
-	float GetNextPatternDelayTime(int32 InNextPatternIndex) const;
-
-//protected:
-	//void HandlePatternFire();
-//~ End Patterns
-
-//~ Begin Animations
-public:
-
-	UPROPERTY(Category = "Animations", EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<UAnimMontage> SwingMontage;
-//~ End Animations
+	UFUNCTION(Category = "Variants", BlueprintCallable)
+	float GetNextPatternDelayTime(int32 InVariantIndex, int32 InNextPatternIndex) const;
+//~ End Variants
 };

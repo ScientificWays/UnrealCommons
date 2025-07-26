@@ -85,24 +85,30 @@ protected:
 //~ Begin Patterns
 public:
 
-	UFUNCTION(Category = "Patterns", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "GetPatternStartLocation"))
-	FVector BP_GetPatternStartLocation(const struct FScWMeleeSwingPatternData& InPatternData, int32 InPatternIndex) const;
+	UFUNCTION(Category = "Patterns", BlueprintCallable)
+	const struct FScWMeleeSwingVariantData& GetCurrentSwingVariantData() const;
 
-	UFUNCTION(Category = "Patterns", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "BeginPatternTraces"))
-	void BP_BeginPatternTraces();
+	UFUNCTION(Category = "Patterns", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "GetPatternStartLocation"))
+	FVector BP_GetPatternStartLocation(const struct FScWMeleeSwingVariantData_TracePattern& InPatternData, int32 InPatternIndex) const;
+
+	UFUNCTION(Category = "Patterns", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "BeginTracePatterns"))
+	void BP_BeginTracePatterns();
 
 protected:
 
-	UFUNCTION(Category = "Patterns", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "HandlePatternTrace"))
-	void BP_HandlePatternTrace(const struct FScWMeleeSwingPatternData& InPatternData, int32 InPatternIndex);
+	UFUNCTION(Category = "Patterns", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "HandleTracePattern"))
+	void BP_HandleTracePattern(const struct FScWMeleeSwingVariantData_TracePattern& InPatternData, int32 InPatternIndex);
 
 	UPROPERTY(Category = "Patterns", EditAnywhere, BlueprintReadWrite)
-	TEnumAsByte<EDrawDebugTrace::Type> PatternTraceDebugType;
+	TEnumAsByte<EDrawDebugTrace::Type> TracePatternDebugType;
 
 	UPROPERTY(Category = "Patterns", BlueprintReadWrite)
-	TArray<TObjectPtr<AActor>> DefaultPatternTraceIgnoredActorArray;
+	TArray<TObjectPtr<AActor>> DefaultTracePatternIgnoredActorArray;
 
-	UPROPERTY()
+	UPROPERTY(Transient)
+	int32 CurrentSwingVariantIndex;
+
+	UPROPERTY(Transient)
 	FTimerHandle NextPatternDelayHandle;
 //~ End Patterns
 };

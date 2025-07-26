@@ -77,7 +77,16 @@ void UScWGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle InHan
 	}
 	else
 	{
-		NativeActivateAbility(InHandle, InActorInfo, InActivationInfo, InTriggerEventData);
+		if (CommitAbility(InHandle, InActorInfo, InActivationInfo))
+		{
+			NativeActivateAbility_Commited(InHandle, InActorInfo, InActivationInfo, InTriggerEventData);
+		}
+		else
+		{
+			constexpr bool bReplicateEndAbility = true;
+			constexpr bool bWasCancelled = true;
+			EndAbility(InHandle, InActorInfo, InActivationInfo, bReplicateEndAbility, bWasCancelled);
+		}
 	}
 }
 

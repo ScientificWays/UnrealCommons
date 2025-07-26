@@ -30,18 +30,19 @@ void AScWHandheld_Melee::BP_UpdateFromDataAsset_Implementation() // AScWHandheld
 
 	if (CollisionComponent)
 	{
-		if (MeleeDataAsset->bIsUsingPatterns)
+		if (MeleeDataAsset->bIsUsingCollisionComponent)
+		{
+			CollisionComponent->SetCapsuleSize(MeleeDataAsset->CapsuleRadiusHeight.X, MeleeDataAsset->CapsuleRadiusHeight.Y);
+			CollisionComponent->SetRelativeTransform(MeleeDataAsset->CapsuleRelativeTransform);
+
+			CollisionComponent->SetAutoActivate(true);
+			CollisionComponent->SetActive(true);
+		}
+		else
 		{
 			CollisionComponent->SetAutoActivate(false);
 			CollisionComponent->SetActive(false);
 		}
-		else
-		{
-			CollisionComponent->SetAutoActivate(true);
-			CollisionComponent->SetActive(true);
-		}
-		CollisionComponent->SetCapsuleSize(MeleeDataAsset->CapsuleRadiusHeight.X, MeleeDataAsset->CapsuleRadiusHeight.Y);
-		CollisionComponent->SetRelativeTransform(MeleeDataAsset->CapsuleRelativeTransform);
 	}
 }
 
@@ -65,23 +66,23 @@ void AScWHandheld_Melee::BeginPlay() // AActor
 
 	if (CollisionComponent)
 	{
-		if (MeleeDataAsset->bIsUsingPatterns)
-		{
-			
-		}
-		else
+		if (MeleeDataAsset->bIsUsingCollisionComponent)
 		{
 			CollisionComponent->ClearMoveIgnoreActors();
 			CollisionComponent->IgnoreActorWhenMoving(OwnerCharacter, true);
 
 			CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AScWHandheld_Melee::OnCollisionComponentBeginOverlap);
 		}
+		else
+		{
+			
+		}
 	}
 	SwingCounter = 0;
 
 	BP_EndSwing();
 
-	DefaultPatternTraceIgnoredActorArray = { OwnerCharacter, this };
+	DefaultTracePatternIgnoredActorArray = { OwnerCharacter, this };
 
 	Super::BeginPlay();
 }
@@ -127,14 +128,16 @@ void AScWHandheld_Melee::BP_BeginSwing_Implementation(float InSwingDamage, TSubc
 	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
 	ensureReturn(MeleeDataAsset);
 
-	if (MeleeDataAsset->bIsUsingPatterns)
-	{
-		BP_BeginPatternTraces();
-	}
-	else
+	CurrentSwingVariantIndex = MeleeDataAsset->BP_GetNewSwingVariantIndexFor(this);
+
+	if (MeleeDataAsset->bIsUsingCollisionComponent)
 	{
 		ensureReturn(CollisionComponent);
 		CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	}
+	else
+	{
+		BP_BeginTracePatterns();
 	}
 }
 
@@ -143,14 +146,14 @@ void AScWHandheld_Melee::BP_EndSwing_Implementation()
 	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
 	ensureReturn(MeleeDataAsset);
 
-	if (MeleeDataAsset->bIsUsingPatterns)
-	{
-
-	}
-	else
+	if (MeleeDataAsset->bIsUsingCollisionComponent)
 	{
 		ensureReturn(CollisionComponent);
 		CollisionComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+	else
+	{
+		
 	}
 }
 
@@ -176,22 +179,30 @@ void AScWHandheld_Melee::BP_HandleSwingHit_Implementation(const FHitResult& InHi
 //~ End Swing
 
 //~ Begin Patterns
-FVector AScWHandheld_Melee::BP_GetPatternStartLocation_Implementation(const FScWMeleeSwingPatternData& InPatternData, int32 InPatternIndex) const
+const FScWMeleeSwingVariantData& AScWHandheld_Melee::GetCurrentSwingVariantData() const
+{
+	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
+	ensureReturn(MeleeDataAsset, FScWMeleeSwingVariantData::Invalid);
+
+	ensureReturn(MeleeDataAsset->Variants.IsValidIndex(CurrentSwingVariantIndex), FScWMeleeSwingVariantData::Invalid);
+	return MeleeDataAsset->Variants[CurrentSwingVariantIndex];
+}
+
+FVector AScWHandheld_Melee::BP_GetPatternStartLocation_Implementation(const FScWMeleeSwingVariantData_TracePattern& InPatternData, int32 InPatternIndex) const
 {
 	ensureReturn(OwnerCharacter, GetActorLocation());
 	return OwnerCharacter->GetPawnViewLocation() + OwnerCharacter->GetViewRotation().Vector() * InPatternData.TraceOffsetLocation;
 }
 
-void AScWHandheld_Melee::BP_BeginPatternTraces_Implementation()
+void AScWHandheld_Melee::BP_BeginTracePatterns_Implementation()
 {
-	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
-	ensureReturn(MeleeDataAsset);
-
-	ensureReturn(!MeleeDataAsset->Patterns.IsEmpty());
-	BP_HandlePatternTrace(MeleeDataAsset->Patterns[0], 0);
+	const FScWMeleeSwingVariantData& CurrentSwingVariantData = GetCurrentSwingVariantData();
+	
+	ensureReturn(!CurrentSwingVariantData.TracePatterns.IsEmpty());
+	BP_HandleTracePattern(CurrentSwingVariantData.TracePatterns[0], 0);
 }
 
-void AScWHandheld_Melee::BP_HandlePatternTrace_Implementation(const FScWMeleeSwingPatternData& InPatternData, int32 InPatternIndex)
+void AScWHandheld_Melee::BP_HandleTracePattern_Implementation(const FScWMeleeSwingVariantData_TracePattern& InPatternData, int32 InPatternIndex)
 {
 	ensureReturn(OwnerCharacter);
 
@@ -208,8 +219,8 @@ void AScWHandheld_Melee::BP_HandlePatternTrace_Implementation(const FScWMeleeSwi
 	FCollisionQueryParams TraceParams = FCollisionQueryParams::DefaultQueryParam;
 
 	TArray<AActor*> ActorsToIgnore;
-	ActorsToIgnore.Append(DefaultPatternTraceIgnoredActorArray);
-	UKismetSystemLibrary::SphereTraceMulti(this, TraceStart, TraceEnd, InPatternData.TraceShapeRadius, TraceTypeQuery_Melee, false, ActorsToIgnore, PatternTraceDebugType, TraceHitResults, true);
+	ActorsToIgnore.Append(DefaultTracePatternIgnoredActorArray);
+	UKismetSystemLibrary::SphereTraceMulti(this, TraceStart, TraceEnd, InPatternData.TraceShapeRadius, TraceTypeQuery_Melee, false, ActorsToIgnore, TracePatternDebugType, TraceHitResults, true);
 	
 	if (TraceHitResults.IsEmpty())
 	{
@@ -219,19 +230,21 @@ void AScWHandheld_Melee::BP_HandlePatternTrace_Implementation(const FScWMeleeSwi
 	{
 		BP_HandleSwingHit(SampleHitResult);
 	}
+	const FScWMeleeSwingVariantData& CurrentSwingVariantData = GetCurrentSwingVariantData();
+
 	int32 NextPatternIndex = InPatternIndex + 1;
-	if (MeleeDataAsset->Patterns.IsValidIndex(NextPatternIndex))
+	if (CurrentSwingVariantData.TracePatterns.IsValidIndex(NextPatternIndex))
 	{
-		float NextPatternDelayTime = MeleeDataAsset->GetNextPatternDelayTime(NextPatternIndex);
+		float NextPatternDelayTime = MeleeDataAsset->GetNextPatternDelayTime(CurrentSwingVariantIndex, NextPatternIndex);
 		if (NextPatternDelayTime > 0.0f)
 		{
 			FTimerDelegate NextPatternMethodDelegate;
-			NextPatternMethodDelegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED_TwoParams(AScWHandheld_Melee, BP_HandlePatternTrace, const FScWMeleeSwingPatternData&, int32), InPatternData, NextPatternIndex);
+			NextPatternMethodDelegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED_TwoParams(AScWHandheld_Melee, BP_HandleTracePattern, const FScWMeleeSwingVariantData_TracePattern&, int32), InPatternData, NextPatternIndex);
 			World->GetTimerManager().SetTimer(NextPatternDelayHandle, NextPatternMethodDelegate, NextPatternDelayTime, false);
 		}
 		else
 		{
-			BP_HandlePatternTrace(InPatternData, NextPatternIndex);
+			BP_HandleTracePattern(InPatternData, NextPatternIndex);
 		}
 	}
 }

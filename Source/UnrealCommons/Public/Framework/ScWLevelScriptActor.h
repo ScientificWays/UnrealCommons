@@ -73,13 +73,13 @@ public:
 //~ Begin Progression
 public:
 
-	UFUNCTION(Category = "Progression", BlueprintImplementableEvent)
+	UFUNCTION(Category = "Progression", BlueprintImplementableEvent, meta = (DisplayName = "OnPlayerProgressionTaskMeterValueChanged"))
 	void BP_OnPlayerProgressionTaskMeterValueChanged(class AScWPlayerState* InPlayerState, const class UScWProgressionTaskData* InTaskData, const FName& InMeterName, const int32 InValue);
 
-	UFUNCTION(Category = "Progression", BlueprintImplementableEvent)
+	UFUNCTION(Category = "Progression", BlueprintImplementableEvent, meta = (DisplayName = "OnPlayerCompletedProgressionTaskMeter"))
 	void BP_OnPlayerCompletedProgressionTaskMeter(class AScWPlayerState* InPlayerState, const class UScWProgressionTaskData* InTaskData, const FName& InMeterName);
 
-	UFUNCTION(Category = "Progression", BlueprintImplementableEvent)
+	UFUNCTION(Category = "Progression", BlueprintImplementableEvent, meta = (DisplayName = "OnPlayerCompletedProgressionTask"))
 	void BP_OnPlayerCompletedProgressionTask(class AScWPlayerState* InPlayerState, const class UScWProgressionTaskData* InTaskData);
 //~ End Progression
 };

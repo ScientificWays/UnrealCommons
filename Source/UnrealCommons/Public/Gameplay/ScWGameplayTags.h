@@ -20,6 +20,7 @@ namespace FScWGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_CancelBy_SprintActivate);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_CancelBy_CrouchActivate);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_CancelBy_WalkSlowActivate);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_CancelBy_SwingActivate);
 
 	// Set by caller
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(SetByCaller_Duration);
