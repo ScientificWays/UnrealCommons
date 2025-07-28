@@ -110,6 +110,13 @@ public:
 	static bool IsComponentRenderedFor(UPrimitiveComponent* InComponent, AActor* ForActor);
 //~ End Visibility
 	
+//~ Begin Materials
+public:
+
+	UFUNCTION(Category = "Materials", BlueprintCallable)
+	static void ApplyOverrideMaterialsToMeshComponent(UMeshComponent* InMeshComponent, const TMap<int32, UMaterialInterface*> InOverrideMaterials);
+//~ End Materials
+	
 //~ Begin Interact
 public:
 

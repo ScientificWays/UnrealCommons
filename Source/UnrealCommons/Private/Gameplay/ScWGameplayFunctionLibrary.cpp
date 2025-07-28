@@ -212,6 +212,18 @@ bool UScWGameplayFunctionLibrary::IsComponentRenderedFor(UPrimitiveComponent* In
 }
 //~ End Visibility
 
+//~ Begin Materials
+void UScWGameplayFunctionLibrary::ApplyOverrideMaterialsToMeshComponent(UMeshComponent* InMeshComponent, const TMap<int32, UMaterialInterface*> InOverrideMaterials)
+{
+	ensureReturn(InMeshComponent);
+
+	for (const auto& SampleKeyValie : InOverrideMaterials)
+	{
+		InMeshComponent->SetMaterial(SampleKeyValie.Key, SampleKeyValie.Value);
+	}
+}
+//~ End Materials
+
 //~ Begin Interact
 TArray<AActor*> UScWGameplayFunctionLibrary::FilterActorsByCanInteract(const UObject* InWCO, UScWInteractComponent* InSourceInteractComponent, const TArray<AActor*>& InActorArray, const bool bReverseCondition, const bool bInReturnAllInsteadOfNothing, const bool bInReturnFirstValidActor)
 {

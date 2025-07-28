@@ -183,6 +183,8 @@ void AScWHandheld_Melee::BP_UpdateCurrentSwingVariantData_Implementation()
 	}
 	ensureReturn(FinalVariantsArrayPtr);
 	const TArray<FScWMeleeSwingVariantData>& FinalVariantsArray = *FinalVariantsArrayPtr;
+
+	ensureReturn(!FinalVariantsArray.IsEmpty());
 	CurrentSwingVariantData = FinalVariantsArray[SwingCounter % FinalVariantsArray.Num()];
 }
 
