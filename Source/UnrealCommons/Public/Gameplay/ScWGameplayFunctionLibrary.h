@@ -109,4 +109,14 @@ public:
 	UFUNCTION(Category = "Visibility", BlueprintCallable, BlueprintPure)
 	static bool IsComponentRenderedFor(UPrimitiveComponent* InComponent, AActor* ForActor);
 //~ End Visibility
+	
+//~ Begin Interact
+public:
+
+	UFUNCTION(Category = "Interact", BlueprintCallable, meta = (WorldContext = "InWCO", DeterminesOutputType = "InActorArray"))
+	static TArray<AActor*> FilterActorsByCanInteract(const UObject* InWCO, class UScWInteractComponent* InSourceInteractComponent, const TArray<AActor*>& InActorArray, const bool bReverseCondition, const bool bInReturnAllInsteadOfNothing = false, const bool bInReturnFirstValidActor = false);
+
+	UFUNCTION(Category = "Interact", BlueprintCallable, BlueprintPure, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InTraceDebugData, InActorFilterArray"))
+	static class UScWInteractComponent* FindInteractTargetInLocation(const UObject* InWCO, const FVector& InLocation, const float InRadius, ETraceTypeQuery InTraceTypeQuery, const struct FScWTraceDebugData& InTraceDebugData, const TArray<AActor*>& InActorFilterArray);
+//~ End Interact
 };

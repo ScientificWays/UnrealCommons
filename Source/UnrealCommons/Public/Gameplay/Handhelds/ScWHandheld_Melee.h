@@ -5,6 +5,7 @@
 #include "UnrealCommons.h"
 
 #include "Gameplay/Handhelds/ScWHandheld.h"
+#include "Gameplay/Handhelds/ScWTypes_Handhelds.h"
 
 #include "ScWHandheld_Melee.generated.h"
 
@@ -58,6 +59,9 @@ public:
 	UFUNCTION(Category = "Swing", BlueprintCallable)
 	int32 GetSwingCounter() const { return SwingCounter; }
 
+	UFUNCTION(Category = "Patterns", BlueprintCallable)
+	const FScWMeleeSwingVariantData& GetCurrentSwingVariantData() const { return CurrentSwingVariantData; }
+
 	UFUNCTION(Category = "Swing", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "PreSwing"))
 	void BP_PreSwing();
 
@@ -68,6 +72,9 @@ public:
 	void BP_EndSwing();
 
 protected:
+
+	UFUNCTION(Category = "Swing", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Update CurrentSwingVariantData"))
+	void BP_UpdateCurrentSwingVariantData();
 
 	UFUNCTION(Category = "Swing", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "HandleSwingHit"))
 	void BP_HandleSwingHit(const FHitResult& InHitResult);
@@ -83,16 +90,19 @@ protected:
 
 	UPROPERTY(Category = "Swing", BlueprintReadWrite)
 	TArray<TObjectPtr<AActor>> LastSwingAffectedActorArray;
+
+	UPROPERTY(Transient)
+	FScWMeleeSwingVariantData CurrentSwingVariantData;
 //~ End Swing
 
 //~ Begin Patterns
 public:
 
-	UFUNCTION(Category = "Patterns", BlueprintCallable)
-	const struct FScWMeleeSwingVariantData& GetCurrentSwingVariantData() const;
-
 	UFUNCTION(Category = "Patterns", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "GetPatternStartLocation"))
 	FVector BP_GetPatternStartLocation(const struct FScWMeleeSwingVariantData_TracePattern& InPatternData, int32 InPatternIndex) const;
+
+	UFUNCTION(Category = "Patterns", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "GetNextPatternDelayTime"))
+	float BP_GetNextPatternDelayTime(int32 InNextPatternIndex) const;
 
 	UFUNCTION(Category = "Patterns", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "BeginTracePatterns"))
 	void BP_BeginTracePatterns();
@@ -104,9 +114,6 @@ protected:
 
 	UPROPERTY(Category = "Patterns", BlueprintReadWrite)
 	TArray<TObjectPtr<AActor>> DefaultTracePatternIgnoredActorArray;
-
-	UPROPERTY(Transient)
-	int32 CurrentSwingVariantIndex;
 
 	UPROPERTY(Transient)
 	FTimerHandle NextPatternDelayHandle;

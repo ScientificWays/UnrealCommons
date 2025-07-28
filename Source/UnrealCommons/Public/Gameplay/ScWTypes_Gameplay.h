@@ -41,10 +41,42 @@ struct FScWGameplayGiveAbilityData
 	EScWAbilityInputID InputID = EScWAbilityInputID::UsePrimary;
 };
 
-/*USTRUCT(BlueprintType)
-struct FScWGameplayAbilityActorInfo : public FGameplayAbilityActorInfo
+USTRUCT(BlueprintType, meta = (DisplayName = "[ScW] Interact Data"))
+struct FScWInteractData
 {
 	GENERATED_BODY()
 
-	virtual void InitFromActor(AActor* InOwnerActor, AActor* InAvatarActor, UAbilitySystemComponent* InAbilitySystemComponent) override;
-};*/
+	UPROPERTY(Category = "Interact", Transient, BlueprintReadOnly)
+	TObjectPtr<class UScWInteractComponent> Source = nullptr;
+
+	UPROPERTY(Category = "Interact", Transient, BlueprintReadOnly)
+	TObjectPtr<class UScWInteractComponent> Target = nullptr;
+
+	UPROPERTY(Category = "Interact", Transient, BlueprintReadOnly)
+	float StartTime = 0.0f;
+
+	UPROPERTY(Category = "Interact", Transient, BlueprintReadOnly)
+	float FinishTime = 0.0f;
+
+	static const FScWInteractData Invalid;
+};
+
+USTRUCT(BlueprintType, meta = (DisplayName = "[ScW] Trace Debug Data"))
+struct FScWTraceDebugData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(Category = Trace, BlueprintReadWrite)
+	TEnumAsByte<EDrawDebugTrace::Type> DrawDebugType = EDrawDebugTrace::None;
+
+	UPROPERTY(Category = Trace, BlueprintReadWrite)
+	float DrawTime = 5.0f;
+
+	UPROPERTY(Category = Trace, BlueprintReadWrite)
+	FLinearColor TraceColor = FLinearColor::Green;
+
+	UPROPERTY(Category = Trace, BlueprintReadWrite)
+	FLinearColor TraceHitColor = FLinearColor::Red;
+
+	static const FScWTraceDebugData None;
+};

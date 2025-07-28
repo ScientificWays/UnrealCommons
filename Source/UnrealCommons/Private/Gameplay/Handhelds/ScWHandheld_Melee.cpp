@@ -2,8 +2,9 @@
 
 #include "Gameplay/Handhelds/ScWHandheld_Melee.h"
 
+#include "Gameplay/ScWASC_Character.h"
+#include "Gameplay/Combo/ScWComboData.h"
 #include "Gameplay/Characters/ScWCharacter.h"
-
 #include "Gameplay/ScWGameplayFunctionLibrary.h"
 #include "Gameplay/Handhelds/ScWHandheldData_Melee.h"
 
@@ -120,11 +121,7 @@ void AScWHandheld_Melee::OnCollisionComponentBeginOverlap(UPrimitiveComponent* I
 void AScWHandheld_Melee::BP_PreSwing_Implementation()
 {
 	++SwingCounter;
-
-	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
-	ensureReturn(MeleeDataAsset);
-
-	CurrentSwingVariantIndex = MeleeDataAsset->BP_GetNewSwingVariantIndexFor(this);
+	BP_UpdateCurrentSwingVariantData();
 }
 
 void AScWHandheld_Melee::BP_BeginSwing_Implementation(float InSwingDamage, TSubclassOf<UDamageType> InSwingDamageTypeClass)
@@ -163,6 +160,32 @@ void AScWHandheld_Melee::BP_EndSwing_Implementation()
 	}
 }
 
+void AScWHandheld_Melee::BP_UpdateCurrentSwingVariantData_Implementation()
+{
+	const TArray<FScWMeleeSwingVariantData>* FinalVariantsArrayPtr = nullptr;
+
+	ensureReturn(OwnerCharacter);
+	UScWASC_Character* OwnerASC = OwnerCharacter->GetCharacterASC();
+	ensureReturn(OwnerASC);
+
+	const UScWComboData* OwnerRelevantCombo = OwnerASC->GetRelevantCombo();
+
+	if (OwnerRelevantCombo && !OwnerRelevantCombo->OverrideSwingVariants.IsEmpty())
+	{
+		FinalVariantsArrayPtr = &OwnerRelevantCombo->OverrideSwingVariants;
+	}
+	else
+	{
+		UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
+		ensureReturn(MeleeDataAsset);
+
+		FinalVariantsArrayPtr = &MeleeDataAsset->SwingVariants;
+	}
+	ensureReturn(FinalVariantsArrayPtr);
+	const TArray<FScWMeleeSwingVariantData>& FinalVariantsArray = *FinalVariantsArrayPtr;
+	CurrentSwingVariantData = FinalVariantsArray[SwingCounter % FinalVariantsArray.Num()];
+}
+
 void AScWHandheld_Melee::BP_HandleSwingHit_Implementation(const FHitResult& InHitResult)
 {
 	ensureReturn(OwnerCharacter);
@@ -185,25 +208,23 @@ void AScWHandheld_Melee::BP_HandleSwingHit_Implementation(const FHitResult& InHi
 //~ End Swing
 
 //~ Begin Patterns
-const FScWMeleeSwingVariantData& AScWHandheld_Melee::GetCurrentSwingVariantData() const
-{
-	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
-	ensureReturn(MeleeDataAsset, FScWMeleeSwingVariantData::Invalid);
-
-	ensureReturn(MeleeDataAsset->Variants.IsValidIndex(CurrentSwingVariantIndex), FScWMeleeSwingVariantData::Invalid);
-	return MeleeDataAsset->Variants[CurrentSwingVariantIndex];
-}
-
 FVector AScWHandheld_Melee::BP_GetPatternStartLocation_Implementation(const FScWMeleeSwingVariantData_TracePattern& InPatternData, int32 InPatternIndex) const
 {
 	ensureReturn(OwnerCharacter, GetActorLocation());
 	return OwnerCharacter->GetPawnViewLocation() + OwnerCharacter->GetViewRotation().Vector() * InPatternData.TraceOffsetLocation;
 }
 
+float AScWHandheld_Melee::BP_GetNextPatternDelayTime_Implementation(int32 InNextPatternIndex) const
+{
+	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
+	ensureReturn(MeleeDataAsset, 0.0f);
+
+	const auto& TracePatterns = CurrentSwingVariantData.TracePatterns;
+	return (TracePatterns.Num() < 2) ? (0.0f) : (MeleeDataAsset->SwingVariantBaseDuration / (float)TracePatterns.Num());
+}
+
 void AScWHandheld_Melee::BP_BeginTracePatterns_Implementation()
 {
-	const FScWMeleeSwingVariantData& CurrentSwingVariantData = GetCurrentSwingVariantData();
-	
 	ensureReturn(!CurrentSwingVariantData.TracePatterns.IsEmpty());
 	BP_HandleTracePattern(CurrentSwingVariantData.TracePatterns[0], 0);
 }
@@ -236,12 +257,10 @@ void AScWHandheld_Melee::BP_HandleTracePattern_Implementation(const FScWMeleeSwi
 	{
 		BP_HandleSwingHit(SampleHitResult);
 	}
-	const FScWMeleeSwingVariantData& CurrentSwingVariantData = GetCurrentSwingVariantData();
-
 	int32 NextPatternIndex = InPatternIndex + 1;
 	if (CurrentSwingVariantData.TracePatterns.IsValidIndex(NextPatternIndex))
 	{
-		float NextPatternDelayTime = MeleeDataAsset->GetNextPatternDelayTime(CurrentSwingVariantIndex, NextPatternIndex);
+		float NextPatternDelayTime = BP_GetNextPatternDelayTime(NextPatternIndex);
 		if (NextPatternDelayTime > 0.0f)
 		{
 			FTimerDelegate NextPatternMethodDelegate;
@@ -255,4 +274,3 @@ void AScWHandheld_Melee::BP_HandleTracePattern_Implementation(const FScWMeleeSwi
 	}
 }
 //~ End Patterns
-

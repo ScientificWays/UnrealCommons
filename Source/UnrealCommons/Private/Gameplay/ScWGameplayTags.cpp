@@ -10,8 +10,8 @@ namespace FScWGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Movement_Crouch, "Ability.Movement.Crouch", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Movement_WalkSlow, "Ability.Movement.WalkSlow", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Handheld_Swing, "Ability.Handheld.Swing", "[Native] TODO: Melee weapon swing ability");
-	/*UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Handheld, "Ability.Handheld", "[Native] TODO: Add description");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Cling, "Ability.Cling", "[Native] TODO: Add description");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Interact, "Ability.Interact", "[Native] TODO: Add description");
+	/*UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Cling, "Ability.Cling", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Handheld_Aim, "Ability.Handheld.Aim", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Handheld_Reload, "Ability.Handheld.Reload", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Ladder, "Ability.Ladder", "[Native] TODO: Add description");*/
@@ -22,6 +22,7 @@ namespace FScWGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_CancelBy_CrouchActivate, "Ability.CancelBy.CrouchActivate", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_CancelBy_WalkSlowActivate, "Ability.CancelBy.WalkSlowActivate", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_CancelBy_SwingActivate, "Ability.CancelBy.SwingActivate", "[Native] TODO: Add description");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_CancelBy_InteractActivate, "Ability.CancelBy.InteractActivate", "[Native] TODO: Add description");
 	/*UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_CancelBy_AimActivate, "Ability.CancelBy.AimActivate", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_CancelBy_EquipHolster, "Ability.CancelBy.EquipHolster", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_CancelBy_MeleeActivate, "Ability.CancelBy.MeleeActivate", "[Native] TODO: Add description");
@@ -76,9 +77,10 @@ namespace FScWGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(State_EvadeAnyDamage, "State.EvadeAnyDamage", "[Native] TODO: Add description");
 
 	// Ability-driven states
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(State_FlashlightOn, "State.FlashlightOn", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(State_Swinging, "State.Swinging", "[Native] Melee swing state");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(State_Aiming, "State.Aiming", "[Native] Weapon aim state");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(State_FlashlightOn, "State.FlashlightOn", "[Native] TODO: Add description");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(State_Interacting, "State.Interacting", "[Native] TODO: Add description");
 
 	// Unsused states
 	/*UE_DEFINE_GAMEPLAY_TAG_COMMENT(State_BeingRevived, "State.BeingRevived", "[Native] TODO: Add description");

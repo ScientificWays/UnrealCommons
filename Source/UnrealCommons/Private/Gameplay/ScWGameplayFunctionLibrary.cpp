@@ -2,9 +2,10 @@
 
 #include "Gameplay/ScWGameplayFunctionLibrary.h"
 
-#include "Gameplay/ScWDamageType.h"
-
 #include "Framework/ScWGameState.h"
+
+#include "Gameplay/ScWDamageType.h"
+#include "Gameplay/Interact/ScWInteractComponent.h"
 
 //~ Begin Health
 TSubclassOf<UGameplayEffect> UScWGameplayFunctionLibrary::GetSetHealthGameplayEffectClass(const UObject* InWCO)
@@ -210,3 +211,76 @@ bool UScWGameplayFunctionLibrary::IsComponentRenderedFor(UPrimitiveComponent* In
 	return true;
 }
 //~ End Visibility
+
+//~ Begin Interact
+TArray<AActor*> UScWGameplayFunctionLibrary::FilterActorsByCanInteract(const UObject* InWCO, UScWInteractComponent* InSourceInteractComponent, const TArray<AActor*>& InActorArray, const bool bReverseCondition, const bool bInReturnAllInsteadOfNothing, const bool bInReturnFirstValidActor)
+{
+	ensureReturn(InWCO, {});
+	ensureReturn(InSourceInteractComponent, {});
+	
+	AActor* SourceOwnerActor = InSourceInteractComponent->GetOwner();
+	TArray<AActor*> OutActorArray;
+
+	for (AActor* SampleActor : InActorArray)
+	{
+		if (SampleActor == SourceOwnerActor)
+		{
+			continue;
+		}
+		if (UScWInteractComponent* SampleInteractComponent = SampleActor->FindComponentByClass<UScWInteractComponent>())
+		{
+			float InteractDuration = 0.0f;
+			if (bReverseCondition != SampleInteractComponent->BP_CanReceiveInteractFrom(InSourceInteractComponent, InteractDuration))
+			{
+				OutActorArray.Add(SampleActor);
+
+				if (bInReturnFirstValidActor)
+				{
+					return OutActorArray;
+				}
+			}
+		}
+	}
+	if (bInReturnAllInsteadOfNothing && OutActorArray.IsEmpty())
+	{
+		return InActorArray;
+	}
+	return OutActorArray;
+}
+
+UScWInteractComponent* UScWGameplayFunctionLibrary::FindInteractTargetInLocation(const UObject* InWCO, const FVector& InLocation, const float InRadius, ETraceTypeQuery InTraceTypeQuery, const FScWTraceDebugData& InTraceDebugData, const TArray<AActor*>& InActorFilterArray)
+{
+	TArray<FHitResult> TraceHitResultArray;
+	UKismetSystemLibrary::SphereTraceMulti(InWCO, InLocation, InLocation, InRadius, InTraceTypeQuery, false, InActorFilterArray, InTraceDebugData.DrawDebugType, TraceHitResultArray, false, InTraceDebugData.TraceColor, InTraceDebugData.TraceHitColor, InTraceDebugData.DrawTime);
+	
+	UScWInteractComponent* OutTarget = nullptr;
+	float NearestDistanceSquared = FLT_MAX;
+
+	for (const FHitResult& SampleHitResult : TraceHitResultArray)
+	{
+		AActor* SampleActor = SampleHitResult.GetActor();
+
+		if (UScWInteractComponent* SampleComponent = SampleActor->FindComponentByClass<UScWInteractComponent>())
+		{
+			FVector SampleLocation = SampleActor->GetActorLocation();
+
+			float SampleDistanceSquared = FVector::DistSquared(InLocation, SampleLocation);
+
+			if (SampleDistanceSquared < NearestDistanceSquared)
+			{
+				FHitResult CheckHitResult;
+
+				UKismetSystemLibrary::LineTraceSingle(InWCO, InLocation, SampleLocation, InTraceTypeQuery, false, {}, InTraceDebugData.DrawDebugType, CheckHitResult, false, InTraceDebugData.TraceColor, InTraceDebugData.TraceHitColor, InTraceDebugData.DrawTime);
+
+				if (CheckHitResult.GetActor() == nullptr || CheckHitResult.GetActor() == SampleActor)
+				{
+					OutTarget = SampleComponent;
+
+					NearestDistanceSquared = SampleDistanceSquared;
+				}
+			}
+		}
+	}
+	return OutTarget;
+}
+//~ End Interact

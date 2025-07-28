@@ -59,22 +59,22 @@ protected:
 	UFUNCTION(Category = "Swing", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Get SwingDamageTypeClass"))
 	TSubclassOf<class UScWDamageType> BP_GetSwingDamageTypeClass() const;
 
-	UPROPERTY(Category = "Swing", BlueprintReadWrite)
+	UPROPERTY(Category = "Swing", EditAnywhere, BlueprintReadWrite)
 	int32 PreSwingMontageSectionIndex;
 
-	UPROPERTY(Category = "Swing", BlueprintReadWrite)
+	UPROPERTY(Category = "Swing", EditAnywhere, BlueprintReadWrite)
 	int32 SwingMontageSectionIndex;
 
-	UPROPERTY(Category = "Swing", BlueprintReadWrite)
+	UPROPERTY(Category = "Swing", EditAnywhere, BlueprintReadWrite)
 	int32 PostSwingMontageSectionIndex;
 
-	UPROPERTY(Category = "Swing", BlueprintReadWrite)
+	UPROPERTY(Category = "Swing", EditAnywhere, BlueprintReadWrite)
 	bool bLoopIfInputIsPressed;
 
-	UPROPERTY(Category = "Swing", BlueprintReadOnly)
+	UPROPERTY(Category = "Swing", Transient, BlueprintReadOnly)
 	TObjectPtr<class AScWHandheld_Melee> OwnerMelee;
 
-	UPROPERTY(Category = "Swing", BlueprintReadOnly)
+	UPROPERTY(Category = "Swing", Transient, BlueprintReadOnly)
 	TObjectPtr<class UScWHandheldData_Melee> OwnerMeleeData;
 //~ End Swing
 };

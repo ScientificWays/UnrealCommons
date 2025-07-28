@@ -4,6 +4,8 @@
 
 #include "UnrealCommons.h"
 
+#include "Gameplay/Handhelds/ScWTypes_Handhelds.h"
+
 #include "ScWComboData.generated.h"
 
 /**
@@ -38,10 +40,10 @@ public:
 //~ Begin Damage
 public:
 
-	UFUNCTION(Category = "Damage", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "ModifyHandheldDamage"))
+	UFUNCTION(Category = "Damage", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Modify HandheldDamage"))
 	float BP_ModifyHandheldDamage(const class UScWHandheldData* InHandheldData, float InDamage) const;
 
-	UFUNCTION(Category = "Damage", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "ModifyHandheldDamageTypeClass"))
+	UFUNCTION(Category = "Damage", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Modify HandheldDamageTypeClass"))
 	TSubclassOf<class UScWDamageType> BP_ModifyHandheldDamageTypeClass(const class UScWHandheldData* InHandheldData, TSubclassOf<class UScWDamageType> InDamageTypeClass) const;
 
 	UPROPERTY(Category = "Damage", EditDefaultsOnly, BlueprintReadOnly)
@@ -57,10 +59,13 @@ public:
 	float DamageImpactImpulseMul;
 //~ End Damage
 
-//~ Begin Animations
+//~ Begin Swing Variants
 public:
 
-	UPROPERTY(Category = "Animations", EditDefaultsOnly, BlueprintReadOnly)
-	TArray<TObjectPtr<const UAnimMontage>> MontageVariants;
-//~ End Animations
+	UFUNCTION(Category = "Swing Variants", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Modify SwingVariants"))
+	void BP_ModifySwingVariants(const class UScWHandheldData* InHandheldData, const TArray<FScWMeleeSwingVariantData>& InVariants, TArray<FScWMeleeSwingVariantData>& OutVariants) const;
+
+	UPROPERTY(Category = "Swing Variants", EditDefaultsOnly, BlueprintReadOnly)
+	TArray<FScWMeleeSwingVariantData> OverrideSwingVariants;
+//~ End Swing Variants
 };

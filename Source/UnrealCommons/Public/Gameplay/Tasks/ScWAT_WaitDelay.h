@@ -22,8 +22,11 @@ public:
 //~ Begin Initialize
 public:
 
-	UFUNCTION(BlueprintCallable, Category = "Ability | Tasks", meta = (DisplayName = "[ScW] WaitDelayOrFinishImmediately", HidePin = "InOwningAbility", DefaultToSelf = "InOwningAbility", BlueprintInternalUseOnly = "true"))
+	UFUNCTION(BlueprintCallable, Category = "Ability | Tasks", meta = (DisplayName = "[ScW] Wait delay or finish Immediately", HidePin = "InOwningAbility", DefaultToSelf = "InOwningAbility", BlueprintInternalUseOnly = "true"))
 	static UScWAT_WaitDelay* WaitDelayOrFinishImmediately(UGameplayAbility* InOwningAbility, float InTime);
+
+	UFUNCTION(BlueprintCallable, Category = "Ability | Tasks", meta = (DisplayName = "[ScW] Wait delay or finish NextTick", HidePin = "InOwningAbility", DefaultToSelf = "InOwningAbility", BlueprintInternalUseOnly = "true"))
+	static UScWAT_WaitDelay* WaitDelayOrFinishNextTick(UGameplayAbility* InOwningAbility, float InTime);
 
 protected:
 	virtual void Activate() override; // UGameplayTask
@@ -42,8 +45,9 @@ protected:
 
 //~ Begin Data
 protected:
-	FTimerHandle TimerHandle;
+	bool bCanFinishImmediately;
 	float Time;
 	float TimeStarted;
+	FTimerHandle TimerHandle;
 //~ End Data
 };

@@ -83,7 +83,7 @@ public:
 
 protected:
 
-	UPROPERTY(Transient, VisibleAnywhere)
+	UPROPERTY(Category = "Components", Transient, BlueprintReadOnly, VisibleAnywhere)
 	TObjectPtr<class UScWASC_Character> CharacterASC;
 
 	UPROPERTY(Transient)

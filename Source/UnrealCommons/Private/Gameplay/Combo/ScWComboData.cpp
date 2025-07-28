@@ -24,3 +24,11 @@ TSubclassOf<UScWDamageType> UScWComboData::BP_ModifyHandheldDamageTypeClass_Impl
 {
 	return OverrideDamageTypeClass ? OverrideDamageTypeClass : InDamageTypeClass;
 }
+//~ End Damage
+
+//~ Begin Swing Variants
+void UScWComboData::BP_ModifySwingVariants_Implementation(const UScWHandheldData* InHandheldData, const TArray<FScWMeleeSwingVariantData>& InVariants, TArray<FScWMeleeSwingVariantData>& OutVariants) const
+{
+	OutVariants = OverrideSwingVariants.IsEmpty() ? InVariants : OverrideSwingVariants;
+}
+//~ End Swing Variants

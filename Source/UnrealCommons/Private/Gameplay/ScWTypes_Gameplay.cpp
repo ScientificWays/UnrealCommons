@@ -2,9 +2,5 @@
 
 #include "Gameplay/ScWTypes_Gameplay.h"
 
-/*void FScWGameplayAbilityActorInfo::InitFromActor(AActor* InOwnerActor, AActor* InAvatarActor, UAbilitySystemComponent* InAbilitySystemComponent)
-{
-	Super::InitFromActor(InOwnerActor, InAvatarActor, InAbilitySystemComponent);
-
-
-}*/
+const FScWInteractData FScWInteractData::Invalid = FScWInteractData();
+const FScWTraceDebugData FScWTraceDebugData::None = FScWTraceDebugData();

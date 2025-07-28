@@ -22,24 +22,8 @@ UScWHandheldData_Melee::UScWHandheldData_Melee()
 	SwingAIMaxRange = 128.0f;
 	SwingAIMaxRange_BlackboardKeyName = TEXT("MeleeRangeMax");
 
-	VariantBaseDuration = 1.0f;
+	SwingVariantBaseDuration = 1.0f;
 }
 
-//~ Begin Variants
-int32 UScWHandheldData_Melee::BP_GetNewSwingVariantIndexFor_Implementation(const AScWHandheld_Melee* InMeleeHandheld) const
-{
-	ensureReturn(InMeleeHandheld, INDEX_NONE);
-	int32 SwingCounter = InMeleeHandheld->GetSwingCounter();
-	
-	ensureReturn(!Variants.IsEmpty(), INDEX_NONE);
-	return SwingCounter % Variants.Num();
-}
-
-float UScWHandheldData_Melee::GetNextPatternDelayTime(int32 InVariantIndex, int32 InNextPatternIndex) const
-{
-	ensureReturn(Variants.IsValidIndex(InVariantIndex), 0.0f);
-
-	const auto& TracePatterns = Variants[InVariantIndex].TracePatterns;
-	return (TracePatterns.Num() < 2) ? (0.0f) : (VariantBaseDuration / (float)TracePatterns.Num());
-}
-//~ End Variants
+//~ Begin Swing Variants
+//~ End Swing Variants

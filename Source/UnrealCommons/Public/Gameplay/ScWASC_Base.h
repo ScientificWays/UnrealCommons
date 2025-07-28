@@ -362,6 +362,6 @@ protected:
 	TObjectPtr<const class UScWComboData> RelevantCombo;
 
 	UPROPERTY(Category = "Combo", BlueprintAssignable)
-	FBoolSignature OnRelevantComboUpdated;
+	FSuccessSignature OnRelevantComboUpdated;
 //~ End Combo
 };

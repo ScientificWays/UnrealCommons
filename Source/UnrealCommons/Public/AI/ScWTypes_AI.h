@@ -37,4 +37,5 @@ namespace FScWAIMessage
 	static const FName AbilityEnded = TEXT("AbilityEnded");
 	static const FName AbilityCancelled = TEXT("AbilityCancelled");
 	static const FName SwingEnded = TEXT("SwingEnded");
+	static const FName InteractEnded = TEXT("InteractEnded");
 }

@@ -21,6 +21,8 @@ UScWGameplayAbility_CommonSwing::UScWGameplayAbility_CommonSwing()
 		SetAssetTags(Tags);
 	}
 	CancelAbilitiesWithTag.AddTag(FScWGameplayTags::Ability_CancelBy_SwingActivate);
+	BlockAbilitiesWithTag.AddTag(FScWGameplayTags::Ability_CancelBy_SwingActivate);
+
 	ActivationOwnedTags.AddTag(FScWGameplayTags::State_Swinging);
 
 	PreSwingMontageSectionIndex = 0;
@@ -48,7 +50,7 @@ void UScWGameplayAbility_CommonSwing::BeginSwingSequence()
 {
 	float PreSwingDelay = BP_HandlePreSwing();
 
-	UScWAT_WaitDelay* PreSwingWaitDelayTask = UScWAT_WaitDelay::WaitDelayOrFinishImmediately(this, PreSwingDelay);
+	UScWAT_WaitDelay* PreSwingWaitDelayTask = UScWAT_WaitDelay::WaitDelayOrFinishNextTick(this, PreSwingDelay);
 	PreSwingWaitDelayTask->OnFinish.AddDynamic(this, &ThisClass::OnPreSwingDelayFinished);
 	PreSwingWaitDelayTask->ReadyForActivation();
 }
@@ -57,7 +59,7 @@ void UScWGameplayAbility_CommonSwing::OnPreSwingDelayFinished()
 {
 	float SwingDuration = BP_HandleBeginSwing();
 
-	UScWAT_WaitDelay* PrePatternsWaitDelayTask = UScWAT_WaitDelay::WaitDelayOrFinishImmediately(this, SwingDuration);
+	UScWAT_WaitDelay* PrePatternsWaitDelayTask = UScWAT_WaitDelay::WaitDelayOrFinishNextTick(this, SwingDuration);
 	PrePatternsWaitDelayTask->OnFinish.AddDynamic(this, &ThisClass::OnSwingFinished);
 	PrePatternsWaitDelayTask->ReadyForActivation();
 }
@@ -72,7 +74,7 @@ void UScWGameplayAbility_CommonSwing::OnSwingFinished()
 	}
 	else
 	{
-		UScWAT_WaitDelay* PrePatternsWaitDelayTask = UScWAT_WaitDelay::WaitDelayOrFinishImmediately(this, PostSwingDelay);
+		UScWAT_WaitDelay* PrePatternsWaitDelayTask = UScWAT_WaitDelay::WaitDelayOrFinishNextTick(this, PostSwingDelay);
 		PrePatternsWaitDelayTask->OnFinish.AddDynamic(this, &ThisClass::OnPostSwingDelayFinished);
 		PrePatternsWaitDelayTask->ReadyForActivation();
 	}

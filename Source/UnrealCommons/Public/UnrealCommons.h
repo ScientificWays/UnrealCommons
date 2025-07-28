@@ -90,10 +90,12 @@ DECLARE_LOG_CATEGORY_EXTERN(LogScWGameplay, Log, All);
 #define ensureBreak(InCondition) ensure(InCondition); if (!(InCondition)) break;
 #define ensureIf(InCondition) ensure(InCondition); if (InCondition)
 #define ensureReturn(InCondition, ...) ensure(InCondition); if (!(InCondition)) return __VA_ARGS__;
+#define ensureGoto(InCondition, InLabel) ensure(InCondition); if (!(InCondition)) goto InLabel;
 
 #define TraceTypeQuery_Visibility				ETraceTypeQuery::TraceTypeQuery1
 #define TraceTypeQuery_Camera					ETraceTypeQuery::TraceTypeQuery2
 #define TraceTypeQuery_Melee					ETraceTypeQuery::TraceTypeQuery3
+#define TraceTypeQuery_Interact					ETraceTypeQuery::TraceTypeQuery4
 
 #define CollisionChannel_Visibility				ECollisionChannel::ECC_GameTraceChannel1
 #define CollisionChannel_Camera					ECollisionChannel::ECC_GameTraceChannel2
@@ -113,8 +115,8 @@ DECLARE_LOG_CATEGORY_EXTERN(LogScWGameplay, Log, All);
 //#define ObjectTypeQuery_PawnA					EObjectTypeQuery::ObjectTypeQuery7
 //#define ObjectTypeQuery_PawnB					EObjectTypeQuery::ObjectTypeQuery8
 //#define ObjectTypeQuery_Building				EObjectTypeQuery::ObjectTypeQuery9
-//#define ObjectTypeQuery_Driver					EObjectTypeQuery::ObjectTypeQuery10
-//#define ObjectTypeQuery_Volume					EObjectTypeQuery::ObjectTypeQuery11
+//#define ObjectTypeQuery_Driver				EObjectTypeQuery::ObjectTypeQuery10
+//#define ObjectTypeQuery_Volume				EObjectTypeQuery::ObjectTypeQuery11
 
 class FUnrealCommonsModule : public IModuleInterface
 {

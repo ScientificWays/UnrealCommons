@@ -14,6 +14,7 @@ namespace FScWGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Movement_Crouch);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Movement_WalkSlow);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Handheld_Swing);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Interact);
 
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_CancelBy_Stunned);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_CancelBy_JumpActivate);
@@ -21,6 +22,7 @@ namespace FScWGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_CancelBy_CrouchActivate);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_CancelBy_WalkSlowActivate);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_CancelBy_SwingActivate);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_CancelBy_InteractActivate);
 
 	// Set by caller
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(SetByCaller_Duration);
@@ -47,9 +49,10 @@ namespace FScWGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(State_EvadeAnyDamage);
 
 	// Ability-driven states
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(State_FlashlightOn);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(State_Swinging);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(State_Aiming);
-	UE_DECLARE_GAMEPLAY_TAG_EXTERN(State_FlashlightOn);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(State_Interacting);
 
 	// Movement modes
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(MovementMode);

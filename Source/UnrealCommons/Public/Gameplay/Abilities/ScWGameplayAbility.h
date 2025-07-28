@@ -8,6 +8,11 @@
 
 #define ensureCancelAbilityReturn(InCondition, ...) ensure(InCondition); if (!(InCondition)) { K2_CancelAbility(); return __VA_ARGS__; };
 
+#define COMMON_WAIT_DELAY_OR_FINISH_NEXT_TICK_TASK(InVariableName, InTime, InMethodName) \
+	UScWAT_WaitDelay* InVariableName = UScWAT_WaitDelay::WaitDelayOrFinishNextTick(this, InTime); \
+	InVariableName->OnFinish.AddDynamic(this, &ThisClass::InMethodName); \
+	InVariableName->ReadyForActivation();
+
 /**
  * 
  */
@@ -28,14 +33,14 @@ protected:
 	
 //~ Begin Owner
 public:
-	
-	UPROPERTY(Category = "Owner", BlueprintReadOnly)
+
+	UPROPERTY(Category = "Owner", Transient, BlueprintReadOnly)
 	TObjectPtr<class AScWCharacter> OwnerCharacter;
 
-	UPROPERTY(Category = "Owner", BlueprintReadOnly)
+	UPROPERTY(Category = "Owner", Transient, BlueprintReadOnly)
 	TObjectPtr<class UScWASC_Base> OwnerASC;
-	
-	UPROPERTY(Category = "Owner", BlueprintReadOnly)
+
+	UPROPERTY(Category = "Owner", Transient, BlueprintReadOnly)
 	TObjectPtr<class AScWPlayerController> OwnerPlayerController;
 //~ End Owner
 	
