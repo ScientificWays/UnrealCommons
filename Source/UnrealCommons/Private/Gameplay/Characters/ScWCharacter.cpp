@@ -319,7 +319,7 @@ void AScWCharacter::OnDied()
 		{
 			bDestroyActorNextTick = false;
 		}
-		else if (DataAsset->DiedAnimInstanceClass)
+		else if (DataAsset->TP_DiedAnimInstanceClass)
 		{
 			bDestroyActorNextTick = false;
 		}

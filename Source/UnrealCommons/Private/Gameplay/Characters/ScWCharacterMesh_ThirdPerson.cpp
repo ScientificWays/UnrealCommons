@@ -111,9 +111,9 @@ void UScWCharacterMesh_ThirdPerson::HandleDied()
 		SetSimulatePhysics(true);
 		SetCollisionProfileName(RagdollCollisionProfileName);
 	}
-	else if (InitCharacterData->DiedAnimInstanceClass)
+	else if (InitCharacterData->TP_DiedAnimInstanceClass)
 	{
-		SetAnimInstanceClass(InitCharacterData->DiedAnimInstanceClass);
+		SetAnimInstanceClass(InitCharacterData->TP_DiedAnimInstanceClass);
 	}
 }
 //~ End Damage
