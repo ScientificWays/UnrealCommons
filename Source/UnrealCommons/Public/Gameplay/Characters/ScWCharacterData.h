@@ -71,12 +71,6 @@ public:
 	UPROPERTY(Category = "Mesh | ThirdPerson", EditDefaultsOnly, BlueprintReadOnly)
 	FTransform TP_SkeletalMeshRelativeTransform;
 
-	UPROPERTY(Category = "Mesh | ThirdPerson", EditDefaultsOnly, BlueprintReadOnly, meta = (DeprecatedProperty, DeprecationMessage = "Use TP_SkeletalMesh instead"))
-	TObjectPtr<USkeletalMesh> SkeletalMesh;
-
-	UPROPERTY(Category = "Mesh | ThirdPerson", EditDefaultsOnly, BlueprintReadOnly, meta = (DeprecatedProperty, DeprecationMessage = "Use TP_SkeletalMeshRelativeTransform instead"))
-	FTransform SkeletalMeshRelativeTransform;
-
 	UPROPERTY(Category = "Mesh | ThirdPerson", EditDefaultsOnly, BlueprintReadOnly)
 	bool bRagdollOnDeath;
 //~ End Mesh
@@ -98,12 +92,6 @@ public:
 
 	UPROPERTY(Category = "Animations | ThirdPerson", EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "!bRagdollOnDeath"))
 	TSubclassOf<UAnimInstance> TP_DiedAnimInstanceClass;
-
-	UPROPERTY(Category = "Animations | ThirdPerson", EditDefaultsOnly, BlueprintReadOnly, meta = (DeprecatedProperty, DeprecationMessage = "Use TP_AnimInstanceClass instead"))
-	TSubclassOf<UAnimInstance> AnimInstanceClass;
-
-	UPROPERTY(Category = "Animations | ThirdPerson", EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "!bRagdollOnDeath", DeprecatedProperty, DeprecationMessage = "Use TP_DiedAnimInstanceClass instead"))
-	TSubclassOf<UAnimInstance> DiedAnimInstanceClass;
 //~ End Animations
 	
 //~ Begin Physics
