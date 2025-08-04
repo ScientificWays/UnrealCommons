@@ -196,6 +196,10 @@ bool UScWBTT_TurnTo::Common_UpdateTargetRotation(UBTNode& InNode, UBehaviorTreeC
 				{
 					InitialRotation = BlackboardComponent->GetValueAsRotator(InBlackboardKey.SelectedKeyName);
 				}
+				else if (InBlackboardKey.SelectedKeyType == UBlackboardKeyType_Vector::StaticClass())
+				{
+					InitialRotation = BlackboardComponent->GetValueAsVector(InBlackboardKey.SelectedKeyName).Rotation();
+				}
 				else if (APawn* TargetPawn = Cast<APawn>(BlackboardComponent->GetValueAsObject(InBlackboardKey.SelectedKeyName)))
 				{
 					InitialRotation = TargetPawn->GetControlRotation();
@@ -206,6 +210,7 @@ bool UScWBTT_TurnTo::Common_UpdateTargetRotation(UBTNode& InNode, UBehaviorTreeC
 				}
 				else
 				{
+					ensure(false);
 					InitialRotation = OwnerController->GetControlRotation();
 				}
 				ThisNodeMemory->TargetRotation = FRotator(FQuat(InOffset) * FQuat(InitialRotation));
@@ -229,6 +234,7 @@ bool UScWBTT_TurnTo::Common_UpdateTargetRotation(UBTNode& InNode, UBehaviorTreeC
 				}
 				else
 				{
+					ensure(false);
 					return false;
 				}
 				ThisNodeMemory->TargetRotation = InOffset.RotateVector(TargetLocation - OwnerViewLocation).ToOrientationRotator();
@@ -236,6 +242,7 @@ bool UScWBTT_TurnTo::Common_UpdateTargetRotation(UBTNode& InNode, UBehaviorTreeC
 			return true;
 		}
 	}
+	ensure(false);
 	return false;
 }
 

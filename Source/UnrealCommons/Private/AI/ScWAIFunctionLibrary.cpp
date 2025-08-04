@@ -67,7 +67,7 @@ int32 UScWAIFunctionLibrary::GetActorObserversNumFromActorArray(const AActor* In
 //~ End Perception
 
 //~ Begin Navigation
-int32 UScWAIFunctionLibrary::GetNearestPatrolPointIndex(const FVector& InReferenceLocation, const TArray<AScWAIPatrolPoint*>& InPatrolPoints, const bool bInCheckMoveToLocations)
+int32 UScWAIFunctionLibrary::GetNearestPatrolPointIndex(const FVector& InReferenceLocation, const TArray<AScWAIPatrolPoint*>& InPatrolPoints, const bool bInUseMoveToLocations)
 {
 	float NearestDistanceSquared = MAX_FLT;
 	int32 OutIndex = INDEX_NONE;
@@ -75,7 +75,7 @@ int32 UScWAIFunctionLibrary::GetNearestPatrolPointIndex(const FVector& InReferen
 	for (int32 SampleIndex = 0; SampleIndex < InPatrolPoints.Num(); ++SampleIndex)
 	{
 		const AScWAIPatrolPoint* SamplePoint = InPatrolPoints[SampleIndex];
-		FVector SampleLocation = bInCheckMoveToLocations ? SamplePoint->BP_GetMoveToLocation() : SamplePoint->GetActorLocation();
+		FVector SampleLocation = bInUseMoveToLocations ? SamplePoint->BP_GetMoveToLocation() : SamplePoint->GetActorLocation();
 		float SampleDistanceSquared = FVector::DistSquared(InReferenceLocation, SampleLocation);
 
 		if (SampleDistanceSquared < NearestDistanceSquared)
@@ -87,10 +87,33 @@ int32 UScWAIFunctionLibrary::GetNearestPatrolPointIndex(const FVector& InReferen
 	return OutIndex;
 }
 
-AScWAIPatrolPoint* UScWAIFunctionLibrary::GetNearestPatrolPoint(const FVector& InReferenceLocation, const TArray<AScWAIPatrolPoint*>& InPatrolPoints, const bool bInCheckMoveToLocations)
+AScWAIPatrolPoint* UScWAIFunctionLibrary::GetNearestPatrolPoint(const FVector& InReferenceLocation, const TArray<AScWAIPatrolPoint*>& InPatrolPoints, const bool bInUseMoveToLocations)
 {
-	int32 OutIndex = GetNearestPatrolPointIndex(InReferenceLocation, InPatrolPoints, bInCheckMoveToLocations);
+	int32 OutIndex = GetNearestPatrolPointIndex(InReferenceLocation, InPatrolPoints, bInUseMoveToLocations);
 	return InPatrolPoints.IsValidIndex(OutIndex) ? InPatrolPoints[OutIndex] : nullptr;
+}
+
+FVector UScWAIFunctionLibrary::GetAIMoveDirection(AAIController* InController, FVector InFallbackDirection)
+{
+	ensureReturn(InController, InFallbackDirection);
+
+	const UPathFollowingComponent* TargetPFC = InController->GetPathFollowingComponent();
+	ensureReturn(TargetPFC, InFallbackDirection);
+
+	const auto& NavPath = TargetPFC->GetPath();
+	ensureReturn(NavPath.IsValid(), InFallbackDirection);
+
+	const auto& PathPoints = NavPath->GetPathPoints();
+	if (PathPoints.Num() < 2)
+	{
+		return InFallbackDirection;
+	}
+	APawn* TargetPawn = InController->GetPawn();
+	ensureReturn(TargetPawn, InFallbackDirection);
+
+	const auto& CurrentLocation = TargetPawn->GetActorLocation();
+	const auto& NextLocation = PathPoints[1].Location;
+	return (NextLocation - CurrentLocation).GetSafeNormal();
 }
 //~ End Navigation
 

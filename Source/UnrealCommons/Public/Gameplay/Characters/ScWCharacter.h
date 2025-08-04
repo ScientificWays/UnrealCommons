@@ -83,19 +83,19 @@ public:
 
 protected:
 
-	UPROPERTY(Category = "Components", Transient, BlueprintReadOnly, VisibleAnywhere)
+	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere)
 	TObjectPtr<class UScWASC_Character> CharacterASC;
 
-	UPROPERTY(Transient)
+	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere)
 	TObjectPtr<class UScWCharacterMesh_FirstPerson> ScWFirstPersonCharacterMesh;
 
-	UPROPERTY(Transient)
+	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere)
 	TObjectPtr<class UScWCharacterMesh_ThirdPerson> ScWThirdPersonCharacterMesh;
 
-	UPROPERTY(Transient)
+	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere)
 	TObjectPtr<class UScWCharacterMovement> ScWCharacterMovement;
 
-	UPROPERTY(Transient)
+	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere)
 	TObjectPtr<class UScWCharacterCapsule> ScWCharacterCapsule;
 //~ End Components
 

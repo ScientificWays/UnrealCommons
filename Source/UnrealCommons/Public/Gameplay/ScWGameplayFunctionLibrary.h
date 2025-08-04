@@ -114,7 +114,7 @@ public:
 public:
 
 	UFUNCTION(Category = "Materials", BlueprintCallable)
-	static void ApplyOverrideMaterialsToMeshComponent(UMeshComponent* InMeshComponent, const TMap<int32, UMaterialInterface*> InOverrideMaterials);
+	static void ApplyOverrideMaterialsToMeshComponent(UMeshComponent* InMeshComponent, const TMap<int32, UMaterialInterface*>& InOverrideMaterials);
 //~ End Materials
 	
 //~ Begin Interact
@@ -130,7 +130,13 @@ public:
 //~ Begin Teams
 public:
 
-	UFUNCTION(Category = "Teams", BlueprintCallable, meta = (WorldContext = "InWCO", DynamicOutputParam = "InFilterActorClass"))
-	TArray<AActor*> GetAllActorsOfTeam(const UObject* InWCO, const FName& InTeamName, TSubclassOf<AActor> InFilterActorClass = nullptr);
+	UFUNCTION(Category = "Teams", BlueprintCallable, meta = (KeyWords = "GetTeamOfActor"))
+	static FGenericTeamId GetActorTeamId(const AActor* InActor, const bool bInChecked = false);
+
+	UFUNCTION(Category = "Teams", BlueprintCallable, meta = (KeyWords = "GetTeamOfActor"))
+	static const FName& GetActorTeamName(const AActor* InActor, const bool bInChecked = false);
+
+	UFUNCTION(Category = "Teams", BlueprintCallable, meta = (WorldContext = "InWCO", KeyWords = "GetActorsOfTeam", DeterminesOutputType = "InFilterActorClass"))
+	static TArray<AActor*> GetAllActorsOfTeam(const UObject* InWCO, const FName& InTeamName, TSubclassOf<AActor> InFilterActorClass = nullptr);
 //~ End Teams
 };

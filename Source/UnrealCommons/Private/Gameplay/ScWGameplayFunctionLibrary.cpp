@@ -213,7 +213,7 @@ bool UScWGameplayFunctionLibrary::IsComponentRenderedFor(UPrimitiveComponent* In
 //~ End Visibility
 
 //~ Begin Materials
-void UScWGameplayFunctionLibrary::ApplyOverrideMaterialsToMeshComponent(UMeshComponent* InMeshComponent, const TMap<int32, UMaterialInterface*> InOverrideMaterials)
+void UScWGameplayFunctionLibrary::ApplyOverrideMaterialsToMeshComponent(UMeshComponent* InMeshComponent, const TMap<int32, UMaterialInterface*>& InOverrideMaterials)
 {
 	ensureReturn(InMeshComponent);
 
@@ -298,6 +298,36 @@ UScWInteractComponent* UScWGameplayFunctionLibrary::FindInteractTargetInLocation
 //~ End Interact
 
 //~ Begin Teams
+FGenericTeamId UScWGameplayFunctionLibrary::GetActorTeamId(const AActor* InActor, const bool bInChecked)
+{
+	ensureReturn(InActor || !bInChecked, FGenericTeamId::NoTeam);
+	if (const IGenericTeamAgentInterface* SampleTeamAgent = Cast<IGenericTeamAgentInterface>(InActor))
+	{
+		return SampleTeamAgent->GetGenericTeamId();
+	}
+	ensureReturn(!bInChecked, FGenericTeamId::NoTeam);
+	return FGenericTeamId::NoTeam;
+}
+
+const FName& UScWGameplayFunctionLibrary::GetActorTeamName(const AActor* InActor, const bool bInChecked)
+{
+	static const FName OutNone = NAME_None;
+	ensureReturn(InActor || !bInChecked, OutNone);
+
+	FGenericTeamId TeamId = GetActorTeamId(InActor, bInChecked);
+	if (TeamId != FGenericTeamId::NoTeam)
+	{
+		ensureReturn(InActor, OutNone);
+		UWorld* World = InActor->GetWorld();
+		ensureReturn(World, OutNone);
+
+		AScWGameState* GameState = World->GetGameState<AScWGameState>();
+		ensureReturn(GameState, OutNone);
+		return GameState->GetTeamName(TeamId);
+	}
+	return OutNone;
+}
+
 TArray<AActor*> UScWGameplayFunctionLibrary::GetAllActorsOfTeam(const UObject* InWCO, const FName& InTeamName, TSubclassOf<AActor> InFilterActorClass)
 {
 	TArray<AActor*> OutActors;
