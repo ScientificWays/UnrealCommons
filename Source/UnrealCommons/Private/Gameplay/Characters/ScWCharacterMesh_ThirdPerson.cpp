@@ -76,7 +76,6 @@ void UScWCharacterMesh_ThirdPerson::UpdateFromHandheld(AScWHandheld* InHandheld)
 		ensureReturn(HandheldData);
 
 		ThirdPersonAnimInstance->Montage_StopGroupByName(0.2f, UScWAnimationsFunctionLibrary::MontageDefaultGroupName);
-
 		ThirdPersonAnimInstance->SetCurrentStaticAnimationData(HandheldData->TP_StaticAnimationData);
 	}
 	else

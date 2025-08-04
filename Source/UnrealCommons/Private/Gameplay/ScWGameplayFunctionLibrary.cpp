@@ -296,3 +296,31 @@ UScWInteractComponent* UScWGameplayFunctionLibrary::FindInteractTargetInLocation
 	return OutTarget;
 }
 //~ End Interact
+
+//~ Begin Teams
+TArray<AActor*> UScWGameplayFunctionLibrary::GetAllActorsOfTeam(const UObject* InWCO, const FName& InTeamName, TSubclassOf<AActor> InFilterActorClass)
+{
+	TArray<AActor*> OutActors;
+
+	ensureReturn(InWCO, OutActors);
+	UWorld* World = InWCO->GetWorld();
+	ensureReturn(World, OutActors);
+
+	AScWGameState* GameState = World->GetGameState<AScWGameState>();
+	ensureReturn(GameState, OutActors);
+
+	FGenericTeamId GenericTeamId = GameState->GetTeamId(InTeamName);
+	for (TActorIterator<AActor> It(World, InFilterActorClass ? *InFilterActorClass : AActor::StaticClass()); It; ++It)
+	{
+		AActor* SampleActor = *It;
+		if (IGenericTeamAgentInterface* SampleTeamAgent = Cast<IGenericTeamAgentInterface>(SampleActor))
+		{
+			if (SampleTeamAgent->GetGenericTeamId() == GenericTeamId)
+			{
+				OutActors.Add(SampleActor);
+			}
+		}
+	}
+	return OutActors;
+}
+//~ End Teams

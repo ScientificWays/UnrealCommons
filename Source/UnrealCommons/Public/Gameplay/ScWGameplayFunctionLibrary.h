@@ -126,4 +126,11 @@ public:
 	UFUNCTION(Category = "Interact", BlueprintCallable, BlueprintPure, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InTraceDebugData, InActorFilterArray"))
 	static class UScWInteractComponent* FindInteractTargetInLocation(const UObject* InWCO, const FVector& InLocation, const float InRadius, ETraceTypeQuery InTraceTypeQuery, const struct FScWTraceDebugData& InTraceDebugData, const TArray<AActor*>& InActorFilterArray);
 //~ End Interact
+
+//~ Begin Teams
+public:
+
+	UFUNCTION(Category = "Teams", BlueprintCallable, meta = (WorldContext = "InWCO", DynamicOutputParam = "InFilterActorClass"))
+	TArray<AActor*> GetAllActorsOfTeam(const UObject* InWCO, const FName& InTeamName, TSubclassOf<AActor> InFilterActorClass = nullptr);
+//~ End Teams
 };
