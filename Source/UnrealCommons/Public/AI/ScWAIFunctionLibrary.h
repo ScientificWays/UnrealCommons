@@ -40,7 +40,7 @@ public:
 	static class AScWAIPatrolPoint* GetNearestPatrolPoint(const FVector& InReferenceLocation, const TArray<class AScWAIPatrolPoint*>& InPatrolPoints, const bool bInUseMoveToLocations = true);
 
 	UFUNCTION(Category = "Navigation", BlueprintCallable, meta = (KeyWords = "GetMoveDirection"))
-	static FVector GetAIMoveDirection(AAIController* InController, FVector InFallbackDirection = FVector(1.0f, 0.0f, 0.0f));
+	static FVector GetAIMoveDirection(AAIController* InController, FVector InFallbackDirection = FVector(1.0f, 0.0f, 0.0f), const bool bInChecked = false);
 //~ End Navigation
 
 //~ Begin Brain

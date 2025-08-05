@@ -353,4 +353,35 @@ TArray<AActor*> UScWGameplayFunctionLibrary::GetAllActorsOfTeam(const UObject* I
 	}
 	return OutActors;
 }
+
+TArray<AActor*> UScWGameplayFunctionLibrary::GetAllActorsOfAnyTeam(const UObject* InWCO, const TSet<FName>& InTeamNameSet, TSubclassOf<AActor> InFilterActorClass)
+{
+	TArray<AActor*> OutActors;
+
+	ensureReturn(InWCO, OutActors);
+	UWorld* World = InWCO->GetWorld();
+	ensureReturn(World, OutActors);
+
+	AScWGameState* GameState = World->GetGameState<AScWGameState>();
+	ensureReturn(GameState, OutActors);
+
+	TSet<FGenericTeamId> GenericTeamIdSet;
+	for (const FName& SampleTeamName : InTeamNameSet)
+	{
+		ensureContinue(GameState->HasTeamName(SampleTeamName));
+		GenericTeamIdSet.Add(GameState->GetTeamId(SampleTeamName));
+	}
+	for (TActorIterator<AActor> It(World, InFilterActorClass ? *InFilterActorClass : AActor::StaticClass()); It; ++It)
+	{
+		AActor* SampleActor = *It;
+		if (IGenericTeamAgentInterface* SampleTeamAgent = Cast<IGenericTeamAgentInterface>(SampleActor))
+		{
+			if (GenericTeamIdSet.Contains(SampleTeamAgent->GetGenericTeamId()))
+			{
+				OutActors.Add(SampleActor);
+			}
+		}
+	}
+	return OutActors;
+}
 //~ End Teams

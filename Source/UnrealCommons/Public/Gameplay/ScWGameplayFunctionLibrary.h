@@ -138,5 +138,8 @@ public:
 
 	UFUNCTION(Category = "Teams", BlueprintCallable, meta = (WorldContext = "InWCO", KeyWords = "GetActorsOfTeam", DeterminesOutputType = "InFilterActorClass"))
 	static TArray<AActor*> GetAllActorsOfTeam(const UObject* InWCO, const FName& InTeamName, TSubclassOf<AActor> InFilterActorClass = nullptr);
+
+	UFUNCTION(Category = "Teams", BlueprintCallable, meta = (WorldContext = "InWCO", KeyWords = "GetActorsOfTeamSet", DeterminesOutputType = "InFilterActorClass"))
+	static TArray<AActor*> GetAllActorsOfAnyTeam(const UObject* InWCO, const TSet<FName>& InTeamNameSet, TSubclassOf<AActor> InFilterActorClass = nullptr);
 //~ End Teams
 };

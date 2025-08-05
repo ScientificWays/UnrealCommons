@@ -59,6 +59,9 @@ public:
 public:
 
 	UFUNCTION(Category = "Teams", BlueprintCallable)
+	bool HasTeamName(const FName& InTeamName) const;
+
+	UFUNCTION(Category = "Teams", BlueprintCallable)
 	FGenericTeamId GetTeamId(const FName& InTeamName) const;
 
 	UFUNCTION(Category = "Teams", BlueprintCallable)

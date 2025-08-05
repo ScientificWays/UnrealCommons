@@ -75,6 +75,11 @@ const UScWCharacterData* AScWGameState::BP_GetDataAssetForNewCharacter_Implement
 //~ End DataAssets
 
 //~ Begin Teams
+bool AScWGameState::HasTeamName(const FName& InTeamName) const
+{
+	return TeamMap.Contains(InTeamName);
+}
+
 FGenericTeamId AScWGameState::GetTeamId(const FName& InTeamName) const
 {
 	const FGenericTeamId* OutTeamIdPtr = TeamMap.Find(InTeamName);

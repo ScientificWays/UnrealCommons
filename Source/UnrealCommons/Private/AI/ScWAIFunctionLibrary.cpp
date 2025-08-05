@@ -93,7 +93,7 @@ AScWAIPatrolPoint* UScWAIFunctionLibrary::GetNearestPatrolPoint(const FVector& I
 	return InPatrolPoints.IsValidIndex(OutIndex) ? InPatrolPoints[OutIndex] : nullptr;
 }
 
-FVector UScWAIFunctionLibrary::GetAIMoveDirection(AAIController* InController, FVector InFallbackDirection)
+FVector UScWAIFunctionLibrary::GetAIMoveDirection(AAIController* InController, FVector InFallbackDirection, const bool bInChecked)
 {
 	ensureReturn(InController, InFallbackDirection);
 
@@ -101,8 +101,15 @@ FVector UScWAIFunctionLibrary::GetAIMoveDirection(AAIController* InController, F
 	ensureReturn(TargetPFC, InFallbackDirection);
 
 	const auto& NavPath = TargetPFC->GetPath();
-	ensureReturn(NavPath.IsValid(), InFallbackDirection);
+	if (NavPath.IsValid())
+	{
 
+	}
+	else
+	{
+		ensure(!bInChecked);
+		return InFallbackDirection;
+	}
 	const auto& PathPoints = NavPath->GetPathPoints();
 	if (PathPoints.Num() < 2)
 	{
