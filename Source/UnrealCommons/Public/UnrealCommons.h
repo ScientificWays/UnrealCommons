@@ -16,6 +16,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Camera/CameraComponent.h"
 #include "Camera/PlayerCameraManager.h"
+#include "Components/BoxComponent.h"
 #include "Components/BrushComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"

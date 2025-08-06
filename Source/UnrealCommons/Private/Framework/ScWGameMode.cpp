@@ -16,6 +16,8 @@ AScWGameMode::AScWGameMode()
 	PlayerStateClass = AScWPlayerState::StaticClass();
 	GameSessionClass = AScWGameSession::StaticClass();
 	PlayerControllerClass = AScWPlayerController::StaticClass();
+
+	DefaultPlayerName = FText::FromString(TEXT("zanayn"));
 }
 
 AScWGameMode* AScWGameMode::TryGetScWGameMode(const UObject* InWCO)

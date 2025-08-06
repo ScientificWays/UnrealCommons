@@ -142,4 +142,11 @@ public:
 	UFUNCTION(Category = "Teams", BlueprintCallable, meta = (WorldContext = "InWCO", KeyWords = "GetActorsOfTeamSet", DeterminesOutputType = "InFilterActorClass"))
 	static TArray<AActor*> GetAllActorsOfAnyTeam(const UObject* InWCO, const TSet<FName>& InTeamNameSet, TSubclassOf<AActor> InFilterActorClass = nullptr);
 //~ End Teams
+
+//~ Begin Transforms
+public:
+
+	UFUNCTION(Category = "Transforms", BlueprintCallable, BlueprintPure, meta = (KeyWords = "Location, Position, Middle", AutoCreateRefTerm = "InVector, InGridSize"))
+	static FVector VectorSnappedToGridCenter(const FVector& InVector, const FVector& InGridSize);
+//~ End Transforms
 };

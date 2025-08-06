@@ -385,3 +385,14 @@ TArray<AActor*> UScWGameplayFunctionLibrary::GetAllActorsOfAnyTeam(const UObject
 	return OutActors;
 }
 //~ End Teams
+
+//~ Begin Transforms
+FVector UScWGameplayFunctionLibrary::VectorSnappedToGridCenter(const FVector& InVector, const FVector& InGridSize)
+{
+	FVector OutSnapped;
+	OutSnapped.X = InGridSize.X > 0.0f ? FMath::Floor(InVector.X / InGridSize.X) * InGridSize.X + (InGridSize.X * 0.5f) : InVector.X;
+	OutSnapped.Y = InGridSize.Y > 0.0f ? FMath::Floor(InVector.Y / InGridSize.Y) * InGridSize.Y + (InGridSize.Y * 0.5f) : InVector.Y;
+	OutSnapped.Z = InGridSize.Z > 0.0f ? FMath::Floor(InVector.Z / InGridSize.Z) * InGridSize.Z + (InGridSize.Z * 0.5f) : InVector.Z;
+	return OutSnapped;
+}
+//~ End Transforms
