@@ -4,8 +4,6 @@
 
 #include "AI/ScWTypes_AI.h"
 
-#include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
-
 UScWBTT_GetRandomReachablePointInRadius::UScWBTT_GetRandomReachablePointInRadius()
 {
 	NodeName = TEXT("Get Random Reachable Point in Radius");

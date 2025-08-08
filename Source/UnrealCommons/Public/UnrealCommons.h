@@ -45,6 +45,14 @@
 #include "Perception/AISenseConfig.h"
 #include "Perception/AIPerceptionComponent.h"
 
+#include "BehaviorTree/Blackboard/BlackboardKeyType_Int.h"
+#include "BehaviorTree/Blackboard/BlackboardKeyType_Bool.h"
+#include "BehaviorTree/Blackboard/BlackboardKeyType_Enum.h"
+#include "BehaviorTree/Blackboard/BlackboardKeyType_Class.h"
+#include "BehaviorTree/Blackboard/BlackboardKeyType_Object.h"
+#include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
+#include "BehaviorTree/Blackboard/BlackboardKeyType_Rotator.h"
+
 #include "AttributeSet.h"
 #include "AbilitySystemGlobals.h"
 #include "AbilitySystemComponent.h"

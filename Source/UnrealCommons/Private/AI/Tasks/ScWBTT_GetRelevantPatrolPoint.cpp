@@ -6,8 +6,6 @@
 #include "AI/ScWAIController.h"
 #include "AI/ScWAIPatrolPoint.h"
 
-#include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
-
 UScWBTT_GetRelevantPatrolPoint::UScWBTT_GetRelevantPatrolPoint()
 {
 	NodeName = TEXT("Get Relevant Patrol Point");

@@ -5,10 +5,6 @@
 #include "AI/ScWTypes_AI.h"
 #include "AI/ScWAIController.h"
 
-#include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
-#include "BehaviorTree/Blackboard/BlackboardKeyType_Rotator.h"
-#include "BehaviorTree/Blackboard/BlackboardKeyType_Object.h"
-
 UScWBTT_TurnTo::UScWBTT_TurnTo()
 {
 	NodeName = "Turn To";

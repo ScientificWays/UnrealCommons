@@ -6,7 +6,6 @@
 
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AIPerceptionListenerInterface.h"
-#include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
 
 //~ Begin Blackboard
 float UScWAIFunctionLibrary::GetDistanceBetweenTwoBlackboardKeys(const UBlackboardComponent* InBlackboard, const FBlackboardKeySelector& InA, const FBlackboardKeySelector& InB, const bool bInSquared, const bool bInHorizontal)

@@ -4,8 +4,6 @@
 
 #include "AI/ScWTypes_AI.h"
 
-#include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
-
 UScWBTD_CheckOcclusion::UScWBTD_CheckOcclusion()
 {
 	NodeName = TEXT("Check Occlusion");

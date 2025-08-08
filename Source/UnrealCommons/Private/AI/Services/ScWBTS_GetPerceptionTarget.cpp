@@ -7,8 +7,6 @@
 //#include "AI/Filters/AITargetFilter_Base.h"
 //#include "AI/Estimators/AITargetEstimator_Base.h"
 
-#include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
-
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AISenseConfig_Damage.h"
 #include "Perception/AISenseConfig_Hearing.h"

@@ -5,8 +5,6 @@
 #include "AI/ScWTypes_AI.h"
 #include "AI/Tasks/ScWBTT_LookAt.h"
 
-#include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
-
 UScWBTS_LookAt::UScWBTS_LookAt()
 {
 	NodeName = TEXT("Look At");

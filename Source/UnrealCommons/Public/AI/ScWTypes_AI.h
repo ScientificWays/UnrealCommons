@@ -30,6 +30,9 @@ namespace FScWBlackboard
 
 	static const FName FirearmShootDelay = TEXT("FirearmShootDelay");
 	static const FName FirearmShootDuration = TEXT("FirearmShootDuration");
+
+	static const FName MoveToLocationArray = TEXT("MoveToLocationArray");
+	static const FName CurrentArrayIndex = TEXT("CurrentArrayIndex");
 }
 
 namespace FScWAIMessage
