@@ -34,6 +34,19 @@ public:
 	FTransform CapsuleRelativeTransform;
 //~ End Physics
 	
+//~ Begin Movement
+public:
+
+	UPROPERTY(Category = "Movement", EditDefaultsOnly, BlueprintReadOnly)
+	bool bPushPlayerDuringSwing;
+
+	UPROPERTY(Category = "Movement", EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "bIsUsingCollisionComponent"))
+	FVector SwingPushVector;
+
+	UPROPERTY(Category = "Movement", EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "bIsUsingCollisionComponent"))
+	float SwingPushDuration;
+//~ End Movement
+	
 //~ Begin Swing
 public:
 
@@ -42,6 +55,12 @@ public:
 
 	UPROPERTY(Category = "Swing", EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<class UScWDamageType> SwingBaseDamageTypeClass;
+
+	UPROPERTY(Category = "Movement", EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UGameplayEffect> SwingOwnerEffect;
+
+	UPROPERTY(Category = "Movement", EditDefaultsOnly, BlueprintReadOnly)
+	bool bSwingOwnerEffectOnlyDuringSwing;
 
 	UPROPERTY(Category = "Swing", EditDefaultsOnly, BlueprintReadOnly)
 	float PostSwingComboTimeWindow;
@@ -62,4 +81,17 @@ public:
 	UPROPERTY(Category = "Swing Variants", EditDefaultsOnly, BlueprintReadOnly)
 	float SwingVariantBaseDuration;
 //~ End Swing Variants
+
+//~ Begin Swing FX
+public:
+
+	UPROPERTY(Category = "Swing FX", EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UNiagaraSystem> DefaultSwingParticles;
+
+	UPROPERTY(Category = "Swing FX", EditDefaultsOnly, BlueprintReadOnly)
+	FName SwingParticlesAttachmentSocketName;
+
+	UPROPERTY(Category = "Swing FX", EditDefaultsOnly, BlueprintReadOnly)
+	FTransform SwingParticlesRelativeTransform;
+//~ End Swing FX
 };

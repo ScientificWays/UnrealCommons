@@ -31,7 +31,9 @@ void UScWCharacterMesh_ThirdPerson::InitFromCharacterData(const UScWCharacterDat
 {
 	ensureReturn(InInitCharacterData);
 
+	ensureReturn(InInitCharacterData->TP_SkeletalMesh);
 	SetSkeletalMeshAsset(InInitCharacterData->TP_SkeletalMesh);
+
 	SetAnimInstanceClass(InInitCharacterData->TP_AnimInstanceClass);
 	SetRelativeTransform(InInitCharacterData->TP_SkeletalMeshRelativeTransform);
 

@@ -23,7 +23,7 @@ public:
 
 //~ Begin Ability
 protected:
-	virtual void NativeActivateAbility_Commited(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo, const FGameplayAbilityActivationInfo InActivationInfo, const FGameplayEventData* InTriggerEventData) override; // UGameplayAbility
+	virtual void NativeActivateAbility_Commited(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo, const FGameplayAbilityActivationInfo InActivationInfo, const FGameplayEventData* InTriggerEventData) override; // UScWGameplayAbility
 	virtual void BeginSwingSequence();
 
 	UFUNCTION()
@@ -56,6 +56,12 @@ protected:
 	UFUNCTION(Category = "Swing", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Get SwingDamage"))
 	float BP_GetSwingDamage() const;
 
+	UFUNCTION(Category = "Swing", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Apply SwingOwnerEffect"))
+	void BP_ApplySwingOwnerEffect();
+
+	UFUNCTION(Category = "Swing", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Remove SwingOwnerEffect"))
+	void BP_RemoveSwingOwnerEffect();
+
 	UFUNCTION(Category = "Swing", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Get SwingDamageTypeClass"))
 	TSubclassOf<class UScWDamageType> BP_GetSwingDamageTypeClass() const;
 
@@ -76,5 +82,8 @@ protected:
 
 	UPROPERTY(Category = "Swing", Transient, BlueprintReadOnly)
 	TObjectPtr<class UScWHandheldData_Melee> OwnerMeleeData;
+
+	UPROPERTY(Transient)
+	FActiveGameplayEffectHandle CurrentSwingEffectHandle;
 //~ End Swing
 };

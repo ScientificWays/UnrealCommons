@@ -45,8 +45,20 @@ public:
 //~ Begin Mesh
 public:
 
-	UPROPERTY(Category = "Mesh", EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<USkeletalMesh> SkeletalMesh;
+	UFUNCTION(Category = "Mesh", BlueprintCallable)
+	bool IsUsingStaticMesh() const { return MeshAsset && MeshAsset->IsA(UStaticMesh::StaticClass()); }
+
+	UFUNCTION(Category = "Mesh", BlueprintCallable)
+	bool IsUsingSkeletalMesh() const { return MeshAsset && MeshAsset->IsA(USkeletalMesh::StaticClass()); }
+
+	UFUNCTION(Category = "Mesh", BlueprintCallable)
+	UStaticMesh* TryGetStaticMesh() const { return Cast<UStaticMesh>(MeshAsset.Get()); }
+
+	UFUNCTION(Category = "Mesh", BlueprintCallable)
+	USkeletalMesh* TryGetSkeletalMesh() const { return Cast<USkeletalMesh>(MeshAsset.Get()); }
+
+	UPROPERTY(Category = "Mesh", EditDefaultsOnly, BlueprintReadOnly, meta = (AllowedClasses = "StaticMesh, SkeletalMesh"))
+	TObjectPtr<UStreamableRenderAsset> MeshAsset;
 
 	UPROPERTY(Category = "Mesh", EditDefaultsOnly, BlueprintReadOnly)
 	FName FP_OwnerMeshAttachmentSocketName;

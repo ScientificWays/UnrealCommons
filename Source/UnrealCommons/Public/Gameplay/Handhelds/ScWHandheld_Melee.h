@@ -95,6 +95,13 @@ protected:
 	FScWMeleeSwingVariantData CurrentSwingVariantData;
 //~ End Swing
 
+//~ Begin Swing FX
+protected:
+
+	UPROPERTY(Category = "Swing FX", Transient, BlueprintReadOnly)
+	TObjectPtr<UNiagaraComponent> SwingPaticlesComponent;
+//~ End Swing FX
+
 //~ Begin Patterns
 public:
 

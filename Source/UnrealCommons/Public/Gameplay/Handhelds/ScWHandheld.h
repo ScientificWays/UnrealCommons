@@ -61,7 +61,13 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override; // IAbilitySystemInterface
 
 	UFUNCTION(Category = "Components", BlueprintCallable)
-	USkeletalMeshComponent* GetMesh() const { return Mesh; }
+	UStaticMeshComponent* GetStaticMeshComponent() const { return StaticMeshComponent; }
+
+	UFUNCTION(Category = "Components", BlueprintCallable)
+	USkeletalMeshComponent* GetSkeletalMeshComponent() const { return SkeletalMeshComponent; }
+
+	UFUNCTION(Category = "Components", BlueprintCallable)
+	UMeshComponent* GetRelevantMeshComponent() const;
 
 	UFUNCTION(Category = "Handheld", BlueprintCallable, meta = (KeyWords = "GetAnimInstance", DisplayName = "Get Anim Instance (Mesh)"))
 	class UScWAnimInstance_Handheld* GetMeshAnimInstance() const;
@@ -69,6 +75,9 @@ public:
 protected:
 
 	UPROPERTY(Category = "Components", VisibleAnywhere, BlueprintReadOnly)
-	TObjectPtr<USkeletalMeshComponent> Mesh;
+	TObjectPtr<UStaticMeshComponent> StaticMeshComponent;
+
+	UPROPERTY(Category = "Components", VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponent;
 //~ End Components
 };

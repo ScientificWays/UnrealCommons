@@ -104,6 +104,10 @@ void AScWHandheld_Melee::HandleDrop() // AScWHandheld
 //~ Begin Components
 void AScWHandheld_Melee::OnCollisionComponentBeginOverlap(UPrimitiveComponent* InOverlappedComponent, AActor* InOtherActor, UPrimitiveComponent* InOtherComponent, int32 InOtherBodyIndex, bool bInFromSweep, const FHitResult& InSweepHitResult)
 {
+	if (InOtherActor == OwnerCharacter)
+	{
+		return;
+	}
 	if (bInFromSweep)
 	{
 		BP_HandleSwingHit(InSweepHitResult);
@@ -133,6 +137,32 @@ void AScWHandheld_Melee::BP_BeginSwing_Implementation(float InSwingDamage, TSubc
 	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
 	ensureReturn(MeleeDataAsset);
 
+	ensureReturn(OwnerCharacter);
+
+	if (MeleeDataAsset->DefaultSwingParticles)
+	{
+		USceneComponent* AttachToComponent = GetRelevantMeshComponent();
+
+		if (AttachToComponent == nullptr)
+		{
+			AttachToComponent = OwnerCharacter->GetMesh();
+		}
+		FFXSystemSpawnParameters SpawnParams;
+		SpawnParams.WorldContextObject = this;
+		SpawnParams.SystemTemplate = MeleeDataAsset->DefaultSwingParticles;
+		SpawnParams.Location = MeleeDataAsset->SwingParticlesRelativeTransform.GetLocation();
+		SpawnParams.Rotation = MeleeDataAsset->SwingParticlesRelativeTransform.GetRotation().Rotator();
+		SpawnParams.Scale = MeleeDataAsset->SwingParticlesRelativeTransform.GetScale3D();
+		SpawnParams.AttachToComponent = GetRelevantMeshComponent();
+		SpawnParams.AttachPointName = MeleeDataAsset->SwingParticlesAttachmentSocketName;
+		SpawnParams.LocationType = EAttachLocation::KeepRelativeOffset;
+		SpawnParams.bAutoDestroy = true;
+		SpawnParams.bAutoActivate = true;
+		SpawnParams.PoolingMethod = EPSCPoolMethod::None;
+		SpawnParams.bPreCullCheck = true;
+		SpawnParams.bIsPlayerEffect = OwnerCharacter->IsPlayerCharacter();
+		SwingPaticlesComponent = UNiagaraFunctionLibrary::SpawnSystemAttachedWithParams(SpawnParams);
+	}
 	if (MeleeDataAsset->bIsUsingCollisionComponent)
 	{
 		ensureReturn(CollisionComponent);
@@ -149,14 +179,17 @@ void AScWHandheld_Melee::BP_EndSwing_Implementation()
 	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
 	ensureReturn(MeleeDataAsset);
 
+	ensureReturn(OwnerCharacter);
+
+	if (SwingPaticlesComponent)
+	{
+		SwingPaticlesComponent->DestroyComponent();
+		SwingPaticlesComponent = nullptr;
+	}
 	if (MeleeDataAsset->bIsUsingCollisionComponent)
 	{
 		ensureReturn(CollisionComponent);
 		CollisionComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	}
-	else
-	{
-		
 	}
 }
 

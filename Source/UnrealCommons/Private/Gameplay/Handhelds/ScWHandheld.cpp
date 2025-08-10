@@ -14,12 +14,7 @@ AScWHandheld::AScWHandheld(const FObjectInitializer& InObjectInitializer)
 {
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Base"));
 
-	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
-	Mesh->SetCollisionProfileName(TEXT("NoCollision"));
-	Mesh->bCastDynamicShadow = true;
-	Mesh->bAffectDynamicIndirectLighting = true;
-	Mesh->PrimaryComponentTick.TickGroup = TG_PrePhysics;
-	Mesh->SetupAttachment(RootComponent);
+
 }
 
 //~ Begin Static
@@ -33,6 +28,7 @@ AScWHandheld* AScWHandheld::SpawnHandheldFor(AScWCharacter* InOwner, UScWHandhel
 	
 	FTransform SpawnTransform = InOwner->GetActorTransform();
 
+	ensureReturn(InData->HandheldClass, nullptr);
 	AScWHandheld* OutHandheld = World->SpawnActorDeferred<AScWHandheld>(InData->HandheldClass, SpawnTransform, InOwner, InOwner, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 	ensureReturn(OutHandheld, nullptr);
 	
@@ -47,15 +43,54 @@ AScWHandheld* AScWHandheld::SpawnHandheldFor(AScWCharacter* InOwner, UScWHandhel
 void AScWHandheld::BP_UpdateFromDataAsset_Implementation()
 {
 	ensureReturn(DataAsset);
-	ensureReturn(Mesh);
-	
-	Mesh->SetSkeletalMeshAsset(DataAsset->SkeletalMesh);
-	Mesh->SetAnimInstanceClass(DataAsset->HandheldAnimInstanceClass);
 
-	UScWAnimInstance_Handheld* HandheldAnimInstance = Cast<UScWAnimInstance_Handheld>(Mesh->GetAnimInstance());
-	ensureReturn(HandheldAnimInstance);
+	if (StaticMeshComponent)
+	{
+		StaticMeshComponent->DestroyComponent();
+		StaticMeshComponent = nullptr;
+	}
+	if (SkeletalMeshComponent)
+	{
+		SkeletalMeshComponent->DestroyComponent();
+		SkeletalMeshComponent = nullptr;
+	}
+	if (DataAsset->IsUsingStaticMesh())
+	{
+		StaticMeshComponent = NewObject<UStaticMeshComponent>(this, UStaticMeshComponent::StaticClass());
+		ensureReturn(StaticMeshComponent);
 
-	HandheldAnimInstance->SetCurrentStaticAnimationData(DataAsset->HandheldStaticAnimationData);
+		StaticMeshComponent->SetStaticMesh(DataAsset->TryGetStaticMesh());
+		StaticMeshComponent->SetCollisionProfileName(TEXT("NoCollision"));
+		StaticMeshComponent->bCastDynamicShadow = true;
+		StaticMeshComponent->bAffectDynamicIndirectLighting = true;
+		StaticMeshComponent->PrimaryComponentTick.TickGroup = TG_PrePhysics;
+		StaticMeshComponent->SetupAttachment(RootComponent);
+		StaticMeshComponent->RegisterComponent();
+	}
+	else if (DataAsset->IsUsingSkeletalMesh())
+	{
+		SkeletalMeshComponent = NewObject<USkeletalMeshComponent>(this, USkeletalMeshComponent::StaticClass());
+		ensureReturn(SkeletalMeshComponent);
+
+		SkeletalMeshComponent->SetSkeletalMeshAsset(DataAsset->TryGetSkeletalMesh());
+		SkeletalMeshComponent->SetCollisionProfileName(TEXT("NoCollision"));
+		SkeletalMeshComponent->bCastDynamicShadow = true;
+		SkeletalMeshComponent->bAffectDynamicIndirectLighting = true;
+		SkeletalMeshComponent->PrimaryComponentTick.TickGroup = TG_PrePhysics;
+		SkeletalMeshComponent->SetupAttachment(RootComponent);
+		SkeletalMeshComponent->RegisterComponent();
+
+		SkeletalMeshComponent->SetAnimInstanceClass(DataAsset->HandheldAnimInstanceClass);
+
+		UScWAnimInstance_Handheld* HandheldAnimInstance = Cast<UScWAnimInstance_Handheld>(SkeletalMeshComponent->GetAnimInstance());
+		ensureReturn(HandheldAnimInstance);
+
+		HandheldAnimInstance->SetCurrentStaticAnimationData(DataAsset->HandheldStaticAnimationData);
+	}
+	else
+	{
+		//ensure(false && TEXT("DataAsset does not have a valid StaticMesh or SkeletalMesh!"));
+	}
 }
 
 void AScWHandheld::OnConstruction(const FTransform& InTransform) // AActor
@@ -86,9 +121,10 @@ void AScWHandheld::UpdateAttachmentToOwner()
 		{
 			AttachToComponent(OwnerFirstPersonMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, DataAsset->FP_OwnerMeshAttachmentSocketName);
 		}
-		ensureIf(Mesh)
+		if (DataAsset->IsUsingSkeletalMesh())
 		{
-			Mesh->SetFirstPersonPrimitiveType(EFirstPersonPrimitiveType::FirstPerson);
+			ensureReturn(SkeletalMeshComponent);
+			SkeletalMeshComponent->SetFirstPersonPrimitiveType(EFirstPersonPrimitiveType::FirstPerson);
 		}
 	}
 	else
@@ -98,9 +134,10 @@ void AScWHandheld::UpdateAttachmentToOwner()
 		{
 			AttachToComponent(OwnerThirdPersonMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, DataAsset->TP_OwnerMeshAttachmentSocketName);
 		}
-		ensureIf(Mesh)
+		if (DataAsset->IsUsingSkeletalMesh())
 		{
-			Mesh->SetFirstPersonPrimitiveType(EFirstPersonPrimitiveType::WorldSpaceRepresentation);
+			ensureReturn(SkeletalMeshComponent);
+			SkeletalMeshComponent->SetFirstPersonPrimitiveType(EFirstPersonPrimitiveType::WorldSpaceRepresentation);
 		}
 	}
 }
@@ -115,12 +152,15 @@ void AScWHandheld::HandleDrop()
 	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	OwnerCharacter = nullptr;
 
-	if (Mesh && Mesh->GetSkeletalMeshAsset())
+	if (DataAsset->IsUsingSkeletalMesh())
 	{
-		Mesh->SetSimulatePhysics(true);
-		Mesh->SetCollisionProfileName(TEXT("PhysicsActor"));
+		ensureReturn(SkeletalMeshComponent);
+		ensureReturn(SkeletalMeshComponent->GetSkeletalMeshAsset());
 
-		Mesh->AddImpulse(OwnerCharacter->GetVelocity(), NAME_None, true);
+		SkeletalMeshComponent->SetSimulatePhysics(true);
+		SkeletalMeshComponent->SetCollisionProfileName(TEXT("PhysicsActor"));
+
+		SkeletalMeshComponent->AddImpulse(OwnerCharacter->GetVelocity(), NAME_None, true);
 	}
 }
 //~ End Owner
@@ -135,9 +175,26 @@ UAbilitySystemComponent* AScWHandheld::GetAbilitySystemComponent() const // IAbi
 	return nullptr;
 }
 
+UMeshComponent* AScWHandheld::GetRelevantMeshComponent() const
+{
+	ensureReturn(DataAsset, nullptr);
+	if (DataAsset->IsUsingStaticMesh())
+	{
+		return StaticMeshComponent;
+	}
+	else if (DataAsset->IsUsingSkeletalMesh())
+	{
+		return SkeletalMeshComponent;
+	}
+	else
+	{
+		return nullptr;
+	}
+}
+
 UScWAnimInstance_Handheld* AScWHandheld::GetMeshAnimInstance() const
 {
-	ensureReturn(Mesh, nullptr);
-	return Cast<UScWAnimInstance_Handheld>(Mesh->GetAnimInstance());
+	ensureReturn(SkeletalMeshComponent, nullptr);
+	return Cast<UScWAnimInstance_Handheld>(SkeletalMeshComponent->GetAnimInstance());
 }
 //~ End Components

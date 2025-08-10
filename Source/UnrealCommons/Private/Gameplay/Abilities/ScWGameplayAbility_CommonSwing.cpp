@@ -8,10 +8,12 @@
 
 #include "Gameplay/ScWDamageType.h"
 #include "Gameplay/ScWGameplayTags.h"
+#include "Gameplay/ScWASC_Character.h"
 #include "Gameplay/Tasks/ScWAT_WaitDelay.h"
 #include "Gameplay/Characters/ScWCharacter.h"
 #include "Gameplay/Handhelds/ScWHandheld_Melee.h"
 #include "Gameplay/Handhelds/ScWHandheldData_Melee.h"
+#include "Gameplay/Tasks/ScWAT_ModifyCharacterMovement.h"
 
 UScWGameplayAbility_CommonSwing::UScWGameplayAbility_CommonSwing()
 {
@@ -33,7 +35,7 @@ UScWGameplayAbility_CommonSwing::UScWGameplayAbility_CommonSwing()
 }
 
 //~ Begin Ability
-void UScWGameplayAbility_CommonSwing::NativeActivateAbility_Commited(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo, const FGameplayAbilityActivationInfo InActivationInfo, const FGameplayEventData* InTriggerEventData) // UGameplayAbility
+void UScWGameplayAbility_CommonSwing::NativeActivateAbility_Commited(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo, const FGameplayAbilityActivationInfo InActivationInfo, const FGameplayEventData* InTriggerEventData) // UScWGameplayAbility
 {
 	ensureCancelAbilityReturn(OwnerCharacter);
 
@@ -93,12 +95,16 @@ void UScWGameplayAbility_CommonSwing::EndAbility(const FGameplayAbilitySpecHandl
 }
 //~ End Ability
 
-//~ Begin Melee
+//~ Begin Swing
 float UScWGameplayAbility_CommonSwing::BP_HandlePreSwing_Implementation()
 {
 	ensureCancelAbilityReturn(OwnerMelee, 0.0f);
 	OwnerMelee->BP_PreSwing();
 
+	if (OwnerMeleeData->SwingOwnerEffect && !OwnerMeleeData->bSwingOwnerEffectOnlyDuringSwing)
+	{
+		BP_ApplySwingOwnerEffect();
+	}
 	const auto& CurrentSwingVariantData = OwnerMelee->GetCurrentSwingVariantData();
 	const auto& CurrentSwingMontageData = CurrentSwingVariantData.MontageData;
 
@@ -115,6 +121,20 @@ float UScWGameplayAbility_CommonSwing::BP_HandleBeginSwing_Implementation()
 	ensureCancelAbilityReturn(OwnerMelee, 0.0f);
 	OwnerMelee->BP_BeginSwing(BP_GetSwingDamage(), BP_GetSwingDamageTypeClass());
 
+	ensureCancelAbilityReturn(OwnerMeleeData, 0.0f);
+	ensureCancelAbilityReturn(OwnerCharacter, 0.0f);
+
+	if (OwnerMeleeData->SwingOwnerEffect && OwnerMeleeData->bSwingOwnerEffectOnlyDuringSwing)
+	{
+		BP_ApplySwingOwnerEffect();
+	}
+	if (OwnerMeleeData->bPushPlayerDuringSwing)
+	{
+		FVector PushMagnitude = OwnerCharacter->GetActorRotation().RotateVector(OwnerMeleeData->SwingPushVector);
+
+		UScWAT_ModifyCharacterMovement* PushPlayerTask = UScWAT_ModifyCharacterMovement::ModifyCharacterMovement(this, OwnerCharacter->GetScWCharacterMovement(), PushMagnitude, false, OwnerMeleeData->SwingPushDuration);
+		PushPlayerTask->ReadyForActivation();
+	}
 	const auto& CurrentSwingVariantData = OwnerMelee->GetCurrentSwingVariantData();
 	const auto& CurrentSwingMontageData = CurrentSwingVariantData.MontageData;
 	return UScWAnimationsFunctionLibrary::GetMontageSectionLengthByIndexFromData(CurrentSwingMontageData, SwingMontageSectionIndex);
@@ -125,6 +145,10 @@ float UScWGameplayAbility_CommonSwing::BP_HandleEndSwing_Implementation()
 	ensureCancelAbilityReturn(OwnerMelee, 0.0f);
 	OwnerMelee->BP_EndSwing();
 
+	if (CurrentSwingEffectHandle.IsValid() && OwnerMeleeData->bSwingOwnerEffectOnlyDuringSwing)
+	{
+		BP_RemoveSwingOwnerEffect();
+	}
 	const auto& CurrentSwingVariantData = OwnerMelee->GetCurrentSwingVariantData();
 	const auto& CurrentSwingMontageData = CurrentSwingVariantData.MontageData;
 	return UScWAnimationsFunctionLibrary::GetMontageSectionLengthByIndexFromData(CurrentSwingMontageData, PostSwingMontageSectionIndex);
@@ -132,6 +156,10 @@ float UScWGameplayAbility_CommonSwing::BP_HandleEndSwing_Implementation()
 
 void UScWGameplayAbility_CommonSwing::BP_HandlePostSwing_Implementation()
 {
+	if (CurrentSwingEffectHandle.IsValid() && !OwnerMeleeData->bSwingOwnerEffectOnlyDuringSwing)
+	{
+		BP_RemoveSwingOwnerEffect();
+	}
 	K2_EndAbility();
 }
 
@@ -146,4 +174,26 @@ TSubclassOf<UScWDamageType> UScWGameplayAbility_CommonSwing::BP_GetSwingDamageTy
 	ensureReturn(OwnerMeleeData, UScWDamageType::StaticClass());
 	return OwnerMeleeData->SwingBaseDamageTypeClass;
 }
-//~ End Melee
+
+void UScWGameplayAbility_CommonSwing::BP_ApplySwingOwnerEffect_Implementation()
+{
+	ensureCancelAbilityReturn(OwnerMeleeData);
+	ensureCancelAbilityReturn(OwnerMeleeData->SwingOwnerEffect);
+
+	if (CurrentSwingEffectHandle.IsValid())
+	{
+		BP_RemoveSwingOwnerEffect();
+	}
+	ensureCancelAbilityReturn(OwnerASC);
+	CurrentSwingEffectHandle = OwnerASC->TryApplyGameplayEffectByClass(OwnerMeleeData->SwingOwnerEffect);
+}
+
+void UScWGameplayAbility_CommonSwing::BP_RemoveSwingOwnerEffect_Implementation()
+{
+	ensureCancelAbilityReturn(OwnerASC);
+	ensureCancelAbilityReturn(CurrentSwingEffectHandle.IsValid());
+	OwnerASC->RemoveActiveGameplayEffect(CurrentSwingEffectHandle);
+
+	CurrentSwingEffectHandle.Invalidate();
+}
+//~ End Swing
