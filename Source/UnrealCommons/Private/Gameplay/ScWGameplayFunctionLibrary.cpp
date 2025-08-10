@@ -311,21 +311,20 @@ FGenericTeamId UScWGameplayFunctionLibrary::GetActorTeamId(const AActor* InActor
 
 const FName& UScWGameplayFunctionLibrary::GetActorTeamName(const AActor* InActor, const bool bInChecked)
 {
-	static const FName OutNone = NAME_None;
-	ensureReturn(InActor || !bInChecked, OutNone);
+	ensureReturn(InActor || !bInChecked, AScWGameState::InvalidTeamName);
 
 	FGenericTeamId TeamId = GetActorTeamId(InActor, bInChecked);
 	if (TeamId != FGenericTeamId::NoTeam)
 	{
-		ensureReturn(InActor, OutNone);
+		ensureReturn(InActor, AScWGameState::InvalidTeamName);
 		UWorld* World = InActor->GetWorld();
-		ensureReturn(World, OutNone);
+		ensureReturn(World, AScWGameState::InvalidTeamName);
 
 		AScWGameState* GameState = World->GetGameState<AScWGameState>();
-		ensureReturn(GameState, OutNone);
+		ensureReturn(GameState, AScWGameState::InvalidTeamName);
 		return GameState->GetTeamName(TeamId);
 	}
-	return OutNone;
+	return AScWGameState::InvalidTeamName;
 }
 
 TArray<AActor*> UScWGameplayFunctionLibrary::GetAllActorsOfTeam(const UObject* InWCO, const FName& InTeamName, TSubclassOf<AActor> InFilterActorClass)

@@ -608,6 +608,22 @@ void AScWCharacter::InputHandheldSwitchDirectReleased()
 //~ End Input
 
 //~ Begin Team
+const FName& AScWCharacter::GetTeamName(const bool bInGetDefaultFromDataAsset) const
+{
+	if (bInGetDefaultFromDataAsset)
+	{
+		ensureReturn(DataAsset, AScWGameState::InvalidTeamName);
+		return DataAsset->DefaultTeamName;
+	}
+	else
+	{
+		AScWGameState* GameState = AScWGameState::TryGetScWGameState(this);
+		ensureReturn(GameState, AScWGameState::InvalidTeamName);
+
+		return GameState->GetTeamName(GetGenericTeamId());
+	}
+}
+
 FGenericTeamId AScWCharacter::GetGenericTeamId() const // IGenericTeamAgentInterface
 {
 	if (IGenericTeamAgentInterface* TeamAgentInterface = GetController<IGenericTeamAgentInterface>())

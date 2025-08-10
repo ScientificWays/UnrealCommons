@@ -252,6 +252,10 @@ protected:
 	
 //~ Begin Team
 public:
+
+	UFUNCTION(Category = "Handheld", BlueprintCallable)
+	const FName& GetTeamName(const bool bInGetDefaultFromDataAsset = false) const;
+
 	virtual FGenericTeamId GetGenericTeamId() const override; // IGenericTeamAgentInterface
 	virtual void SetGenericTeamId(const FGenericTeamId& InNewTeamID) override; // IGenericTeamAgentInterface
 //~ End Team
