@@ -51,12 +51,9 @@ void AScWHandheld_Melee::OnConstruction(const FTransform& InTransform) // AActor
 {
 	Super::OnConstruction(InTransform);
 
-	if (UWorld* World = GetWorld())
+	if (IS_EDITOR_WORLD() && DataAsset)
 	{
-		if (World->IsEditorWorld() && DataAsset)
-		{
-			BP_UpdateFromDataAsset();
-		}
+		BP_UpdateFromDataAsset();
 	}
 }
 

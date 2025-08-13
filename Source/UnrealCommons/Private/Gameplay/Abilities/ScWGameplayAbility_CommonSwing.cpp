@@ -101,6 +101,7 @@ float UScWGameplayAbility_CommonSwing::BP_HandlePreSwing_Implementation()
 	ensureCancelAbilityReturn(OwnerMelee, 0.0f);
 	OwnerMelee->BP_PreSwing();
 
+	ensureCancelAbilityReturn(OwnerMeleeData, 0.0f);
 	if (OwnerMeleeData->SwingOwnerEffect && !OwnerMeleeData->bSwingOwnerEffectOnlyDuringSwing)
 	{
 		BP_ApplySwingOwnerEffect();
@@ -113,7 +114,7 @@ float UScWGameplayAbility_CommonSwing::BP_HandlePreSwing_Implementation()
 
 	ensureCancelAbilityReturn(OwnerCharacter, 0.0f);
 	UScWAnimationsFunctionLibrary::PlayCharacterMontagesFromData(OwnerCharacter, CurrentSwingMontageData);
-	return UScWAnimationsFunctionLibrary::GetMontageSectionLengthByIndexFromData(CurrentSwingMontageData, PreSwingMontageSectionIndex);
+	return UScWAnimationsFunctionLibrary::GetMontageSectionLengthByIndexFromData(CurrentSwingMontageData, PreSwingMontageSectionIndex) * OwnerMeleeData->SwingVariantBaseDuration;
 }
 
 float UScWGameplayAbility_CommonSwing::BP_HandleBeginSwing_Implementation()
@@ -137,7 +138,7 @@ float UScWGameplayAbility_CommonSwing::BP_HandleBeginSwing_Implementation()
 	}
 	const auto& CurrentSwingVariantData = OwnerMelee->GetCurrentSwingVariantData();
 	const auto& CurrentSwingMontageData = CurrentSwingVariantData.MontageData;
-	return UScWAnimationsFunctionLibrary::GetMontageSectionLengthByIndexFromData(CurrentSwingMontageData, SwingMontageSectionIndex);
+	return UScWAnimationsFunctionLibrary::GetMontageSectionLengthByIndexFromData(CurrentSwingMontageData, SwingMontageSectionIndex) * OwnerMeleeData->SwingVariantBaseDuration;
 }
 
 float UScWGameplayAbility_CommonSwing::BP_HandleEndSwing_Implementation()
@@ -145,13 +146,14 @@ float UScWGameplayAbility_CommonSwing::BP_HandleEndSwing_Implementation()
 	ensureCancelAbilityReturn(OwnerMelee, 0.0f);
 	OwnerMelee->BP_EndSwing();
 
+	ensureCancelAbilityReturn(OwnerMeleeData, 0.0f);
 	if (CurrentSwingEffectHandle.IsValid() && OwnerMeleeData->bSwingOwnerEffectOnlyDuringSwing)
 	{
 		BP_RemoveSwingOwnerEffect();
 	}
 	const auto& CurrentSwingVariantData = OwnerMelee->GetCurrentSwingVariantData();
 	const auto& CurrentSwingMontageData = CurrentSwingVariantData.MontageData;
-	return UScWAnimationsFunctionLibrary::GetMontageSectionLengthByIndexFromData(CurrentSwingMontageData, PostSwingMontageSectionIndex);
+	return UScWAnimationsFunctionLibrary::GetMontageSectionLengthByIndexFromData(CurrentSwingMontageData, PostSwingMontageSectionIndex) * OwnerMeleeData->SwingVariantBaseDuration;
 }
 
 void UScWGameplayAbility_CommonSwing::BP_HandlePostSwing_Implementation()

@@ -125,12 +125,9 @@ void AScWCharacter::OnConstruction(const FTransform& InTransform) // AActor
 	{
 		UKismetSystemLibrary::PrintString(this, GetName() + " has bIsPlayerCharacter == false!", true, true, FLinearColor::Red, 30.0f);
 	}
-	if (UWorld* World = GetWorld())
+	if (IS_EDITOR_WORLD() && DataAsset)
 	{
-		if (World->IsEditorWorld() && DataAsset)
-		{
-			DataAsset->BP_InitializeCharacterComponents(this);
-		}
+		DataAsset->BP_InitializeCharacterComponents(this);
 	}
 }
 

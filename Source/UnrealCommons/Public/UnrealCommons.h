@@ -103,6 +103,8 @@ DECLARE_LOG_CATEGORY_EXTERN(LogScWGameplay, Log, All);
 #define ensureReturn(InCondition, ...) ensure(InCondition); if (!(InCondition)) return __VA_ARGS__;
 #define ensureGoto(InCondition, InLabel) ensure(InCondition); if (!(InCondition)) goto InLabel;
 
+#define IS_EDITOR_WORLD(...) (WITH_EDITOR && ((__VA_ARGS__ GetWorld()) && (__VA_ARGS__ GetWorld()->WorldType == EWorldType::Editor))) // Common check with compile-time optimization for non-editor builds
+
 #define TraceTypeQuery_Visibility				ETraceTypeQuery::TraceTypeQuery1
 #define TraceTypeQuery_Camera					ETraceTypeQuery::TraceTypeQuery2
 #define TraceTypeQuery_Melee					ETraceTypeQuery::TraceTypeQuery3

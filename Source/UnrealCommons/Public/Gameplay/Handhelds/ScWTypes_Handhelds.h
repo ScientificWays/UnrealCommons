@@ -13,16 +13,16 @@ struct FScWMeleeSwingVariantData_TracePattern
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "bIsUsingTraces"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FRotator TraceOffsetRotation = FRotator::ZeroRotator;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "bIsUsingTraces"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector TraceOffsetLocation = FVector::ZeroVector;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "bIsUsingTraces"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float TraceLength = 128.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "bIsUsingTraces"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float TraceShapeRadius = 32.0f;
 };
 

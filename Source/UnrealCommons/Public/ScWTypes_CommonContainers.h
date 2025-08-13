@@ -4,30 +4,33 @@
 
 #include "UnrealCommons.h"
 
-//#include "ScWTypes_Containers.generated.h"
+#include "ScWTypes_CommonContainers.generated.h"
 
-/*USTRUCT(BlueprintType)
-struct FUInt16Point3D
+USTRUCT(BlueprintType)
+struct FUint16Vector3
 {
 	GENERATED_BODY()
 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY()
 	uint16 X;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY()
 	uint16 Y;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY()
 	uint16 Z;
+
+	FUint16Vector3(const uint16 InX = 0u, const uint16 InY = 0u, const uint16 InZ = 0u) : X(InX), Y(InY), Z(InZ) {}
+	FUint16Vector3(const FIntVector& InPoint) : X(InPoint.X), Y(InPoint.Y), Z(InPoint.Z) {}
+
+	operator FIntVector() const { return FIntVector(int32(X), int32(Y), int32(Z)); }
 };
 
-uint32 GetTypeHash(const FUInt16Point3D& InPoint)
+/*uint32 GetTypeHash(const FUint16Vector3& InPoint)
 {
 	// Note: this assumes there's no padding in Point that could contain uncompared data.
 	return FCrc::MemCrc32(&InPoint, sizeof(InPoint));
 }*/
-
-//using FVoxelPoint3D = FUInt16Point3D;
 
 template<typename ElementType>
 struct TArraySetPair
