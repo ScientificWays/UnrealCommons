@@ -70,8 +70,7 @@ void AScWPlayerController::CalcCamera(float InDeltaSeconds, FMinimalViewInfo& In
 {
 	if (CalcCameraComponent)
 	{
-		InOutResult.Location = CalcCameraComponent->GetComponentLocation();
-		InOutResult.Rotation = CalcCameraComponent->GetComponentRotation();
+		CalcCameraComponent->GetCameraView(InDeltaSeconds, InOutResult);
 	}
 	else
 	{
