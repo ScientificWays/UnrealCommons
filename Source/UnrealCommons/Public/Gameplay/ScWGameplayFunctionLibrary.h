@@ -136,10 +136,10 @@ public:
 	UFUNCTION(Category = "Teams", BlueprintCallable, meta = (KeyWords = "GetTeamOfActor"))
 	static const FName& GetActorTeamName(const AActor* InActor, const bool bInChecked = false);
 
-	UFUNCTION(Category = "Teams", BlueprintCallable, meta = (WorldContext = "InWCO", KeyWords = "GetActorsOfTeam", DeterminesOutputType = "InFilterActorClass"))
+	UFUNCTION(Category = "Teams", BlueprintCallable, meta = (WorldContext = "InWCO", KeyWords = "GetActorsOfTeam, GetCharactersOfTeam, GetAllCharactersOfTeam", AutoCreateRefTerm = "InTeamName", DeterminesOutputType = "InFilterActorClass"))
 	static TArray<AActor*> GetAllActorsOfTeam(const UObject* InWCO, const FName& InTeamName, TSubclassOf<AActor> InFilterActorClass = nullptr);
 
-	UFUNCTION(Category = "Teams", BlueprintCallable, meta = (WorldContext = "InWCO", KeyWords = "GetActorsOfTeamSet", DeterminesOutputType = "InFilterActorClass"))
+	UFUNCTION(Category = "Teams", BlueprintCallable, meta = (WorldContext = "InWCO", KeyWords = "GetActorsOfTeamSet, GetCharactersOfTeamSet, GetAllCharactersOfTeamSet", AutoCreateRefTerm = "InTeamName", DeterminesOutputType = "InFilterActorClass"))
 	static TArray<AActor*> GetAllActorsOfAnyTeam(const UObject* InWCO, const TSet<FName>& InTeamNameSet, TSubclassOf<AActor> InFilterActorClass = nullptr);
 //~ End Teams
 

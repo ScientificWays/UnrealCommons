@@ -138,6 +138,13 @@ protected:
 	
 //~ Begin Team
 public:
+
+	UFUNCTION(Category = "Team", BlueprintCallable)
+	const FName& GetTeamName(const bool bInGetDefaultFromCharacterDataAsset = false) const;
+
+	UPROPERTY(Category = "Team", BlueprintReadOnly, EditDefaultsOnly)
+	FName DefaultTeamName;
+
 	virtual FGenericTeamId GetGenericTeamId() const override { return TeamId; } // IGenericTeamAgentInterface
 	virtual void SetGenericTeamId(const FGenericTeamId& InNewTeamID) override; // IGenericTeamAgentInterface
 private:

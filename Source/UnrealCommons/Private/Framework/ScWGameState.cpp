@@ -25,24 +25,14 @@ AScWGameState::AScWGameState()
 //~ Begin Statics
 AScWGameState* AScWGameState::TryGetScWGameState(const UObject* InWCO)
 {
-	if (!InWCO)
-	{
-		UE_LOG(LogScWGameplay, Error, TEXT("AScWGameState::TryGetScWGameState() World context is not valid!"));
-		return nullptr;
-	}
-
+	ensureReturn(InWCO, nullptr);
 	UWorld* World = InWCO->GetWorld();
-	if (!World)
-	{
-		UE_LOG(LogScWGameplay, Error, TEXT("AScWGameState::TryGetScWGameState() World from context %s is not valid!"), *InWCO->GetName());
-		return nullptr;
-	}
-	if (AScWGameState* OutGameState = World->GetGameState<AScWGameState>())
-	{
-		return OutGameState;
-	}
-	UE_LOG(LogScWGameplay, Error, TEXT("AScWGameState::TryGetScWGameState() GameState from %s is not of class AScWGameState!"), *World->GetName());
-	return nullptr;
+
+	ensureReturn(World, nullptr);
+	AScWGameState* OutGameState = World->GetGameState<AScWGameState>();
+
+	ensureReturn(OutGameState, nullptr);
+	return OutGameState;
 }
 //~ End Statics
 

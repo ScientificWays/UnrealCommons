@@ -3,7 +3,10 @@
 #include "Framework/ScWPlayerController.h"
 
 #include "Gameplay/ScWASC_Base.h"
+#include "Gameplay/Characters/ScWCharacter.h"
 #include "Gameplay/ScWGameplayFunctionLibrary.h"
+
+#include "Framework/ScWGameState.h"
 
 AScWPlayerController::AScWPlayerController()
 {
@@ -14,6 +17,7 @@ AScWPlayerController::AScWPlayerController()
 	CONSTRUCTOR_TRY_LOAD_OBJECT(UInputMappingContext, DefaultInputMappingContext, "/UnrealCommons/Blueprints/Input/IMC_CommonPlayerController.IMC_CommonPlayerController");
 	CONSTRUCTOR_TRY_LOAD_OBJECT(UInputAction, MouseLookAction, "/UnrealCommons/Blueprints/Input/IA_MouseLook.IA_MouseLook");
 
+	DefaultTeamName = TEXT("Player");
 	TeamId = FGenericTeamId::NoTeam;
 }
 
@@ -48,6 +52,14 @@ void AScWPlayerController::BeginPlay() // AActor
 	Super::BeginPlay();
 
 	UScWGameplayFunctionLibrary::AddEnhancedInputMappingContextTo(this, DefaultInputMappingContext, DefaultInputMappingContextPriority, DefaultInputMappingContextOptions);
+
+	if ((GetGenericTeamId() == FGenericTeamId::NoTeam) && !DefaultTeamName.IsNone())
+	{
+		AScWGameState* GameState = AScWGameState::TryGetScWGameState(this);
+		ensureReturn(GameState);
+
+		SetGenericTeamId(GameState->GetTeamId(DefaultTeamName));
+	}
 }
 
 void AScWPlayerController::EndPlay(const EEndPlayReason::Type InReason) // AActor
@@ -177,6 +189,14 @@ void AScWPlayerController::InputMouseLook(const FInputActionInstance& InActionIn
 //~ End Input
 
 //~ Begin Team
+const FName& AScWPlayerController::GetTeamName(const bool bInGetDefaultFromCharacterDataAsset) const
+{
+	AScWCharacter* PawnCharacter = GetPawn<AScWCharacter>();
+	ensureReturn(PawnCharacter, AScWGameState::InvalidTeamName);
+
+	return PawnCharacter->GetTeamName(bInGetDefaultFromCharacterDataAsset);
+}
+
 void AScWPlayerController::SetGenericTeamId(const FGenericTeamId& InNewTeamId) // IGenericTeamAgentInterface
 {
 	TeamId = InNewTeamId;
