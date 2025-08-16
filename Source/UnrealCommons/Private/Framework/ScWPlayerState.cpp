@@ -16,12 +16,14 @@ void AScWPlayerState::PostInitializeComponents() // AActor
 {
 	Super::PostInitializeComponents();
 
-	
 }
 
 void AScWPlayerState::BeginPlay() // AActor
 {
 	Super::BeginPlay();
+
+	OnPawnSet.AddDynamic(this, &ThisClass::HandlePawnSet);
+	UpdateOwnedASCActorInfo();
 
 	UWorld* World = GetWorld();
 	ensureReturn(World);
@@ -42,15 +44,51 @@ void AScWPlayerState::EndPlay(const EEndPlayReason::Type InReason) // AActor
 }
 //~ End Initialize
 
-//~ Begin AbilitySystem
+//~ Begin Pawn
+void AScWPlayerState::HandlePawnSet(APlayerState* InPlayer, APawn* InNewPawn, APawn* InOldPawn)
+{
+	UpdateOwnedASCActorInfo();
+}
+//~ End Pawn
+
+//~ Begin Ability System
+bool AScWPlayerState::OwnsAbilitySystemComponent() const
+{
+	return GetOwnedAbilitySystemComponent() != nullptr;
+}
+
+UAbilitySystemComponent* AScWPlayerState::GetOwnedAbilitySystemComponent() const
+{
+	return FindComponentByClass<UAbilitySystemComponent>();
+}
+
 UAbilitySystemComponent* AScWPlayerState::GetAbilitySystemComponent() const // IAbilitySystemInterface
 {
+	if (UAbilitySystemComponent* OwnedASC = GetOwnedAbilitySystemComponent())
+	{
+		return OwnedASC;
+	}
 	return UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPawn());
 }
-//~ End AbilitySystem
+
+void AScWPlayerState::UpdateOwnedASCActorInfo()
+{
+	if (UAbilitySystemComponent* OwnedASC = GetOwnedAbilitySystemComponent())
+	{
+		if (APawn* CurrentPawn = GetPawn())
+		{
+			OwnedASC->SetAvatarActor(CurrentPawn);
+		}
+		else
+		{
+			OwnedASC->SetAvatarActor(this);
+		}
+	}
+}
+//~ End Ability System
 
 //~ Begin Progression Tasks
-const FScWProgressionTask_ProgressData& AScWPlayerState::GetProgressionTaskProgressData(class UScWProgressionTaskData* InTaskData) const
+const FScWProgressionTask_ProgressData& AScWPlayerState::GetProgressionTaskProgressData(UScWProgressionTaskData* InTaskData) const
 {
 	if (const FScWProgressionTask_ProgressData* OutData = ProgressionTasksProgressDataMap.Find(InTaskData))
 	{
@@ -59,7 +97,7 @@ const FScWProgressionTask_ProgressData& AScWPlayerState::GetProgressionTaskProgr
 	return FScWProgressionTask_ProgressData::Invalid;
 }
 
-int32 AScWPlayerState::GetProgressionTaskProgressMeterValue(class UScWProgressionTaskData* InTaskData, const FName& InMeterName, const bool bInFailIfTaskWasMarkedAsCompleted) const
+int32 AScWPlayerState::GetProgressionTaskProgressMeterValue(UScWProgressionTaskData* InTaskData, const FName& InMeterName, const bool bInFailIfTaskWasMarkedAsCompleted) const
 {
 	ensureReturn(InTaskData, false);
 

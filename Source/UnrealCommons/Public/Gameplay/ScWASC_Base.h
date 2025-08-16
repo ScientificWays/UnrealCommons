@@ -53,7 +53,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FComboMoveEventSignature, const clas
 /**
  * 
  */
-UCLASS(Abstract, Blueprintable, meta = (DisplayName = "[ScW] ASC Base"))
+UCLASS(Blueprintable, meta = (DisplayName = "[ScW] ASC Base", BlueprintSpawnableComponent))
 class UNREALCOMMONS_API UScWASC_Base : public UAbilitySystemComponent, public IScWCharacterData_InitInterface
 {
 	GENERATED_BODY()
@@ -145,8 +145,11 @@ public:
 	UFUNCTION(Category = "Abilities", BlueprintCallable)
 	void GetAbilitiesByInput(EScWAbilityInputID InInputID, TArray<UGameplayAbility*>& OutAbilityArray) const;
 
-	UFUNCTION(Category = "Abilities", BlueprintCallable)
+	UFUNCTION(Category = "Abilities", BlueprintCallable, meta = (KeyWords = "GiveInputAbilities"))
 	void SetInputAbilities(const EScWAbilityInputID InInputID, const TArray<TSubclassOf<UGameplayAbility>>& InClassArray);
+
+	UFUNCTION(Category = "Abilities", BlueprintCallable, meta = (KeyWords = "GiveInputAbility"))
+	void SetInputAbility(const EScWAbilityInputID InInputID, TSubclassOf<UGameplayAbility>& InClass) { SetInputAbilities(InInputID, { InClass }); }
 
 	UFUNCTION(Category = "Abilities", BlueprintCallable)
 	FGameplayAbilitySpecHandle AddInputAbility(const EScWAbilityInputID InInputID, const TSubclassOf<UGameplayAbility> InClass);

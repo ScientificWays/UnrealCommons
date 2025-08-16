@@ -28,6 +28,9 @@ UDELEGATE()
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBaseASCEventSignature, const class UScWASC_Base*, InTargetASC);
 
 UDELEGATE()
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FScWCharacterSignature, class AScWCharacter*, InCharacter);
+
+UDELEGATE()
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTeamNameSignature, const FName&, InTeamName);
 
 USTRUCT(BlueprintType)

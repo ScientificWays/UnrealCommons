@@ -118,7 +118,7 @@ void UScWGameplayFunctionLibrary::MakeMinimalInfoDamageImpactHitResult(AActor* I
 }
 //~ End Damage
 
-//~ Begin GameplayTags
+//~ Begin Gameplay Tags
 FDelegateHandle_BlueprintWrapper UScWGameplayFunctionLibrary::RegisterGameplayTagEvent(UAbilitySystemComponent* InASC, FGameplayTagNumChangedEvent InEvent, FGameplayTag InTag, EGameplayTagEventType::Type InType)
 {
 	return { InASC->RegisterGameplayTagEvent(InTag, InType).AddUFunction(InEvent.GetUObject(), InEvent.GetFunctionName()) };
@@ -128,7 +128,7 @@ void UScWGameplayFunctionLibrary::UnRegisterGameplayTagEvent(UAbilitySystemCompo
 {
 	InASC->RegisterGameplayTagEvent(InTag, InType).Remove(InHandleWrapper.Handle);
 }
-//~ End GameplayTags
+//~ End Gameplay Tags
 
 //~ Begin Input
 bool UScWGameplayFunctionLibrary::AddEnhancedInputMappingContextTo(APlayerController* InPlayerController, const UInputMappingContext* InMappingContext, int32 InPriority, const FModifyContextOptions& InOptions)

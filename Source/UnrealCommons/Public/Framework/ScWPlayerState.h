@@ -26,11 +26,27 @@ protected:
 	virtual void BeginPlay() override; // AActor
 	virtual void EndPlay(const EEndPlayReason::Type InReason) override; // AActor
 //~ End Initialize
-	
-//~ Begin AbilitySystem
+
+//~ Begin Pawn
+protected:
+
+	UFUNCTION()
+	virtual void HandlePawnSet(APlayerState* InPlayer, APawn* InNewPawn, APawn* InOldPawn);
+//~ End Pawn
+
+//~ Begin Ability System
 public:
+
+	UFUNCTION(Category = "Ability System", BlueprintCallable)
+	bool OwnsAbilitySystemComponent() const;
+
+	UFUNCTION(Category = "Ability System", BlueprintCallable)
+	UAbilitySystemComponent* GetOwnedAbilitySystemComponent() const;
+
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override; // IAbilitySystemInterface
-//~ End AbilitySystem
+protected:
+	virtual void UpdateOwnedASCActorInfo();
+//~ End Ability System
 
 //~ Begin Progression Tasks
 public:

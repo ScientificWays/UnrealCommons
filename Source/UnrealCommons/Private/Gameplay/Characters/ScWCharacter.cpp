@@ -335,6 +335,10 @@ void AScWCharacter::OnDied()
 			}
 		}
 	}
+	if (const AScWGameState* GameState = AScWGameState::TryGetScWGameState(this))
+	{
+		GameState->OnCharacterDied.Broadcast(this);
+	}
 	if (bDestroyActorNextTick)
 	{
 		GetWorldTimerManager().SetTimerForNextTick(this, &ThisClass::K2_DestroyActor);

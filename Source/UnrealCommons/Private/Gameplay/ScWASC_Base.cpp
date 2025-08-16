@@ -55,17 +55,31 @@ UScWASC_Base* UScWASC_Base::TryGetBaseScWASCFromActor(const AActor* InActor, boo
 //~ Begin Initialize
 void UScWASC_Base::InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) // UAbilitySystemComponent
 {
-	Super::InitAbilityActorInfo(InOwnerActor, InAvatarActor);
+	ensureReturn(GetWorld());
 
-	if (!GetWorld() || !GetWorld()->IsGameWorld())
+	if (GetWorld()->IsGameWorld())
 	{
-		return;
-	}
-	// TODO: Check if something was bound before?
-	InAvatarActor->OnTakePointDamage.AddDynamic(this, &UScWASC_Base::OnAvatarTakePointDamage);
-	InAvatarActor->OnTakeRadialDamage.AddDynamic(this, &UScWASC_Base::OnAvatarTakeRadialDamage);
+		if (AbilityActorInfo.IsValid())
+		{
+			if (AbilityActorInfo->AvatarActor.IsValid())
+			{
+				AbilityActorInfo->AvatarActor->OnTakePointDamage.RemoveDynamic(this, &ThisClass::OnAvatarTakePointDamage);
+				AbilityActorInfo->AvatarActor->OnTakeRadialDamage.RemoveDynamic(this, &ThisClass::OnAvatarTakeRadialDamage);
+			}
+		}
+		Super::InitAbilityActorInfo(InOwnerActor, InAvatarActor);
 
-	IScWASC_InitInterface::HandleInit(this, InOwnerActor, InAvatarActor);
+		ensureIf(InAvatarActor)
+		{
+			InAvatarActor->OnTakePointDamage.AddDynamic(this, &ThisClass::OnAvatarTakePointDamage);
+			InAvatarActor->OnTakeRadialDamage.AddDynamic(this, &ThisClass::OnAvatarTakeRadialDamage);
+		}
+		IScWASC_InitInterface::HandleInit(this, InOwnerActor, InAvatarActor);
+	}
+	else
+	{
+		Super::InitAbilityActorInfo(InOwnerActor, InAvatarActor);
+	}
 }
 
 void UScWASC_Base::DestroyActiveState() // UAbilitySystemComponent

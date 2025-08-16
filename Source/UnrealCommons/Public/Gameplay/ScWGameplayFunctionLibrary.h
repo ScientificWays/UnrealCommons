@@ -6,6 +6,8 @@
 
 #include "ScWTypes_CommonDelegates.h"
 
+#include "Gameplay/ScWTypes_Gameplay.h"
+
 #include "ScWGameplayFunctionLibrary.generated.h"
 
 DECLARE_DYNAMIC_DELEGATE_TwoParams(FGameplayTagNumChangedEvent, const FGameplayTag, InTag, int32, InNewNum);
@@ -44,51 +46,51 @@ public:
 	static void MakeMinimalInfoDamageImpactHitResult(AActor* InSourceActor, UPrimitiveComponent* InSourceComponent, APawn* InInstigatorPawn, AActor* InDamagedActor, UPrimitiveComponent* InDamagedComponent, FHitResult& OutHitResult);
 //~ End Damage
 
-//~ Begin GameplayTags
+//~ Begin Gameplay Tags
 public:
 
-	UFUNCTION(Category = "GameplayTags", BlueprintCallable)
+	UFUNCTION(Category = "Gameplay Tags", BlueprintCallable)
 	static void AddLooseGameplayTag(UAbilitySystemComponent* InASC, FGameplayTag InGameplayTag, int32 InCount = 1)
 	{ InASC->AddLooseGameplayTag(InGameplayTag, InCount); }
 
-	UFUNCTION(Category = "GameplayTags", BlueprintCallable)
+	UFUNCTION(Category = "Gameplay Tags", BlueprintCallable)
 	static void AddLooseGameplayTags(UAbilitySystemComponent* InASC, FGameplayTagContainer InGameplayTags, int32 InCount = 1)
 	{ InASC->AddLooseGameplayTags(InGameplayTags, InCount); }
 
-	UFUNCTION(Category = "GameplayTags", BlueprintCallable)
+	UFUNCTION(Category = "Gameplay Tags", BlueprintCallable)
 	static void RemoveLooseGameplayTag(UAbilitySystemComponent* InASC, FGameplayTag InGameplayTag, int32 InCount = 1)
 	{ InASC->RemoveLooseGameplayTag(InGameplayTag, InCount); }
 
-	UFUNCTION(Category = "GameplayTags", BlueprintCallable)
+	UFUNCTION(Category = "Gameplay Tags", BlueprintCallable)
 	static void RemoveLooseGameplayTags(UAbilitySystemComponent* InASC, FGameplayTagContainer InGameplayTags, int32 InCount = 1)
 	{ InASC->RemoveLooseGameplayTags(InGameplayTags, InCount); }
 
-	UFUNCTION(Category = "GameplayTags", BlueprintCallable)
+	UFUNCTION(Category = "Gameplay Tags", BlueprintCallable)
 	static void SetLooseGameplayTagCount(UAbilitySystemComponent* InASC, FGameplayTag InGameplayTag, int32 InNewCount)
 	{ InASC->SetLooseGameplayTagCount(InGameplayTag, InNewCount); }
 
-	UFUNCTION(Category = "GameplayTags", BlueprintCallable)
+	UFUNCTION(Category = "Gameplay Tags", BlueprintCallable)
 	static FDelegateHandle_BlueprintWrapper RegisterGameplayTagEvent(UAbilitySystemComponent* InASC, FGameplayTagNumChangedEvent InEvent, FGameplayTag InTag, EGameplayTagEventType::Type InType = EGameplayTagEventType::NewOrRemoved);
 
-	UFUNCTION(Category = "GameplayTags", BlueprintCallable)
+	UFUNCTION(Category = "Gameplay Tags", BlueprintCallable)
 	static void UnRegisterGameplayTagEvent(UAbilitySystemComponent* InASC, FDelegateHandle_BlueprintWrapper InHandleWrapper, FGameplayTag InTag, EGameplayTagEventType::Type InType = EGameplayTagEventType::NewOrRemoved);
-//~ End GameplayTags
+//~ End Gameplay Tags
 
-//~ Begin GameplayEffects
+//~ Begin Gameplay Effects
 public:
 
-	UFUNCTION(Category = "GameplayEffects", BlueprintCallable, BlueprintPure)
+	UFUNCTION(Category = "Gameplay Effects", BlueprintCallable, BlueprintPure)
 	static bool IsValidEffectHandle(UPARAM(Ref) const FActiveGameplayEffectHandle& InHandle)
 	{ return InHandle.IsValid(); }
 
-	UFUNCTION(Category = "GameplayEffects", BlueprintCallable)
+	UFUNCTION(Category = "Gameplay Effects", BlueprintCallable)
 	static FActiveGameplayEffectHandle& InvalidateEffectHandle(UPARAM(Ref) FActiveGameplayEffectHandle& InHandle)
 	{ InHandle.Invalidate(); return InHandle; }
 
-	UFUNCTION(Category = "GameplayEffects", BlueprintCallable, BlueprintPure)
+	UFUNCTION(Category = "Gameplay Effects", BlueprintCallable, BlueprintPure)
 	static bool WasSuccessfullyAppliedEffectHandle(UPARAM(Ref) const FActiveGameplayEffectHandle& InHandle)
 	{ return InHandle.WasSuccessfullyApplied(); }
-//~ End GameplayEffects
+//~ End Gameplay Effects
 
 //~ Begin Input
 public:
@@ -101,6 +103,12 @@ public:
 	
 	UFUNCTION(Category = "Input", BlueprintCallable, BlueprintCosmetic, BlueprintPure)
 	static bool GetActionMappedKeyDisplayName(APlayerController* InPlayerController, const UInputAction* InInputAction, const bool bInLongDisplayName, FText& OutDisplayName);
+
+	UFUNCTION(Category = "Input", BlueprintCallable, BlueprintPure, meta = (DisplayName = "Enum to AbilityInputID"))
+	static int32 EnumToAbilityInputID(EScWAbilityInputID InEnum) { return static_cast<int32>(InEnum); }
+
+	UFUNCTION(Category = "Input", BlueprintCallable, BlueprintPure, meta = (DisplayName = "AbilityInputID to Enum"))
+	static EScWAbilityInputID AbilityInputIDToEnum(int32 InInputID) { return static_cast<EScWAbilityInputID>(InInputID); }
 //~ End Input
 	
 //~ Begin Visibility

@@ -4,6 +4,8 @@
 
 #include "UnrealCommons.h"
 
+#include "ScWTypes_CommonDelegates.h"
+
 #include "ScWGameState.generated.h"
 
 /**
@@ -25,19 +27,19 @@ public:
 	static AScWGameState* TryGetScWGameState(const UObject* InWCO);
 //~ End Statics
 	
-//~ Begin DataAssets
+//~ Begin Data Assets
 public:
 
 	// Default implementation tries to get data from ScW Level Script Actor first
-	UFUNCTION(Category = "DataAssets", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "GetDataAssetForNewCharacter"))
+	UFUNCTION(Category = "Data Assets", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "GetDataAssetForNewCharacter"))
 	const class UScWCharacterData* BP_GetDataAssetForNewCharacter(const class AScWCharacter* InCharacter) const;
 
-	UPROPERTY(Category = "DataAssets", EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(Category = "Data Assets", EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<const class UScWCharacterData> DefaultPlayerCharacterDataAsset;
 
-	UPROPERTY(Category = "DataAssets", EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(Category = "Data Assets", EditAnywhere, BlueprintReadWrite)
 	bool bForceDefaultPlayerCharacterDataAsset;
-//~ End DataAssets
+//~ End Data Assets
 
 //~ Begin Gameplay Ability System
 public:
@@ -72,4 +74,11 @@ public:
 
 	static const FName InvalidTeamName;
 //~ End Teams
+
+//~ Begin Characters
+public:
+
+	UPROPERTY(Category = "Characters", BlueprintAssignable)
+	FScWCharacterSignature OnCharacterDied;
+//~ End Characters
 };

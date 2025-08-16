@@ -36,7 +36,7 @@ AScWGameState* AScWGameState::TryGetScWGameState(const UObject* InWCO)
 }
 //~ End Statics
 
-//~ Begin DataAssets
+//~ Begin Data Assets
 const UScWCharacterData* AScWGameState::BP_GetDataAssetForNewCharacter_Implementation(const AScWCharacter* InCharacter) const
 {
 	if (UWorld* World = GetWorld())
@@ -62,7 +62,7 @@ const UScWCharacterData* AScWGameState::BP_GetDataAssetForNewCharacter_Implement
 	}
 	return nullptr;
 }
-//~ End DataAssets
+//~ End Data Assets
 
 //~ Begin Teams
 bool AScWGameState::HasTeamName(const FName& InTeamName) const

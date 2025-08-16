@@ -39,9 +39,15 @@ void UScWGameplayAbility::SetCurrentActorInfo(const FGameplayAbilitySpecHandle I
 	if (InstancingPolicy == EGameplayAbilityInstancingPolicy::InstancedPerActor ||
 		InstancingPolicy == EGameplayAbilityInstancingPolicy::InstancedPerExecution)
 	{
-		const_cast<ThisClass*>(this)->OwnerCharacter = Cast<AScWCharacter>(InActorInfo->AvatarActor);
-		ensure(OwnerCharacter);
-
+		if (InActorInfo->AvatarActor->IsA(ACharacter::StaticClass()))
+		{
+			const_cast<ThisClass*>(this)->OwnerCharacter = Cast<AScWCharacter>(InActorInfo->AvatarActor);
+			ensure(OwnerCharacter);
+		}
+		else
+		{
+			const_cast<ThisClass*>(this)->OwnerCharacter = nullptr;
+		}
 		const_cast<ThisClass*>(this)->OwnerASC = Cast<UScWASC_Base>(InActorInfo->AbilitySystemComponent);
 		ensure(OwnerASC);
 

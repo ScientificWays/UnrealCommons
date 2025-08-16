@@ -11,7 +11,7 @@
 /**
  * 
  */
-UCLASS(meta = (DisplayName = "[ScW] ASC Character"))
+UCLASS(meta = (DisplayName = "[ScW] ASC Character", BlueprintSpawnableComponent))
 class UNREALCOMMONS_API UScWASC_Character : public UScWASC_Base
 {
 	GENERATED_BODY()
