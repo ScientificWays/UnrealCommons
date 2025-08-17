@@ -9,7 +9,7 @@
 #include "ScWPlayerState.generated.h"
 
 /**
- * 
+ *	
  */
 UCLASS(meta = (DisplayName = "[ScW] Player State"))
 class UNREALCOMMONS_API AScWPlayerState : public APlayerState, public IAbilitySystemInterface, public IGenericTeamAgentInterface

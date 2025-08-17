@@ -57,6 +57,7 @@ void UScWGameplayAbility::SetCurrentActorInfo(const FGameplayAbilitySpecHandle I
 			ensure(OwnerPlayerController);
 		}
 	}
+	const_cast<ThisClass*>(this)->BP_PostSetCurrentActorInfo();
 }
 //~ End Initialize
 

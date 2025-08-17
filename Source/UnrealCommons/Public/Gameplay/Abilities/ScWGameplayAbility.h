@@ -29,6 +29,9 @@ public:
 //~ Begin Initialize
 protected:
 	virtual void SetCurrentActorInfo(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo) const override; // UGameplayAbility
+
+	UFUNCTION(Category = "Initialize", BlueprintImplementableEvent, meta = (DisplayName = "Post SetCurrentActorInfo"))
+	void BP_PostSetCurrentActorInfo();
 //~ End Initialize
 	
 //~ Begin Owner

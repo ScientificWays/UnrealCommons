@@ -80,17 +80,25 @@ public:
 public:
 
 	UFUNCTION(Category = "Gameplay Effects", BlueprintCallable, BlueprintPure)
-	static bool IsValidEffectHandle(UPARAM(Ref) const FActiveGameplayEffectHandle& InHandle)
-	{ return InHandle.IsValid(); }
+	static bool IsValidEffectHandle(UPARAM(Ref) const FActiveGameplayEffectHandle& InHandle) { return InHandle.IsValid(); }
 
 	UFUNCTION(Category = "Gameplay Effects", BlueprintCallable)
-	static FActiveGameplayEffectHandle& InvalidateEffectHandle(UPARAM(Ref) FActiveGameplayEffectHandle& InHandle)
-	{ InHandle.Invalidate(); return InHandle; }
+	static FActiveGameplayEffectHandle& InvalidateEffectHandle(UPARAM(Ref) FActiveGameplayEffectHandle& InHandle) { InHandle.Invalidate(); return InHandle; }
 
 	UFUNCTION(Category = "Gameplay Effects", BlueprintCallable, BlueprintPure)
-	static bool WasSuccessfullyAppliedEffectHandle(UPARAM(Ref) const FActiveGameplayEffectHandle& InHandle)
-	{ return InHandle.WasSuccessfullyApplied(); }
+	static bool WasSuccessfullyAppliedEffectHandle(UPARAM(Ref) const FActiveGameplayEffectHandle& InHandle) { return InHandle.WasSuccessfullyApplied(); }
 //~ End Gameplay Effects
+
+//~ Begin Gameplay Abilities
+public:
+	
+	UFUNCTION(Category = "Gameplay Abilities", BlueprintCallable, BlueprintPure)
+	static bool IsValidAbilitySpecHandle(UPARAM(Ref) const FGameplayAbilitySpecHandle& InHandle) { return InHandle.IsValid(); }
+
+	UFUNCTION(Category = "Gameplay Abilities", BlueprintCallable)
+	static FGameplayAbilitySpecHandle& InvalidateAbilitySpecHandle(UPARAM(Ref) FGameplayAbilitySpecHandle& InHandle) { InHandle = FGameplayAbilitySpecHandle(); return InHandle; }
+
+//~ End Gameplay Abilities
 
 //~ Begin Input
 public:
