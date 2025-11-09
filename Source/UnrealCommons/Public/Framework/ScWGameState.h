@@ -23,10 +23,15 @@ public:
 //~ Begin Statics
 public:
 
-	UFUNCTION(Category = "Statics", BlueprintCallable, BlueprintPure, meta = (WorldContext = "InWCO"))
+	UFUNCTION(Category = "Statics", BlueprintCallable, BlueprintPure, meta = (WorldContext = "InWCO", DisplayName = "Try Get ScW Game State"))
 	static AScWGameState* TryGetScWGameState(const UObject* InWCO);
 //~ End Statics
 	
+//~ Begin Initialize
+public:
+	virtual void BeginPlay() override; // AActor
+//~ End Initialize
+
 //~ Begin Data Assets
 public:
 
@@ -81,4 +86,38 @@ public:
 	UPROPERTY(Category = "Characters", BlueprintAssignable)
 	FScWCharacterSignature OnCharacterDied;
 //~ End Characters
+
+//~ Begin Pause
+public:
+
+	UFUNCTION(Category = "Pause", BlueprintCallable)
+	void AddPauseSourceObject(UObject* InSourceObject);
+
+	UFUNCTION(Category = "Pause", BlueprintCallable)
+	void RemovePauseSourceObject(UObject* InSourceObject);
+
+	UFUNCTION(Category = "Pause", BlueprintCallable)
+	void SetSlowdownRate(float InRate = 0.5);
+
+protected:
+	void UpdatePauseState();
+
+	UPROPERTY(Category = "Pause", BlueprintReadOnly)
+	TSet<TObjectPtr<UObject>> PauseSourceObjectsSet;
+
+	UPROPERTY()
+	float SlowdownTargetTimeDilation;
+
+	UPROPERTY()
+	TObjectPtr<UTimelineComponent> SlowdownTimeline;
+
+	UPROPERTY()
+	TObjectPtr<UCurveFloat> SlowdownAlphaCurve;
+
+	UFUNCTION()
+	void OnSlowdownTimelineUpdate(float InValue);
+
+	UFUNCTION()
+	void OnSlowdownTimelineFinished();
+//~ End Pause
 };

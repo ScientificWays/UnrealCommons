@@ -86,10 +86,10 @@ protected:
 	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere)
 	TObjectPtr<class UScWASC_Character> CharacterASC;
 
-	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere)
+	UPROPERTY(Category = "Components", BlueprintReadOnly)
 	TObjectPtr<class UScWCharacterMesh_FirstPerson> ScWFirstPersonCharacterMesh;
 
-	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere)
+	UPROPERTY(Category = "Components", BlueprintReadOnly)
 	TObjectPtr<class UScWCharacterMesh_ThirdPerson> ScWThirdPersonCharacterMesh;
 
 	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere)
