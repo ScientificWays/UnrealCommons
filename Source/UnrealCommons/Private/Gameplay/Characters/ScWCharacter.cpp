@@ -335,6 +335,8 @@ void AScWCharacter::OnDied()
 			}
 		}
 	}
+	OnDiedDelegate.Broadcast();
+
 	if (const AScWGameState* GameState = AScWGameState::TryGetScWGameState(this))
 	{
 		GameState->OnCharacterDied.Broadcast(this);

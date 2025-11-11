@@ -1,6 +1,6 @@
 // Scientific Ways
 
-#include "World/Volumes/ScWTriggerVolume.h"
+#include "World/Triggers/ScWTriggerVolume.h"
 
 #include "Gameplay/ScWGameplayFunctionLibrary.h"
 
@@ -17,6 +17,7 @@ AScWTriggerVolume::AScWTriggerVolume()
 	SetMinNetUpdateFrequency(0.1f);
 	SetReplicatingMovement(false);
 
+	bGenerateOverlapEventsDuringLevelStreaming = true;
 	bEnableAutoLODGeneration = false;
 
 #if WITH_EDITORONLY_DATA

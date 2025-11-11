@@ -430,7 +430,21 @@ bool UScWASC_Base::HandleTryReceiveDamage(float InDamage, const FReceivedDamageD
 {
 	check(IsOwnerActorAuthoritative());
 
-	UAISense_Damage::ReportDamageEvent(this, GetAvatarActor(), InData.Instigator, InDamage, InData.Source->GetActorLocation(), InData.HitResult.Location);
+	FVector SourceLocation = FVector::ZeroVector;
+
+	if (InData.Source)
+	{
+		SourceLocation = InData.Source->GetActorLocation();
+	}
+	else if (InData.Instigator && InData.Instigator->GetPawn())
+	{
+		SourceLocation = InData.Instigator->GetPawn()->GetActorLocation();
+	}
+	else if (GetAvatarActor_Direct())
+	{
+		SourceLocation = GetAvatarActor_Direct()->GetActorLocation();
+	}
+	UAISense_Damage::ReportDamageEvent(this, GetAvatarActor_Direct(), InData.Instigator, InDamage, SourceLocation, InData.HitResult.Location);
 
 	if (HasMatchingGameplayTag(FScWGameplayTags::Cheat_Invulnerable))
 	{

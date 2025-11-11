@@ -144,6 +144,9 @@ protected:
 
 	UFUNCTION()
 	void OnDied();
+
+	UPROPERTY(Category = "Attributes", BlueprintAssignable)
+	FDefaultEventSignature OnDiedDelegate;
 //~ End Attributes
 
 //~ Begin Input
