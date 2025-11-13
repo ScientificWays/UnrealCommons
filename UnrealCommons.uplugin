@@ -21,6 +21,7 @@
 			"LoadingPhase": "Default"
 		}
 	],
+	"Precompiled": true,
 	"Plugins": [
 		{
 			"Name": "EnhancedInput",
