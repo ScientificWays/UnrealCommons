@@ -109,6 +109,7 @@ public:
 
 protected:
 	virtual void SetupInputComponent() override; // APlayerController
+	virtual bool InputKey(const FInputKeyEventArgs& InEventArgs) override; // APlayerController
 	virtual bool ShouldShowMouseCursor() const { return Super::ShouldShowMouseCursor() || !ShowMouseCursorSourceSet.IsEmpty(); } // APlayerController
 	virtual bool IsMoveInputIgnored() const { return Super::IsMoveInputIgnored() || !MovementInputBlockSourceSet.IsEmpty(); } // AController
 	virtual bool IsLookInputIgnored() const { return Super::IsLookInputIgnored() || !LookInputBlockSourceSet.IsEmpty(); } // AController
@@ -125,6 +126,12 @@ protected:
 
 	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UInputAction> MouseLookAction;
+
+	UPROPERTY(Category = "Input", BlueprintAssignable)
+	FBoolSignature OnIsUsingGamepadChangedDelegate;
+
+	UPROPERTY(Category = "Input", BlueprintReadOnly, Transient)
+	bool bIsUsingGamepad;
 
 	UPROPERTY(Transient)
 	TSet<TObjectPtr<UObject>> ShowMouseCursorSourceSet;

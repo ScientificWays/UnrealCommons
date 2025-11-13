@@ -7,6 +7,7 @@
 #include "Gameplay/ScWGameplayFunctionLibrary.h"
 
 #include "Framework/ScWGameState.h"
+#include "Framework/ScWGameInstance.h"
 
 AScWPlayerController::AScWPlayerController()
 {
@@ -172,6 +173,28 @@ void AScWPlayerController::SetupInputComponent() // APlayerController
 		EnhancedInputComponent->BindAction(MouseLookAction, ETriggerEvent::Triggered, this, &AScWPlayerController::InputMouseLook);
 		EnhancedInputComponent->BindAction(MouseLookAction, ETriggerEvent::Completed, this, &AScWPlayerController::InputMouseLook);
 	}
+
+}
+
+bool AScWPlayerController::InputKey(const FInputKeyEventArgs& InEventArgs) // APlayerController
+{
+	bool bOutResult = Super::InputKey(InEventArgs);
+	if (bOutResult)
+	{
+		bool bNewIsGamepad = InEventArgs.IsGamepad();
+		if (bNewIsGamepad != bIsUsingGamepad)
+		{
+			bIsUsingGamepad = bNewIsGamepad;
+			OnIsUsingGamepadChangedDelegate.Broadcast(bIsUsingGamepad);
+
+			UScWGameInstance* GameInstance = GetGameInstance<UScWGameInstance>();
+			ensureIf(GameInstance)
+			{
+				GameInstance->OnPlayerIsUsingGamepadChangedDelegate.Broadcast(this, bIsUsingGamepad);
+			}
+		}
+	}
+	return bOutResult;
 }
 
 void AScWPlayerController::InputMouseLook(const FInputActionInstance& InActionInstance)
