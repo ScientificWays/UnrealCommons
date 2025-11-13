@@ -55,5 +55,8 @@ public:
 
 	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
 	bool bShouldBlockLookInput;
+
+	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
+	bool bShouldPauseGame;
 //~ End Input
 };

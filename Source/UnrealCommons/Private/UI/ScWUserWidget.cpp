@@ -2,6 +2,7 @@
 
 #include "UI/ScWUserWidget.h"
 
+#include "Framework/ScWGameState.h"
 #include "Framework/ScWPlayerState.h"
 #include "Framework/ScWPlayerController.h"
 
@@ -44,6 +45,15 @@ void UScWUserWidget::NativePreConstruct() // UUserWidget
 		{
 			OwnerPlayerState = OwningPlayer->GetPlayerState<AScWPlayerState>();
 		}
+		if (UWorld* World = GetWorld())
+		{
+			AScWGameState* GameState = World->GetGameState<AScWGameState>();
+
+			if (bShouldPauseGame)
+			{
+				GameState->AddPauseSourceObject(this);
+			}
+		}
 	}
 	Super::NativePreConstruct();
 }
@@ -71,6 +81,15 @@ void UScWUserWidget::NativeDestruct() // UUserWidget
 			if (bShouldBlockLookInput)
 			{
 				OwnerPlayerController->RemoveLookInputBlockSource(this);
+			}
+		}
+		if (UWorld* World = GetWorld())
+		{
+			AScWGameState* GameState = World->GetGameState<AScWGameState>();
+
+			if (bShouldPauseGame)
+			{
+				GameState->RemovePauseSourceObject(this);
 			}
 		}
 	}
