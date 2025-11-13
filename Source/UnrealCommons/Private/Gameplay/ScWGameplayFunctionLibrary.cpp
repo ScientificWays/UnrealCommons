@@ -395,3 +395,12 @@ FVector UScWGameplayFunctionLibrary::VectorSnappedToGridCenter(const FVector& In
 	return OutSnapped;
 }
 //~ End Transforms
+
+
+//~ Begin Utils
+UObject* UScWGameplayFunctionLibrary::GetObjectDefault(TSubclassOf<UObject> InObjectClass, const bool bInChecked)
+{
+	ensureReturn(!bInChecked || InObjectClass, nullptr);
+	return InObjectClass ? InObjectClass->GetDefaultObject() : nullptr;
+}
+//~ End Utils

@@ -165,4 +165,11 @@ public:
 	UFUNCTION(Category = "Transforms", BlueprintCallable, BlueprintPure, meta = (KeyWords = "Location, Position, Middle", AutoCreateRefTerm = "InVector, InGridSize"))
 	static FVector VectorSnappedToGridCenter(const FVector& InVector, const FVector& InGridSize);
 //~ End Transforms
+
+//~ Begin Utils
+public:
+
+	UFUNCTION(Category = "Utils", BlueprintCallable, BlueprintPure, meta = (DeterminesOutputType = "InObjectClass"))
+	static UObject* GetObjectDefault(TSubclassOf<UObject> InObjectClass, const bool bInChecked = true);
+//~ End Utils
 };
