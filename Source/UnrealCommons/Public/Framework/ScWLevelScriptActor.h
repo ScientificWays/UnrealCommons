@@ -18,6 +18,13 @@ public:
 
 	AScWLevelScriptActor();
 	
+//~ Begin Statics
+public:
+
+	UFUNCTION(Category = "Statics", BlueprintCallable)
+	static AScWLevelScriptActor* TryGetScWLevelScriptOfActor(const AActor* InActor);
+//~ End Statics
+
 //~ Begin Initialize
 public:
 
@@ -53,12 +60,12 @@ public:
 	bool bForceDefaultPlayerCharacterDataAsset;
 //~ End DataAssets
 
-//~ Begin Requests
+//~ Begin Events
 public:
 
-	//UFUNCTION(Category = "Requests", BlueprintCallable, BlueprintImplementableEvent, BlueprintAuthorityOnly, meta = (DisplayName = "HandleCustomRequest (ScWLevelScriptActor)", AutoCreateRefTerm = "InRequestType"))
-	//int32 BP_HandleCustomRequest(const FName& InRequestType, UObject* InOptionalObject = nullptr);
-//~ End Requests
+	UFUNCTION(Category = "Events", BlueprintCallable, BlueprintImplementableEvent, BlueprintAuthorityOnly, meta = (DisplayName = "HandleCustomEvent (ScWLevelScriptActor)", AutoCreateRefTerm = "InEventName"))
+	int32 BP_HandleCustomEvent(const FName& InEventName, UObject* InOptionalObject = nullptr);
+//~ End Events
 
 //~ Begin Levels
 public:

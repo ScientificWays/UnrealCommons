@@ -9,6 +9,15 @@ AScWLevelScriptActor::AScWLevelScriptActor()
 
 }
 
+//~ Begin Statics
+AScWLevelScriptActor* AScWLevelScriptActor::TryGetScWLevelScriptOfActor(const AActor* InActor)
+{
+	ensureReturn(InActor, nullptr);
+	ensureReturn(InActor->GetLevel(), nullptr);
+	return Cast<AScWLevelScriptActor>(InActor->GetLevel()->GetLevelScriptActor());
+}
+//~ End Statics
+
 //~ Begin Initialize
 void AScWLevelScriptActor::PostInitializeComponents() // AActor
 {

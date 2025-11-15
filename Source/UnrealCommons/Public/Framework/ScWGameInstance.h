@@ -25,9 +25,19 @@ public:
 //~ Begin Statics
 public:
 
-	UFUNCTION(Category = "Statics", BlueprintCallable, BlueprintPure)
+	UFUNCTION(Category = "Statics", BlueprintCallable, BlueprintPure, meta = (WorldContext = "InWCO", DisplayName = "Try Get ScW Game Instance"))
 	static UScWGameInstance* TryGetScWGameInstance(const UObject* InWCO);
 //~ End Statics
+
+//~ Begin Save
+public:
+
+	UPROPERTY(Category = "Save", BlueprintReadOnly)
+	FString CurrentSaveDataSlot;
+
+	UPROPERTY(Category = "Save", BlueprintReadOnly)
+	TObjectPtr<class UScWSaveGame> CurrentSaveDataObject;
+//~ End Save
 
 //~ Begin Input
 public:
