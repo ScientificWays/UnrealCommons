@@ -63,7 +63,7 @@ public:
 //~ Begin Events
 public:
 
-	UFUNCTION(Category = "Events", BlueprintCallable, BlueprintImplementableEvent, BlueprintAuthorityOnly, meta = (DisplayName = "HandleCustomEvent (ScWLevelScriptActor)", AutoCreateRefTerm = "InEventName"))
+	UFUNCTION(Category = "Events", BlueprintCallable, BlueprintImplementableEvent, BlueprintAuthorityOnly, meta = (DisplayName = "HandleCustomEvent (ScWLevelScriptActor)", AutoCreateRefTerm = "InEventName", ReturnDisplayName = "OutReturnCode"))
 	int32 BP_HandleCustomEvent(const FName& InEventName, UObject* InOptionalObject = nullptr);
 //~ End Events
 

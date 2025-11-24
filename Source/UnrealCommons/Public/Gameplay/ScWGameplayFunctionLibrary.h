@@ -73,7 +73,7 @@ public:
 	static FDelegateHandle_BlueprintWrapper RegisterGameplayTagEvent(UAbilitySystemComponent* InASC, FGameplayTagNumChangedEvent InEvent, FGameplayTag InTag, EGameplayTagEventType::Type InType = EGameplayTagEventType::NewOrRemoved);
 
 	UFUNCTION(Category = "Gameplay Tags", BlueprintCallable)
-	static void UnRegisterGameplayTagEvent(UAbilitySystemComponent* InASC, FDelegateHandle_BlueprintWrapper InHandleWrapper, FGameplayTag InTag, EGameplayTagEventType::Type InType = EGameplayTagEventType::NewOrRemoved);
+	static void UnRegisterGameplayTagEvent(UAbilitySystemComponent* InASC, FDelegateHandle_BlueprintWrapper InHandle, FGameplayTag InTag, EGameplayTagEventType::Type InType = EGameplayTagEventType::NewOrRemoved);
 //~ End Gameplay Tags
 
 //~ Begin Gameplay Effects

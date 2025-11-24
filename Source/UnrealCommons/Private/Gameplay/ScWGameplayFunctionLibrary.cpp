@@ -124,9 +124,9 @@ FDelegateHandle_BlueprintWrapper UScWGameplayFunctionLibrary::RegisterGameplayTa
 	return { InASC->RegisterGameplayTagEvent(InTag, InType).AddUFunction(InEvent.GetUObject(), InEvent.GetFunctionName()) };
 }
 
-void UScWGameplayFunctionLibrary::UnRegisterGameplayTagEvent(UAbilitySystemComponent* InASC, FDelegateHandle_BlueprintWrapper InHandleWrapper, FGameplayTag InTag, EGameplayTagEventType::Type InType)
+void UScWGameplayFunctionLibrary::UnRegisterGameplayTagEvent(UAbilitySystemComponent* InASC, FDelegateHandle_BlueprintWrapper InHandle, FGameplayTag InTag, EGameplayTagEventType::Type InType)
 {
-	InASC->RegisterGameplayTagEvent(InTag, InType).Remove(InHandleWrapper.Handle);
+	InASC->UnregisterGameplayTagEvent(InHandle.Handle, InTag, InType);
 }
 //~ End Gameplay Tags
 
