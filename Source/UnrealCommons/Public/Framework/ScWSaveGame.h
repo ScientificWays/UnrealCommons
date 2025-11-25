@@ -16,49 +16,55 @@ class UNREALCOMMONS_API UScWSaveGame : public USaveGame
 {
 	GENERATED_BODY()
 
-//~ Begin Slot
+//~ Begin ScW SaveGame System
 public:
 
-	UFUNCTION(Category = "Slot", BlueprintCallable, BlueprintPure, meta = (WorldContext = "InWCO"))
+	UFUNCTION(Category = "ScW SaveGame System", BlueprintCallable, BlueprintPure, meta = (WorldContext = "InWCO"))
 	static const FString& GetCurrentSaveGameDataSlot(const UObject* InWCO);
 
-	UFUNCTION(Category = "Slot", BlueprintCallable, BlueprintPure, meta = (WorldContext = "InWCO"))
+	UFUNCTION(Category = "ScW SaveGame System", BlueprintCallable, BlueprintPure, meta = (WorldContext = "InWCO"))
 	static UScWSaveGame* GetCurrentSaveGameDataObject(const UObject* InWCO);
 
-	UFUNCTION(Category = "Slot", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InSlot"))
-	static void SaveCurrentSaveGameDataToSlot(const UObject* InWCO, const FString& InSlot, int32 InUserIndex);
+	UFUNCTION(Category = "ScW SaveGame System", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InSlot"))
+	static void SaveCurrentSaveGameDataToCurrentSlot(const UObject* InWCO);
 
-	UFUNCTION(Category = "Slot", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InSlot"))
+	UFUNCTION(Category = "ScW SaveGame System", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InSlot"))
 	static void LoadCurrentSaveGameDataFromSlot(const UObject* InWCO, const FString& InSlot, int32 InUserIndex);
-//~ End Slot
 
-//~ Begin Data
 public:
 
-	UFUNCTION(Category = "Data", BlueprintCallable, BlueprintPure, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InKey", KeyWords = "GetBoolSave"))
-	static bool GetCurrentSaveGameDataBool(const UObject* InWCO, const FString& InKey, const bool bInDefaultValue);
+	UFUNCTION(Category = "ScW SaveGame System", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InKey, bInDefaultValue", KeyWords = "GetBoolSave, GetSaveDataBool"))
+	static bool GetCurrentSaveGameDataBool(const UObject* InWCO, const FString& InKey, const bool& bInDefaultValue);
 
-	UFUNCTION(Category = "Data", BlueprintCallable, BlueprintPure, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InKey", KeyWords = "GetIntegerSave"))
-	static int32 GetCurrentSaveGameDataInteger(const UObject* InWCO, const FString& InKey, const int32 InDefaultValue);
+	UFUNCTION(Category = "ScW SaveGame System", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InKey, bInDefaultValue", KeyWords = "GetIntegerSave, GetSaveDataInteger"))
+	static int32 GetCurrentSaveGameDataInteger(const UObject* InWCO, const FString& InKey, const int32& InDefaultValue);
 
-	UFUNCTION(Category = "Data", BlueprintCallable, BlueprintPure, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InKey", KeyWords = "GetFloatSave"))
-	static float GetCurrentSaveGameDataFloat(const UObject* InWCO, const FString& InKey, const float InDefaultValue);
+	UFUNCTION(Category = "ScW SaveGame System", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InKey, bInDefaultValue", KeyWords = "GetFloatSave, GetSaveDataFloat"))
+	static float GetCurrentSaveGameDataFloat(const UObject* InWCO, const FString& InKey, const float& InDefaultValue);
 
-	UFUNCTION(Category = "Data", BlueprintCallable, BlueprintPure, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InKey", KeyWords = "GetVectorSave"))
+	UFUNCTION(Category = "ScW SaveGame System", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InKey, bInDefaultValue", KeyWords = "GetVectorSave, GetSaveDataVector"))
 	static FVector GetCurrentSaveGameDataVector(const UObject* InWCO, const FString& InKey, const FVector& InDefaultValue);
 
-	UFUNCTION(Category = "Data", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InKey", KeyWords = "SaveBoolKey"))
-	static void SetCurrentSaveGameDataBool(const UObject* InWCO, const FString& InKey, const bool bInValue);
+	UFUNCTION(Category = "ScW SaveGame System", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InKey, bInDefaultValue", KeyWords = "GetStringSave, GetSaveDataString"))
+	static FString GetCurrentSaveGameDataString(const UObject* InWCO, const FString& InKey, const FString& InDefaultValue);
 
-	UFUNCTION(Category = "Data", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InKey", KeyWords = "SaveIntegerKey"))
-	static void SetCurrentSaveGameDataInteger(const UObject* InWCO, const FString& InKey, const int32 InValue);
+	UFUNCTION(Category = "ScW SaveGame System", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InKey, bInValue", KeyWords = "SaveBoolKey, SetSaveDataBool"))
+	static void SetCurrentSaveGameDataBool(const UObject* InWCO, const FString& InKey, const bool& bInValue);
 
-	UFUNCTION(Category = "Data", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InKey", KeyWords = "SaveFloatKey"))
-	static void SetCurrentSaveGameDataFloat(const UObject* InWCO, const FString& InKey, const float InValue);
+	UFUNCTION(Category = "ScW SaveGame System", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InKey, InValue", KeyWords = "SaveIntegerKey, SetSaveDataInteger"))
+	static void SetCurrentSaveGameDataInteger(const UObject* InWCO, const FString& InKey, const int32& InValue);
 
-	UFUNCTION(Category = "Data", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InKey", KeyWords = "SaveVectorKey"))
+	UFUNCTION(Category = "ScW SaveGame System", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InKey, InValue", KeyWords = "SaveFloatKey, SetSaveDataFloat"))
+	static void SetCurrentSaveGameDataFloat(const UObject* InWCO, const FString& InKey, const float& InValue);
+
+	UFUNCTION(Category = "ScW SaveGame System", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InKey, InValue", KeyWords = "SaveVectorKey, SetSaveDataVector"))
 	static void SetCurrentSaveGameDataVector(const UObject* InWCO, const FString& InKey, const FVector& InValue);
 
+	UFUNCTION(Category = "ScW SaveGame System", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InKey, InValue", KeyWords = "SaveStringKey, SetSaveDataString"))
+	static void SetCurrentSaveGameDataString(const UObject* InWCO, const FString& InKey, const FString& InValue);
+//~ End ScW SaveGame System
+
+//~ Begin Data
 protected:
 
 	UPROPERTY(Category = "Data", EditAnywhere, BlueprintReadWrite)
@@ -72,5 +78,8 @@ protected:
 
 	UPROPERTY(Category = "Data", EditAnywhere, BlueprintReadWrite)
 	TMap<FString, FVector> VectorKeys;
+
+	UPROPERTY(Category = "Data", EditAnywhere, BlueprintReadWrite)
+	TMap<FString, FString> StringKeys;
 //~ End Data
 };

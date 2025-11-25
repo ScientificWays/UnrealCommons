@@ -34,7 +34,15 @@ public:
 protected:
 	virtual void PostInitializeComponents() override; // AActor
 	virtual void BeginPlay() override; // AActor
+	virtual void EndPlay(const EEndPlayReason::Type InEndPlayReason) override; // AActor
 //~ End Initialize
+
+//~ Begin Save Game
+public:
+
+	UPROPERTY(Category = "Save Game", EditAnywhere, BlueprintReadWrite)
+	bool bTrySaveGameOnEndPlay;
+//~ End Save Game
 	
 //~ Begin Pawns
 public:
@@ -46,19 +54,19 @@ public:
 	void BP_OnPawnControllerChanged(APawn* InPawn, AController* InController);
 //~ End Pawns
 
-//~ Begin DataAssets
+//~ Begin Data Assets
 public:
 
 	// Called from ScW Game State default implementation of BP_GetDataAssetForNewCharacter()
-	UFUNCTION(Category = "DataAssets", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "GetDataAssetForNewCharacter"))
+	UFUNCTION(Category = "Data Assets", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "GetDataAssetForNewCharacter"))
 	const class UScWCharacterData* BP_GetDataAssetForNewCharacter(const class AScWCharacter* InCharacter) const;
 
-	UPROPERTY(Category = "DataAssets", EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(Category = "Data Assets", EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<const class UScWCharacterData> DefaultPlayerCharacterDataAsset;
 
-	UPROPERTY(Category = "DataAssets", EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(Category = "Data Assets", EditAnywhere, BlueprintReadWrite)
 	bool bForceDefaultPlayerCharacterDataAsset;
-//~ End DataAssets
+//~ End Data Assets
 
 //~ Begin Events
 public:

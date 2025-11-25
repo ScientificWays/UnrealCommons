@@ -36,6 +36,9 @@ public:
 	FString CurrentSaveDataSlot;
 
 	UPROPERTY(Category = "Save", BlueprintReadOnly)
+	int32 CurrentSaveDataUserIndex;
+
+	UPROPERTY(Category = "Save", BlueprintReadOnly)
 	TObjectPtr<class UScWSaveGame> CurrentSaveDataObject;
 //~ End Save
 

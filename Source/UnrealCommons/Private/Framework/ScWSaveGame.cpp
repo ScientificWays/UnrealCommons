@@ -4,7 +4,7 @@
 
 #include "Framework/ScWGameInstance.h"
 
-//~ Begin Slot
+//~ Begin ScW SaveGame System
 const FString& UScWSaveGame::GetCurrentSaveGameDataSlot(const UObject* InWCO)
 {
 	static const FString FallbackSlot = TEXT("DefaultSaveSlot");
@@ -20,14 +20,14 @@ UScWSaveGame* UScWSaveGame::GetCurrentSaveGameDataObject(const UObject* InWCO)
 	return GameInstance->CurrentSaveDataObject;
 }
 
-void UScWSaveGame::SaveCurrentSaveGameDataToSlot(const UObject* InWCO, const FString& InSlot, int32 InUserIndex)
+void UScWSaveGame::SaveCurrentSaveGameDataToCurrentSlot(const UObject* InWCO)
 {
 	ensureReturn(InWCO);
 	UScWGameInstance* GameInstance = Cast<UScWGameInstance>(UGameplayStatics::GetGameInstance(InWCO));
 	ensureReturn(GameInstance);
 
 	ensureReturn(GameInstance->CurrentSaveDataObject);
-	UGameplayStatics::SaveGameToSlot(GameInstance->CurrentSaveDataObject, InSlot, InUserIndex);
+	UGameplayStatics::SaveGameToSlot(GameInstance->CurrentSaveDataObject, GameInstance->CurrentSaveDataSlot, GameInstance->CurrentSaveDataUserIndex);
 }
 
 void UScWSaveGame::LoadCurrentSaveGameDataFromSlot(const UObject* InWCO, const FString& InSlot, int32 InUserIndex)
@@ -47,64 +47,28 @@ void UScWSaveGame::LoadCurrentSaveGameDataFromSlot(const UObject* InWCO, const F
 	ensureReturn(InWCO);
 	UScWGameInstance* GameInstance = Cast<UScWGameInstance>(UGameplayStatics::GetGameInstance(InWCO));
 	ensureReturn(GameInstance);
+	GameInstance->CurrentSaveDataSlot = InSlot;
+	GameInstance->CurrentSaveDataUserIndex = InUserIndex;
 	GameInstance->CurrentSaveDataObject = LoadedData;
 }
-//~ End Slot
 
-//~ Begin Data
-bool UScWSaveGame::GetCurrentSaveGameDataBool(const UObject* InWCO, const FString& InKey, const bool bInDefaultValue)
-{
-	UScWSaveGame* CurrentSaveDataObject = GetCurrentSaveGameDataObject(InWCO);
-	ensureReturn(CurrentSaveDataObject, bInDefaultValue);
-	return CurrentSaveDataObject->BoolKeys.Contains(InKey) ? CurrentSaveDataObject->BoolKeys[InKey] : bInDefaultValue;
-}
+#define DECLARE_GET_SET_CURRENT_SAVE_GAME_DATA(InType, InName) \
+	InType UScWSaveGame::GetCurrentSaveGameData##InName(const UObject* InWCO, const FString& InKey, const InType& InDefaultValue) \
+	{ \
+		UScWSaveGame* CurrentSaveDataObject = GetCurrentSaveGameDataObject(InWCO); \
+		ensureReturn(CurrentSaveDataObject, InDefaultValue); \
+		return CurrentSaveDataObject->InName##Keys.Contains(InKey) ? CurrentSaveDataObject->InName##Keys[InKey] : InDefaultValue; \
+	} \
+	void UScWSaveGame::SetCurrentSaveGameData##InName(const UObject* InWCO, const FString& InKey, const InType& InValue) \
+	{ \
+		UScWSaveGame* CurrentSaveDataObject = GetCurrentSaveGameDataObject(InWCO); \
+		ensureReturn(CurrentSaveDataObject); \
+		CurrentSaveDataObject->InName##Keys.Add(InKey, InValue); \
+	} \
 
-int32 UScWSaveGame::GetCurrentSaveGameDataInteger(const UObject* InWCO, const FString& InKey, const int32 InDefaultValue)
-{
-	UScWSaveGame* CurrentSaveDataObject = GetCurrentSaveGameDataObject(InWCO);
-	ensureReturn(CurrentSaveDataObject, InDefaultValue);
-	return CurrentSaveDataObject->IntegerKeys.Contains(InKey) ? CurrentSaveDataObject->IntegerKeys[InKey] : InDefaultValue;
-}
-
-float UScWSaveGame::GetCurrentSaveGameDataFloat(const UObject* InWCO, const FString& InKey, const float InDefaultValue)
-{
-	UScWSaveGame* CurrentSaveDataObject = GetCurrentSaveGameDataObject(InWCO);
-	ensureReturn(CurrentSaveDataObject, InDefaultValue);
-	return CurrentSaveDataObject->FloatKeys.Contains(InKey) ? CurrentSaveDataObject->FloatKeys[InKey] : InDefaultValue;
-}
-
-FVector UScWSaveGame::GetCurrentSaveGameDataVector(const UObject* InWCO, const FString& InKey, const FVector& InDefaultValue)
-{
-	UScWSaveGame* CurrentSaveDataObject = GetCurrentSaveGameDataObject(InWCO);
-	ensureReturn(CurrentSaveDataObject, InDefaultValue);
-	return CurrentSaveDataObject->VectorKeys.Contains(InKey) ? CurrentSaveDataObject->VectorKeys[InKey] : InDefaultValue;
-}
-
-void UScWSaveGame::SetCurrentSaveGameDataBool(const UObject* InWCO, const FString& InKey, const bool bInValue)
-{
-	UScWSaveGame* CurrentSaveDataObject = GetCurrentSaveGameDataObject(InWCO);
-	ensureReturn(CurrentSaveDataObject);
-	CurrentSaveDataObject->BoolKeys.Add(InKey, bInValue);
-}
-
-void UScWSaveGame::SetCurrentSaveGameDataInteger(const UObject* InWCO, const FString& InKey, const int32 InValue)
-{
-	UScWSaveGame* CurrentSaveDataObject = GetCurrentSaveGameDataObject(InWCO);
-	ensureReturn(CurrentSaveDataObject);
-	CurrentSaveDataObject->IntegerKeys.Add(InKey, InValue);
-}
-
-void UScWSaveGame::SetCurrentSaveGameDataFloat(const UObject* InWCO, const FString& InKey, const float InValue)
-{
-	UScWSaveGame* CurrentSaveDataObject = GetCurrentSaveGameDataObject(InWCO);
-	ensureReturn(CurrentSaveDataObject);
-	CurrentSaveDataObject->FloatKeys.Add(InKey, InValue);
-}
-
-void UScWSaveGame::SetCurrentSaveGameDataVector(const UObject* InWCO, const FString& InKey, const FVector& InValue)
-{
-	UScWSaveGame* CurrentSaveDataObject = GetCurrentSaveGameDataObject(InWCO);
-	ensureReturn(CurrentSaveDataObject);
-	CurrentSaveDataObject->VectorKeys.Add(InKey, InValue);
-}
-//~ End Data
+DECLARE_GET_SET_CURRENT_SAVE_GAME_DATA(bool, Bool)
+DECLARE_GET_SET_CURRENT_SAVE_GAME_DATA(int, Integer)
+DECLARE_GET_SET_CURRENT_SAVE_GAME_DATA(float, Float)
+DECLARE_GET_SET_CURRENT_SAVE_GAME_DATA(FVector, Vector)
+DECLARE_GET_SET_CURRENT_SAVE_GAME_DATA(FString, String)
+//~ End ScW SaveGame System

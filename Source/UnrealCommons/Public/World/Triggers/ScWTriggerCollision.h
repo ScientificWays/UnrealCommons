@@ -56,7 +56,7 @@ public:
 	UFUNCTION(Category = "Toggle", BlueprintCallable)
 	bool IsEnabled() const { return bIsEnabled; }
 	
-	UFUNCTION(Category = "Toggle", BlueprintCallable, meta = (KeyWords = "GenerateOverlapEvents"))
+	UFUNCTION(Category = "Toggle", BlueprintCallable, meta = (KeyWords = "GenerateOverlapEvents, Disable"))
 	void SetEnabled(const bool bInNewEnabled);
 
 	UPROPERTY(Category = "Toggle", BlueprintAssignable)

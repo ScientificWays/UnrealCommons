@@ -2,11 +2,13 @@
 
 #include "Framework/ScWLevelScriptActor.h"
 
+#include "Framework/ScWSaveGame.h"
+
 #include "Gameplay/Characters/ScWCharacter.h"
 
 AScWLevelScriptActor::AScWLevelScriptActor()
 {
-
+	bTrySaveGameOnEndPlay = true;
 }
 
 //~ Begin Statics
@@ -37,9 +39,19 @@ void AScWLevelScriptActor::BeginPlay() // AActor
 
 
 }
+
+void AScWLevelScriptActor::EndPlay(const EEndPlayReason::Type InEndPlayReason) // AActor
+{
+	Super::EndPlay(InEndPlayReason);
+
+	if (bTrySaveGameOnEndPlay && !UScWSaveGame::GetCurrentSaveGameDataSlot(this).IsEmpty())
+	{
+		UScWSaveGame::SaveCurrentSaveGameDataToCurrentSlot(this);
+	}
+}
 //~ End Initialize
 
-//~ Begin DataAssets
+//~ Begin Data Assets
 const UScWCharacterData* AScWLevelScriptActor::BP_GetDataAssetForNewCharacter_Implementation(const AScWCharacter* InCharacter) const
 {
 	if (InCharacter)
@@ -55,7 +67,7 @@ const UScWCharacterData* AScWLevelScriptActor::BP_GetDataAssetForNewCharacter_Im
 	}
 	return nullptr;
 }
-//~ End DataAssets
+//~ End Data Assets
 
 //~ Begin Pawns
 //~ End Pawns
