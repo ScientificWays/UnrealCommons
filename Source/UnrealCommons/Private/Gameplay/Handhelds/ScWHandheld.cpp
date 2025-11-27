@@ -119,7 +119,7 @@ void AScWHandheld::UpdateAttachmentToOwner()
 		UScWCharacterMesh_FirstPerson* OwnerFirstPersonMesh = OwnerCharacter->GetScWFirstPersonCharacterMesh();
 		ensureIf(OwnerFirstPersonMesh)
 		{
-			AttachToComponent(OwnerFirstPersonMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, DataAsset->FP_OwnerMeshAttachmentSocketName);
+			AttachToComponent(OwnerFirstPersonMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, DataAsset->FP_OwnerMeshAttachmentSocketName);
 		}
 		if (DataAsset->IsUsingSkeletalMesh())
 		{
@@ -132,7 +132,7 @@ void AScWHandheld::UpdateAttachmentToOwner()
 		UScWCharacterMesh_ThirdPerson* OwnerThirdPersonMesh = OwnerCharacter->GetScWThirdPersonCharacterMesh();
 		ensureIf(OwnerThirdPersonMesh)
 		{
-			AttachToComponent(OwnerThirdPersonMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, DataAsset->TP_OwnerMeshAttachmentSocketName);
+			AttachToComponent(OwnerThirdPersonMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, DataAsset->TP_OwnerMeshAttachmentSocketName);
 		}
 		if (DataAsset->IsUsingSkeletalMesh())
 		{
