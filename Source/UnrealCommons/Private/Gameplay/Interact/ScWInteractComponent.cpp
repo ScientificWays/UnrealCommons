@@ -4,6 +4,8 @@
 
 UScWInteractComponent::UScWInteractComponent()
 {
+	SetIsReplicatedByDefault(true);
+
 	PrivateInteractData = FScWInteractData::Invalid;
 }
 

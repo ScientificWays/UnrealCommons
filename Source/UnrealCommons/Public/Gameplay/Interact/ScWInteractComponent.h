@@ -15,7 +15,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInteractComponentSignature, class U
 /**
  * 
  */
-UCLASS(ClassGroup = ("Interact"), meta = (DisplayName = "[ScW] Interact Component", BlueprintSpawnableComponent))
+UCLASS(Abstract, ClassGroup = ("Interact"), meta = (DisplayName = "[ScW] Interact Component", BlueprintSpawnableComponent))
 class UNREALCOMMONS_API UScWInteractComponent : public UActorComponent
 {
 	GENERATED_BODY()

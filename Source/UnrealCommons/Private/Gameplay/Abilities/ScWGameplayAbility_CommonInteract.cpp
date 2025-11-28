@@ -121,7 +121,7 @@ bool UScWGameplayAbility_CommonInteract::BP_TryStartInteract_Implementation()
 		UScWInteractComponent* SampleInteractTarget = UScWGameplayFunctionLibrary::FindInteractTargetInLocation(this, SampleHitLocation, InteractTraceCheckRadius, InteractTraceTypeQuery, InteractTraceDebugData, ActorsToIgnore);
 
 		float InteractDuration = 0.0f;
-		if (SampleInteractTarget->BP_CanReceiveInteractFrom(OwnerInteractComponent, InteractDuration))
+		if (SampleInteractTarget && SampleInteractTarget->BP_CanReceiveInteractFrom(OwnerInteractComponent, InteractDuration))
 		{
 			FScWInteractData NewInteractData = { OwnerInteractComponent, SampleInteractTarget, ServerWorldTimeSeconds, ServerWorldTimeSeconds + InteractDuration };
 
@@ -135,7 +135,11 @@ bool UScWGameplayAbility_CommonInteract::BP_TryStartInteract_Implementation()
 		else
 		{
 			OwnerInteractComponent->OnEmitInteractFailed.Broadcast(SampleInteractTarget);
-			SampleInteractTarget->OnReceiveInteractFailed.Broadcast(OwnerInteractComponent);
+
+			if (SampleInteractTarget)
+			{
+				SampleInteractTarget->OnReceiveInteractFailed.Broadcast(OwnerInteractComponent);
+			}
 		}
 	}
 	return false;
