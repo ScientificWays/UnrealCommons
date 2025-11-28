@@ -52,6 +52,19 @@ void UScWSaveGame::LoadCurrentSaveGameDataFromSlot(const UObject* InWCO, const F
 	GameInstance->CurrentSaveDataObject = LoadedData;
 }
 
+void UScWSaveGame::ResetCurrentSaveGameData(const UObject* InWCO)
+{
+	ensureReturn(InWCO);
+	UScWGameInstance* GameInstance = Cast<UScWGameInstance>(UGameplayStatics::GetGameInstance(InWCO));
+
+	ensureReturn(GameInstance->CurrentSaveDataObject);
+	GameInstance->CurrentSaveDataObject->BoolKeys.Empty();
+	GameInstance->CurrentSaveDataObject->IntegerKeys.Empty();
+	GameInstance->CurrentSaveDataObject->FloatKeys.Empty();
+	GameInstance->CurrentSaveDataObject->VectorKeys.Empty();
+	GameInstance->CurrentSaveDataObject->StringKeys.Empty();
+}
+
 #define DECLARE_GET_SET_CURRENT_SAVE_GAME_DATA(InType, InName) \
 	InType UScWSaveGame::GetCurrentSaveGameData##InName(const UObject* InWCO, const FString& InKey, const InType& InDefaultValue) \
 	{ \

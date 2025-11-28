@@ -31,6 +31,9 @@ public:
 	UFUNCTION(Category = "ScW SaveGame System", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InSlot"))
 	static void LoadCurrentSaveGameDataFromSlot(const UObject* InWCO, const FString& InSlot, int32 InUserIndex);
 
+	UFUNCTION(Category = "ScW SaveGame System", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InSlot"))
+	static void ResetCurrentSaveGameData(const UObject* InWCO);
+
 public:
 
 	UFUNCTION(Category = "ScW SaveGame System", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InKey, bInDefaultValue", KeyWords = "GetBoolSave, GetSaveDataBool"))
