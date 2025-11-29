@@ -7,6 +7,8 @@
 
 UScWComboData::UScWComboData()
 {
+	ComboPower = 1.0f;
+
 	DisplayName = FText::FromString(TEXT("Unnamed Combo"));
 
 	DamageMul = 1.0f;

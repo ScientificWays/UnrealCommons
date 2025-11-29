@@ -85,6 +85,9 @@ public:
 //~ Begin Swing FX
 public:
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "InitializeSwingParticles"))
+	UNiagaraComponent* BP_InitializeSwingParticles(class AScWHandheld_Melee* InMeleeHandheld) const;
+
 	UPROPERTY(Category = "Swing FX", EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UNiagaraSystem> DefaultSwingParticles;
 

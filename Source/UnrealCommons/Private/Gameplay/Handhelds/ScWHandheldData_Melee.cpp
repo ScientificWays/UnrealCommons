@@ -32,3 +32,36 @@ UScWHandheldData_Melee::UScWHandheldData_Melee()
 	SwingParticlesAttachmentSocketName = NAME_None;
 	SwingParticlesRelativeTransform = FTransform(FRotator::ZeroRotator, FVector(0.0f, 0.0f, 0.0f), FVector::OneVector);
 }
+
+UNiagaraComponent* UScWHandheldData_Melee::BP_InitializeSwingParticles_Implementation(AScWHandheld_Melee* InMeleeHandheld) const
+{
+	if (DefaultSwingParticles)
+	{
+		ensureReturn(InMeleeHandheld, nullptr);
+		USceneComponent* AttachToComponent = InMeleeHandheld->GetRelevantMeshComponent();
+
+		AScWCharacter* OwnerCharacter = InMeleeHandheld->GetOwnerCharacter();
+		ensureReturn(OwnerCharacter, nullptr);
+
+		if (AttachToComponent == nullptr)
+		{
+			AttachToComponent = OwnerCharacter->GetMesh();
+		}
+		FFXSystemSpawnParameters SpawnParams;
+		SpawnParams.WorldContextObject = this;
+		SpawnParams.SystemTemplate = DefaultSwingParticles;
+		SpawnParams.Location = SwingParticlesRelativeTransform.GetLocation();
+		SpawnParams.Rotation = SwingParticlesRelativeTransform.GetRotation().Rotator();
+		SpawnParams.Scale = SwingParticlesRelativeTransform.GetScale3D();
+		SpawnParams.AttachToComponent = AttachToComponent;
+		SpawnParams.AttachPointName = SwingParticlesAttachmentSocketName;
+		SpawnParams.LocationType = EAttachLocation::KeepRelativeOffset;
+		SpawnParams.bAutoDestroy = true;
+		SpawnParams.bAutoActivate = true;
+		SpawnParams.PoolingMethod = EPSCPoolMethod::None;
+		SpawnParams.bPreCullCheck = true;
+		SpawnParams.bIsPlayerEffect = OwnerCharacter->IsPlayerCharacter();
+		return UNiagaraFunctionLibrary::SpawnSystemAttachedWithParams(SpawnParams);
+	}
+	return nullptr;
+}

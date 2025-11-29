@@ -237,6 +237,7 @@ bool UScWBTT_TurnTo::Common_UpdateTargetRotation(UBTNode& InNode, UBehaviorTreeC
 			}
 			return true;
 		}
+		return false;
 	}
 	ensure(false);
 	return false;

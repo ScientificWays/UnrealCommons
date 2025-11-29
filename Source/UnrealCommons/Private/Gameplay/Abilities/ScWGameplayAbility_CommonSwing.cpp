@@ -27,6 +27,8 @@ UScWGameplayAbility_CommonSwing::UScWGameplayAbility_CommonSwing()
 
 	ActivationOwnedTags.AddTag(FScWGameplayTags::State_Swinging);
 
+	bCaptureDamageDataOnBeginSwingSequence = true;
+
 	PreSwingMontageSectionIndex = 0;
 	SwingMontageSectionIndex = 1;
 	PostSwingMontageSectionIndex = 2;
@@ -50,6 +52,11 @@ void UScWGameplayAbility_CommonSwing::NativeActivateAbility_Commited(const FGame
 
 void UScWGameplayAbility_CommonSwing::BeginSwingSequence()
 {
+	if (bCaptureDamageDataOnBeginSwingSequence)
+	{
+		CapturedSwingDamage = BP_GetSwingDamage();
+		CapturedSwingDamageTypeClass = BP_GetSwingDamageTypeClass();
+	}
 	float PreSwingDelay = BP_HandlePreSwing();
 
 	UScWAT_WaitDelay* PreSwingWaitDelayTask = UScWAT_WaitDelay::WaitDelayOrFinishNextTick(this, PreSwingDelay);
@@ -120,8 +127,15 @@ float UScWGameplayAbility_CommonSwing::BP_HandlePreSwing_Implementation()
 float UScWGameplayAbility_CommonSwing::BP_HandleBeginSwing_Implementation()
 {
 	ensureCancelAbilityReturn(OwnerMelee, 0.0f);
-	OwnerMelee->BP_BeginSwing(BP_GetSwingDamage(), BP_GetSwingDamageTypeClass());
 
+	if (bCaptureDamageDataOnBeginSwingSequence)
+	{
+		OwnerMelee->BP_BeginSwing(CapturedSwingDamage, CapturedSwingDamageTypeClass);
+	}
+	else
+	{
+		OwnerMelee->BP_BeginSwing(BP_GetSwingDamage(), BP_GetSwingDamageTypeClass());
+	}
 	ensureCancelAbilityReturn(OwnerMeleeData, 0.0f);
 	ensureCancelAbilityReturn(OwnerCharacter, 0.0f);
 

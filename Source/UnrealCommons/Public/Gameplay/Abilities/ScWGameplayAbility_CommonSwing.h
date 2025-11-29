@@ -86,4 +86,17 @@ protected:
 	UPROPERTY(Transient)
 	FActiveGameplayEffectHandle CurrentSwingEffectHandle;
 //~ End Swing
+
+//~ Begin Capture
+protected:
+
+	UPROPERTY(Category = "Swing", EditAnywhere, BlueprintReadWrite)
+	bool bCaptureDamageDataOnBeginSwingSequence;
+
+	UPROPERTY(Category = "Swing", BlueprintReadWrite)
+	float CapturedSwingDamage;
+
+	UPROPERTY(Category = "Swing", BlueprintReadWrite)
+	TSubclassOf<class UScWDamageType> CapturedSwingDamageTypeClass;
+//~ End Capture
 };

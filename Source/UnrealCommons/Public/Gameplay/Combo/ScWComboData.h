@@ -20,6 +20,13 @@ public:
 
 	UScWComboData();
 
+//~ Begin Power
+public:
+
+	UPROPERTY(Category = "Power", EditDefaultsOnly, BlueprintReadOnly)
+	float ComboPower;
+//~ End Power
+
 //~ Begin UI
 public:
 

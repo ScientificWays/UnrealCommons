@@ -136,30 +136,8 @@ void AScWHandheld_Melee::BP_BeginSwing_Implementation(float InSwingDamage, TSubc
 
 	ensureReturn(OwnerCharacter);
 
-	if (MeleeDataAsset->DefaultSwingParticles)
-	{
-		USceneComponent* AttachToComponent = GetRelevantMeshComponent();
+	SwingPaticlesComponent = MeleeDataAsset->BP_InitializeSwingParticles(this);
 
-		if (AttachToComponent == nullptr)
-		{
-			AttachToComponent = OwnerCharacter->GetMesh();
-		}
-		FFXSystemSpawnParameters SpawnParams;
-		SpawnParams.WorldContextObject = this;
-		SpawnParams.SystemTemplate = MeleeDataAsset->DefaultSwingParticles;
-		SpawnParams.Location = MeleeDataAsset->SwingParticlesRelativeTransform.GetLocation();
-		SpawnParams.Rotation = MeleeDataAsset->SwingParticlesRelativeTransform.GetRotation().Rotator();
-		SpawnParams.Scale = MeleeDataAsset->SwingParticlesRelativeTransform.GetScale3D();
-		SpawnParams.AttachToComponent = GetRelevantMeshComponent();
-		SpawnParams.AttachPointName = MeleeDataAsset->SwingParticlesAttachmentSocketName;
-		SpawnParams.LocationType = EAttachLocation::KeepRelativeOffset;
-		SpawnParams.bAutoDestroy = true;
-		SpawnParams.bAutoActivate = true;
-		SpawnParams.PoolingMethod = EPSCPoolMethod::None;
-		SpawnParams.bPreCullCheck = true;
-		SpawnParams.bIsPlayerEffect = OwnerCharacter->IsPlayerCharacter();
-		SwingPaticlesComponent = UNiagaraFunctionLibrary::SpawnSystemAttachedWithParams(SpawnParams);
-	}
 	if (MeleeDataAsset->bIsUsingCollisionComponent)
 	{
 		ensureReturn(CollisionComponent);
