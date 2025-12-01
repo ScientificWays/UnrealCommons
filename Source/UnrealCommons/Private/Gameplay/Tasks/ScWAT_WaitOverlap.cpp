@@ -3,11 +3,12 @@
 #include "Gameplay/Tasks/ScWAT_WaitOverlap.h"
 
 //~ Begin Initialize
-UScWAT_WaitOverlap* UScWAT_WaitOverlap::IDWaitOverlap(UGameplayAbility* InOwningAbility, UPrimitiveComponent* InCheckComponent, UClass* InOverlapClassFilter)
+UScWAT_WaitOverlap* UScWAT_WaitOverlap::ScWWaitOverlap(UGameplayAbility* InOwningAbility, UPrimitiveComponent* InCheckComponent, UClass* InOverlapClassFilter, const bool bInTriggerOnlyOnce)
 {
 	UScWAT_WaitOverlap* OutTaskObject = NewAbilityTask<UScWAT_WaitOverlap>(InOwningAbility);
 	OutTaskObject->CheckComponent = InCheckComponent;
 	OutTaskObject->OverlapClassFilter = InOverlapClassFilter;
+	OutTaskObject->bTriggerOnlyOnce = bInTriggerOnlyOnce;
 	return OutTaskObject;
 }
 
@@ -39,7 +40,10 @@ void UScWAT_WaitOverlap::OnOverlapCallback(UPrimitiveComponent* InOverlappedComp
 	{
 		OnOverlap.Broadcast(InOtherActor);
 
-		EndTask();
+		if (bTriggerOnlyOnce)
+		{
+			EndTask();
+		}
 	}
 }
 //~ End Task

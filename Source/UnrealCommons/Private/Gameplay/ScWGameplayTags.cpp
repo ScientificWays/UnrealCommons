@@ -40,6 +40,10 @@ namespace FScWGameplayTags
 	//UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_ActivateFail_ActivationGroup, "Ability.ActivateFail.ActivationGroup", "[Native] Ability failed to activate because of its activation group.");
 
 	//UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Behavior_SurvivesDeath, "Ability.Behavior.SurvivesDeath", "[Native] An ability with this type tag should not be canceled due to death.");
+	
+	// Collisions
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Collision, "Collision", "[Native] TODO: Add description");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Collision_None, "Collision.None", "[Native] TODO: Add description");
 
 	//UE_DEFINE_GAMEPLAY_TAG_COMMENT(InitState_Spawned, "InitState.Spawned", "[Native] 1: Actor/component has initially spawned and can be extended");
 	//UE_DEFINE_GAMEPLAY_TAG_COMMENT(InitState_DataAvailable, "InitState.DataAvailable", "[Native] 2: All required data has been loaded/replicated and is ready for initialization");

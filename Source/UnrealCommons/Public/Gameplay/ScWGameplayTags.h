@@ -8,6 +8,7 @@
 
 namespace FScWGameplayTags
 {
+	// Abilities
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Flashlight);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Movement_Jump);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Movement_Sprint);
@@ -23,6 +24,10 @@ namespace FScWGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_CancelBy_WalkSlowActivate);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_CancelBy_SwingActivate);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_CancelBy_InteractActivate);
+
+	// Collisions
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Collision);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Collision_None);
 
 	// Set by caller
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(SetByCaller_Duration);

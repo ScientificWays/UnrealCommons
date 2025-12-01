@@ -26,14 +26,27 @@ public:
 public:
 	virtual void InitFromASC(class UScWASC_Base* InInitASC, AActor* InOwnerActor, AActor* InAvatarActor) override; // IScWASC_InitInterface
 	virtual void InitFromCharacterData(const class UScWCharacterData* InInitCharacterData) override; // IScWCharacterData_InitInterface
+protected:
+	virtual void BeginPlay() override; // UActorComponent
 //~ End Initialize
 
-//~ Begin Damage
+//~ Begin Profiles
 public:
 
-	UPROPERTY(Category = "Damage", EditAnywhere, BlueprintReadWrite)
-	FName DiedCollisionProfileName;
+	UPROPERTY(Category = "Profiles", EditAnywhere, BlueprintReadWrite)
+	TMap<FGameplayTag, FName> TagCollisionProfileNameMap;
 
+	UPROPERTY()
+	FName DefaultCollisionProfileName;
+//~ End Profiles
+
+//~ Begin Tags
+protected:
+	void OnCollisionTagNumChanged(const FGameplayTag InCallbackTag, int32 InNewCount);
+	void UpdateCollisionProfileFromTags();
+//~ End Tags
+
+//~ Begin Damage
 protected:
 
 	UFUNCTION()

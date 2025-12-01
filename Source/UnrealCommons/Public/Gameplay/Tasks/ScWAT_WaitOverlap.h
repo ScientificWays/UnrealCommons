@@ -24,8 +24,8 @@ public:
 //~ Begin Initialize
 public:
 
-	UFUNCTION(BlueprintCallable, Category = "Ability | Tasks", meta = (HidePin = "InOwningAbility", DefaultToSelf = "InOwningAbility", BlueprintInternalUseOnly = "true"))
-	static UScWAT_WaitOverlap* IDWaitOverlap(UGameplayAbility* InOwningAbility, UPrimitiveComponent* InCheckComponent, UClass* InOverlapClassFilter);
+	UFUNCTION(BlueprintCallable, Category = "Ability | Tasks", meta = (DisplayName = "[ScW] Wait for Overlap", HidePin = "InOwningAbility", DefaultToSelf = "InOwningAbility", BlueprintInternalUseOnly = "true"))
+	static UScWAT_WaitOverlap* ScWWaitOverlap(UGameplayAbility* InOwningAbility, UPrimitiveComponent* InCheckComponent, UClass* InOverlapClassFilter, const bool bInTriggerOnlyOnce = true);
 
 protected:
 	virtual void Activate() override; // UGameplayTask
@@ -42,4 +42,7 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UClass> OverlapClassFilter;
+
+	UPROPERTY()
+	bool bTriggerOnlyOnce;
 };

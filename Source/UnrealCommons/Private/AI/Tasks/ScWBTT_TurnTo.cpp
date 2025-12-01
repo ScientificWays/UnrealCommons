@@ -230,16 +230,15 @@ bool UScWBTT_TurnTo::Common_UpdateTargetRotation(UBTNode& InNode, UBehaviorTreeC
 				}
 				else
 				{
-					ensure(false);
+					//ensure(false);
 					return false;
 				}
 				ThisNodeMemory->TargetRotation = InOffset.RotateVector(TargetLocation - OwnerViewLocation).ToOrientationRotator();
 			}
 			return true;
 		}
-		return false;
 	}
-	ensure(false);
+	//ensure(false);
 	return false;
 }
 
