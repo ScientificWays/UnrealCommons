@@ -196,16 +196,16 @@ void AScWHandheld_Melee::BP_UpdateCurrentSwingVariantData_Implementation()
 	CurrentSwingVariantData = FinalVariantsArray[SwingCounter % FinalVariantsArray.Num()];
 }
 
-void AScWHandheld_Melee::BP_HandleSwingHit_Implementation(const FHitResult& InHitResult)
+bool AScWHandheld_Melee::BP_HandleSwingHit_Implementation(const FHitResult& InHitResult)
 {
-	ensureReturn(OwnerCharacter);
+	ensureReturn(OwnerCharacter, false);
 
 	AActor* HitActor = InHitResult.GetActor();
-	ensureReturn(HitActor);
+	ensureReturn(HitActor, false);
 
 	if (LastSwingAffectedActorArray.Contains(HitActor))
 	{
-
+		return false;
 	}
 	else
 	{
@@ -213,6 +213,7 @@ void AScWHandheld_Melee::BP_HandleSwingHit_Implementation(const FHitResult& InHi
 
 		FVector HitDirection = (InHitResult.TraceEnd - InHitResult.TraceStart).GetSafeNormal();
 		UScWGameplayFunctionLibrary::ApplyPointDamage(this, HitActor, LastSwingDamage, HitDirection, InHitResult, OwnerCharacter->GetController(), LastSwingDamageTypeClass);
+		return true;
 	}
 }
 //~ End Swing

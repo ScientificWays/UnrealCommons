@@ -658,8 +658,8 @@ bool UScWASC_Base::TryApplyDamage(float InDamage, const FReceivedDamageData& InD
 		FGameplayCueParameters ImpactCueParams = FGameplayCueParameters(MakeEffectContext());
 		ImpactCueParams.Instigator = InData.Instigator ? InData.Instigator->GetPawn() : nullptr;
 		ImpactCueParams.EffectCauser = InData.Source;
-		ImpactCueParams.Location = InData.HitResult.Location;
-		ImpactCueParams.Normal = InData.HitResult.Normal;
+		ImpactCueParams.Location = InData.HitResult.ImpactPoint;
+		ImpactCueParams.Normal = InData.HitResult.ImpactNormal;
 		ImpactCueParams.RawMagnitude = InDamage;
 		ImpactCueParams.NormalizedMagnitude = FMath::Min(InDamage / GetMaxHealth(), 1.0f);
 		ExecuteGameplayCue(FScWGameplayTags::GameplayCue_Damage_Impact, ImpactCueParams);

@@ -77,7 +77,7 @@ protected:
 	void BP_UpdateCurrentSwingVariantData();
 
 	UFUNCTION(Category = "Swing", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "HandleSwingHit"))
-	void BP_HandleSwingHit(const FHitResult& InHitResult);
+	bool BP_HandleSwingHit(const FHitResult& InHitResult);
 
 	UPROPERTY(Category = "Swing", BlueprintReadWrite)
 	int32 SwingCounter;
