@@ -20,13 +20,6 @@ public:
 
 	UScWComboData();
 
-//~ Begin Power
-public:
-
-	UPROPERTY(Category = "Power", EditDefaultsOnly, BlueprintReadOnly)
-	float ComboPower;
-//~ End Power
-
 //~ Begin UI
 public:
 
@@ -42,7 +35,20 @@ public:
 
 	UPROPERTY(Category = "Moves", EditDefaultsOnly, BlueprintReadOnly)
 	TArray<TObjectPtr<const class UScWComboMoveData>> Moves;
+
+	UPROPERTY(Category = "Moves", EditDefaultsOnly, BlueprintReadOnly)
+	bool bUseLastMoveModifiers;
 //~ End Moves
+	
+//~ Begin Power
+public:
+
+	UPROPERTY(Category = "Power", EditDefaultsOnly, BlueprintReadOnly)
+	float ComboPowerMul;
+
+	UFUNCTION(Category = "Power", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Get Handheld PowerMul"))
+	float BP_GetHandheldPowerMul(const class UScWHandheldData* InHandheldData) const;
+//~ End Power
 
 //~ Begin Damage
 public:
