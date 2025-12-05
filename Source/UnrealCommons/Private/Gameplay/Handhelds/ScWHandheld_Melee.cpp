@@ -14,6 +14,10 @@ AScWHandheld_Melee::AScWHandheld_Melee(const FObjectInitializer& InObjectInitial
 	CollisionComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Collision"));
 	CollisionComponent->SetCollisionProfileName(TEXT("MeleeWeapon"), false);
 	CollisionComponent->SetupAttachment(RootComponent);
+
+	PreSwingMontageSectionIndex = 0;
+	SwingMontageSectionIndex = 1;
+	EndSwingMontageSectionIndex = 2;
 }
 
 //~ Begin Initialize
@@ -78,9 +82,10 @@ void AScWHandheld_Melee::BeginPlay() // AActor
 	}
 	SwingCounter = 0;
 
-	BP_EndSwing();
+	BP_ResetSwingComponents();
 
-	DefaultTracePatternIgnoredActorArray = { OwnerCharacter, this };
+	SwingHitIgnoredActors = { OwnerCharacter, this };
+	TracePatternIgnoredActors = { OwnerCharacter, this };
 
 	Super::BeginPlay();
 }
@@ -107,65 +112,132 @@ void AScWHandheld_Melee::OnCollisionComponentBeginOverlap(UPrimitiveComponent* I
 	}
 	if (bInFromSweep)
 	{
-		BP_HandleSwingHit(InSweepHitResult);
+		BP_HandleSwingHit(InOtherActor, InSweepHitResult);
 	}
 	else
 	{
 		FHitResult MinimalInfoHitResult;
 		UScWGameplayFunctionLibrary::MakeMinimalInfoDamageImpactHitResult(this, InOverlappedComponent, OwnerCharacter, InOtherActor, InOtherComponent, MinimalInfoHitResult);
-		BP_HandleSwingHit(MinimalInfoHitResult);
+		BP_HandleSwingHit(InOtherActor, MinimalInfoHitResult);
 	}
 }
 //~ End Components
 
 //~ Begin Swing
-void AScWHandheld_Melee::BP_PreSwing_Implementation()
+float AScWHandheld_Melee::BP_GetSwingDamage_Implementation() const
 {
-	++SwingCounter;
-	BP_UpdateCurrentSwingVariantData();
+	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
+	ensureReturn(MeleeDataAsset, 0.0f);
+
+	float OutDamage = MeleeDataAsset->SwingBaseDamage;
+
+	ensureReturn(OwnerCharacter, OutDamage);
+	UScWASC_Character* OwnerASC = OwnerCharacter->GetCharacterASC();
+
+	ensureReturn(OwnerASC, OutDamage);
+	if (const UScWComboData* RelevantCombo = OwnerASC->GetRelevantCombo())
+	{
+		OutDamage = RelevantCombo->BP_ModifyHandheldDamage(MeleeDataAsset, OutDamage);
+	}
+	return OutDamage;
 }
 
-void AScWHandheld_Melee::BP_BeginSwing_Implementation(float InSwingDamage, TSubclassOf<UDamageType> InSwingDamageTypeClass)
+TSubclassOf<UScWDamageType> AScWHandheld_Melee::BP_GetSwingDamageTypeClass_Implementation() const
 {
+	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
+	ensureReturn(MeleeDataAsset, UScWDamageType::StaticClass());
+
+	TSubclassOf<UScWDamageType> OutDamageTypeClass = MeleeDataAsset->SwingBaseDamageTypeClass;
+
+	ensureReturn(OwnerCharacter, OutDamageTypeClass);
+	UScWASC_Character* OwnerASC = OwnerCharacter->GetCharacterASC();
+
+	ensureReturn(OwnerASC, OutDamageTypeClass);
+	if (const UScWComboData* RelevantCombo = OwnerASC->GetRelevantCombo())
+	{
+		OutDamageTypeClass = RelevantCombo->BP_ModifyHandheldDamageTypeClass(MeleeDataAsset, OutDamageTypeClass);
+	}
+	return OutDamageTypeClass;
+}
+
+float AScWHandheld_Melee::BP_PreSwing_Implementation()
+{
+	CurrentSwingPhase = EScWSwingPhase::PreSwing;
+
+	++SwingCounter;
+	BP_UpdateCurrentSwingVariantData();
+
+	const auto& CurrentSwingMontageData = CurrentSwingVariantData.MontageData;
+
+	ensureReturn(CurrentSwingMontageData.GetRelevantTimingMontage(), -1.0f);
+	ensureReturn(CurrentSwingMontageData.GetRelevantTimingMontage()->GetNumSections() >= 3, -1.0f);
+
+	ensureReturn(OwnerCharacter, -1.0f);
+	UScWAnimationsFunctionLibrary::PlayCharacterMontagesFromData(OwnerCharacter, CurrentSwingMontageData);
+
+	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
+	ensureReturn(MeleeDataAsset, -1.0f);
+
+	float OutPreSwingDelay = UScWAnimationsFunctionLibrary::GetMontageSectionLengthByIndexFromData(CurrentSwingMontageData, PreSwingMontageSectionIndex) * MeleeDataAsset->SwingVariantBaseDuration;
+	OnPreSwingDelegate.Broadcast(OutPreSwingDelay);
+	return OutPreSwingDelay;
+}
+
+float AScWHandheld_Melee::BP_BeginSwing_Implementation(float InSwingDamage, TSubclassOf<UDamageType> InSwingDamageTypeClass)
+{
+	CurrentSwingPhase = EScWSwingPhase::Swing;
+
 	LastSwingDamage = InSwingDamage;
 	LastSwingDamageTypeClass = InSwingDamageTypeClass;
 	LastSwingAffectedActorArray.Empty();
 
 	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
-	ensureReturn(MeleeDataAsset);
-
-	ensureReturn(OwnerCharacter);
+	ensureReturn(MeleeDataAsset, -1.0f);
 
 	SwingPaticlesComponent = MeleeDataAsset->BP_InitializeSwingParticles(this);
 
 	if (MeleeDataAsset->bIsUsingCollisionComponent)
 	{
-		ensureReturn(CollisionComponent);
+		ensureReturn(CollisionComponent, -1.0f);
 		CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	}
 	else
 	{
 		BP_BeginTracePatterns();
 	}
+	float OutSwingDuration = UScWAnimationsFunctionLibrary::GetMontageSectionLengthByIndexFromData(CurrentSwingVariantData.MontageData, SwingMontageSectionIndex) * MeleeDataAsset->SwingVariantBaseDuration;
+	OnBeginSwingDelegate.Broadcast(OutSwingDuration);
+	return OutSwingDuration;
 }
 
-void AScWHandheld_Melee::BP_EndSwing_Implementation()
+float AScWHandheld_Melee::BP_EndSwing_Implementation(const bool bInWasCancelled)
 {
+	BP_ResetSwingComponents();
+
 	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
-	ensureReturn(MeleeDataAsset);
+	ensureReturn(MeleeDataAsset, -1.0f);
 
-	ensureReturn(OwnerCharacter);
+	float OutEndSwingDelay = UScWAnimationsFunctionLibrary::GetMontageSectionLengthByIndexFromData(CurrentSwingVariantData.MontageData, EndSwingMontageSectionIndex) * MeleeDataAsset->SwingVariantBaseDuration;
+	OnEndSwingDelegate.Broadcast(OutEndSwingDelay, bInWasCancelled);
+	return OutEndSwingDelay;
+}
 
+void AScWHandheld_Melee::BP_ResetSwingComponents_Implementation()
+{
 	if (SwingPaticlesComponent)
 	{
 		SwingPaticlesComponent->DestroyComponent();
 		SwingPaticlesComponent = nullptr;
 	}
+	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
+	ensureReturn(MeleeDataAsset);
+
 	if (MeleeDataAsset->bIsUsingCollisionComponent)
 	{
 		ensureReturn(CollisionComponent);
 		CollisionComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
+	CurrentSwingPhase = EScWSwingPhase::None;
 }
 
 void AScWHandheld_Melee::BP_UpdateCurrentSwingVariantData_Implementation()
@@ -196,23 +268,21 @@ void AScWHandheld_Melee::BP_UpdateCurrentSwingVariantData_Implementation()
 	CurrentSwingVariantData = FinalVariantsArray[SwingCounter % FinalVariantsArray.Num()];
 }
 
-bool AScWHandheld_Melee::BP_HandleSwingHit_Implementation(const FHitResult& InHitResult)
+bool AScWHandheld_Melee::BP_HandleSwingHit_Implementation(AActor* InHitActor, const FHitResult& InHitResult)
 {
-	ensureReturn(OwnerCharacter, false);
-
-	AActor* HitActor = InHitResult.GetActor();
-	ensureReturn(HitActor, false);
-
-	if (LastSwingAffectedActorArray.Contains(HitActor))
+	ensureReturn(InHitActor, false);
+	if (SwingHitIgnoredActors.Contains(InHitActor) || LastSwingAffectedActorArray.Contains(InHitActor))
 	{
 		return false;
 	}
 	else
 	{
-		LastSwingAffectedActorArray.Add(HitActor);
+		LastSwingAffectedActorArray.Add(InHitActor);
 
 		FVector HitDirection = (InHitResult.TraceEnd - InHitResult.TraceStart).GetSafeNormal();
-		UScWGameplayFunctionLibrary::ApplyPointDamage(this, HitActor, LastSwingDamage, HitDirection, InHitResult, OwnerCharacter->GetController(), LastSwingDamageTypeClass);
+
+		ensureReturn(OwnerCharacter, false);
+		UScWGameplayFunctionLibrary::ApplyPointDamage(this, InHitActor, LastSwingDamage, HitDirection, InHitResult, OwnerCharacter->GetController(), LastSwingDamageTypeClass);
 		return true;
 	}
 }
@@ -255,10 +325,7 @@ void AScWHandheld_Melee::BP_HandleTracePattern_Implementation(const FScWMeleeSwi
 
 	TArray<FHitResult> TraceHitResults;
 	FCollisionQueryParams TraceParams = FCollisionQueryParams::DefaultQueryParam;
-
-	TArray<AActor*> ActorsToIgnore;
-	ActorsToIgnore.Append(DefaultTracePatternIgnoredActorArray);
-	UKismetSystemLibrary::SphereTraceMulti(this, TraceStart, TraceEnd, InPatternData.TraceShapeRadius, TraceTypeQuery_Melee, false, ActorsToIgnore, TracePatternDebugType, TraceHitResults, true);
+	UKismetSystemLibrary::SphereTraceMulti(this, TraceStart, TraceEnd, InPatternData.TraceShapeRadius, TraceTypeQuery_Melee, false, TracePatternIgnoredActors, TracePatternDebugType, TraceHitResults, true);
 	
 	if (TraceHitResults.IsEmpty())
 	{
@@ -266,7 +333,7 @@ void AScWHandheld_Melee::BP_HandleTracePattern_Implementation(const FScWMeleeSwi
 	}
 	for (const FHitResult& SampleHitResult : TraceHitResults)
 	{
-		BP_HandleSwingHit(SampleHitResult);
+		BP_HandleSwingHit(SampleHitResult.GetActor(), SampleHitResult);
 	}
 	int32 NextPatternIndex = InPatternIndex + 1;
 	if (CurrentSwingVariantData.TracePatterns.IsValidIndex(NextPatternIndex))

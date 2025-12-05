@@ -56,23 +56,14 @@ protected:
 	UFUNCTION(Category = "Swing", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Get SwingDamage"))
 	float BP_GetSwingDamage() const;
 
+	UFUNCTION(Category = "Swing", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Get SwingDamageTypeClass"))
+	TSubclassOf<class UScWDamageType> BP_GetSwingDamageTypeClass() const;
+
 	UFUNCTION(Category = "Swing", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Apply SwingOwnerEffect"))
 	void BP_ApplySwingOwnerEffect();
 
 	UFUNCTION(Category = "Swing", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Remove SwingOwnerEffect"))
 	void BP_RemoveSwingOwnerEffect();
-
-	UFUNCTION(Category = "Swing", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Get SwingDamageTypeClass"))
-	TSubclassOf<class UScWDamageType> BP_GetSwingDamageTypeClass() const;
-
-	UPROPERTY(Category = "Swing", EditAnywhere, BlueprintReadWrite)
-	int32 PreSwingMontageSectionIndex;
-
-	UPROPERTY(Category = "Swing", EditAnywhere, BlueprintReadWrite)
-	int32 SwingMontageSectionIndex;
-
-	UPROPERTY(Category = "Swing", EditAnywhere, BlueprintReadWrite)
-	int32 PostSwingMontageSectionIndex;
 
 	UPROPERTY(Category = "Swing", EditAnywhere, BlueprintReadWrite)
 	bool bLoopIfInputIsPressed;

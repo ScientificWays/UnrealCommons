@@ -36,10 +36,8 @@ protected:
 	virtual float BP_HandlePreSwing_Implementation() override; // UScWGameplayAbility_CommonSwing
 	virtual float BP_HandleEndSwing_Implementation() override; // UScWGameplayAbility_CommonSwing
 	virtual void BP_HandlePostSwing_Implementation() override; // UScWGameplayAbility_CommonSwing
-	virtual float BP_GetSwingDamage_Implementation() const override; // UScWGameplayAbility_CommonSwing
-	virtual TSubclassOf<class UScWDamageType> BP_GetSwingDamageTypeClass_Implementation() const override; // UScWGameplayAbility_CommonSwing
-
+	
 	UFUNCTION(Category = "Swing", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Handle SwingEndCombo"))
-	void BP_HandleSwingEndCombo();
+	void BP_HandleSwingEndComboWindow();
 //~ End Swing
 };

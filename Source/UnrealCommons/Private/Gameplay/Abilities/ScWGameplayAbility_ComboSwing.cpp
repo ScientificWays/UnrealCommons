@@ -30,8 +30,10 @@ void UScWGameplayAbility_ComboSwing::OnPostSwingComboWindowFinished()
 
 void UScWGameplayAbility_ComboSwing::EndAbility(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo, const FGameplayAbilityActivationInfo InActivationInfo, bool bInReplicateEndAbility, bool bInWasCancelled) // UGameplayAbility
 {
-
-
+	if (bInWasCancelled)
+	{
+		OwnerASC->SetComboState(EComboState::Reset, true);
+	}
 	Super::EndAbility(InHandle, InActorInfo, InActivationInfo, bInReplicateEndAbility, bInWasCancelled);
 }
 //~ End Ability
@@ -49,7 +51,7 @@ float UScWGameplayAbility_ComboSwing::BP_HandleEndSwing_Implementation()
 {
 	float OutPostSwingDelay = Super::BP_HandleEndSwing_Implementation();
 
-	BP_HandleSwingEndCombo();
+	BP_HandleSwingEndComboWindow();
 
 	ensureCancelAbilityReturn(OwnerMeleeData, OutPostSwingDelay);
 	return FMath::Max(OwnerMeleeData->PostSwingComboTimeWindow, OutPostSwingDelay);
@@ -63,29 +65,7 @@ void UScWGameplayAbility_ComboSwing::BP_HandlePostSwing_Implementation()
 	Super::BP_HandlePostSwing_Implementation();
 }
 
-float UScWGameplayAbility_ComboSwing::BP_GetSwingDamage_Implementation() const
-{
-	float OutDamage = Super::BP_GetSwingDamage_Implementation();
-
-	ensureReturn(OwnerASC, OutDamage);
-	const UScWComboData* RelevantCombo = OwnerASC->GetRelevantCombo();
-
-	ensureReturn(RelevantCombo, OutDamage);
-	return RelevantCombo->BP_ModifyHandheldDamage(OwnerMeleeData, OutDamage);
-}
-
-TSubclassOf<UScWDamageType> UScWGameplayAbility_ComboSwing::BP_GetSwingDamageTypeClass_Implementation() const
-{
-	TSubclassOf<UScWDamageType> OutDamageTypeClass = Super::BP_GetSwingDamageTypeClass_Implementation();
-
-	ensureReturn(OwnerASC, OutDamageTypeClass);
-	const UScWComboData* RelevantCombo = OwnerASC->GetRelevantCombo();
-
-	ensureReturn(RelevantCombo, OutDamageTypeClass);
-	return RelevantCombo->BP_ModifyHandheldDamageTypeClass(OwnerMeleeData, OutDamageTypeClass);
-}
-
-void UScWGameplayAbility_ComboSwing::BP_HandleSwingEndCombo_Implementation()
+void UScWGameplayAbility_ComboSwing::BP_HandleSwingEndComboWindow_Implementation()
 {
 	UScWAT_WaitComboMoveEvent* WaitComboMoveQueuedTask = UScWAT_WaitComboMoveEvent::WaitComboMoveQueued(this);
 	WaitComboMoveQueuedTask->OnComboMoveEvent.AddDynamic(this, &ThisClass::K2_EndAbility);
@@ -98,6 +78,5 @@ void UScWGameplayAbility_ComboSwing::BP_HandleSwingEndCombo_Implementation()
 	UScWAT_WaitDelay* PostSwingComboWindowTask = UScWAT_WaitDelay::WaitDelayOrFinishNextTick(this, OwnerMeleeData->PostSwingComboTimeWindow);
 	PostSwingComboWindowTask->OnFinish.AddDynamic(this, &ThisClass::OnPostSwingComboWindowFinished);
 	PostSwingComboWindowTask->ReadyForActivation();
-
 }
 //~ End Swing
