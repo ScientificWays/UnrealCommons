@@ -145,12 +145,12 @@ float UScWGameplayAbility_CommonSwing::BP_HandleBeginSwing_Implementation()
 	{
 		BP_ApplySwingOwnerEffect();
 	}
-	if (OwnerMeleeData->bPushPlayerDuringSwing)
+	if (OwnerMeleeData->bPushOwnerDuringSwing)
 	{
 		FVector PushMagnitude = OwnerCharacter->GetActorRotation().RotateVector(OwnerMeleeData->SwingPushVector);
 
-		UScWAT_ModifyCharacterMovement* PushPlayerTask = UScWAT_ModifyCharacterMovement::ModifyCharacterMovement(this, OwnerCharacter->GetScWCharacterMovement(), PushMagnitude, false, OwnerMeleeData->SwingPushDuration);
-		PushPlayerTask->ReadyForActivation();
+		UScWAT_ModifyCharacterMovement* PushOwnerTask = UScWAT_ModifyCharacterMovement::ModifyCharacterMovement(this, OwnerCharacter->GetScWCharacterMovement(), PushMagnitude, false, OwnerMeleeData->SwingPushDuration);
+		PushOwnerTask->ReadyForActivation();
 	}
 	return OutSwingDuration;
 }

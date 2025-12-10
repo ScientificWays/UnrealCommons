@@ -300,8 +300,9 @@ float AScWHandheld_Melee::BP_GetNextPatternDelayTime_Implementation(int32 InNext
 	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
 	ensureReturn(MeleeDataAsset, 0.0f);
 
+	const float SwingDuration = UScWAnimationsFunctionLibrary::GetMontageSectionLengthByIndexFromData(CurrentSwingVariantData.MontageData, SwingMontageSectionIndex) * MeleeDataAsset->SwingVariantBaseDuration;
 	const auto& TracePatterns = CurrentSwingVariantData.TracePatterns;
-	return (TracePatterns.Num() < 2) ? (0.0f) : (MeleeDataAsset->SwingVariantBaseDuration / (float)TracePatterns.Num());
+	return (TracePatterns.Num() < 2) ? (0.0f) : (SwingDuration / (float)TracePatterns.Num());
 }
 
 void AScWHandheld_Melee::BP_BeginTracePatterns_Implementation()
@@ -327,10 +328,10 @@ void AScWHandheld_Melee::BP_HandleTracePattern_Implementation(const FScWMeleeSwi
 	FCollisionQueryParams TraceParams = FCollisionQueryParams::DefaultQueryParam;
 	UKismetSystemLibrary::SphereTraceMulti(this, TraceStart, TraceEnd, InPatternData.TraceShapeRadius, TraceTypeQuery_Melee, false, TracePatternIgnoredActors, TracePatternDebugType, TraceHitResults, true);
 	
-	if (TraceHitResults.IsEmpty())
+	/*if (TraceHitResults.IsEmpty())
 	{
 		return;
-	}
+	}*/
 	for (const FHitResult& SampleHitResult : TraceHitResults)
 	{
 		BP_HandleSwingHit(SampleHitResult.GetActor(), SampleHitResult);
@@ -342,7 +343,7 @@ void AScWHandheld_Melee::BP_HandleTracePattern_Implementation(const FScWMeleeSwi
 		if (NextPatternDelayTime > 0.0f)
 		{
 			FTimerDelegate NextPatternMethodDelegate;
-			NextPatternMethodDelegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED_TwoParams(AScWHandheld_Melee, BP_HandleTracePattern, const FScWMeleeSwingVariantData_TracePattern&, int32), InPatternData, NextPatternIndex);
+			NextPatternMethodDelegate.BindUFunction(this, GET_FUNCTION_NAME_CHECKED_TwoParams(ThisClass, BP_HandleTracePattern, const FScWMeleeSwingVariantData_TracePattern&, int32), CurrentSwingVariantData.TracePatterns[NextPatternIndex], NextPatternIndex);
 			World->GetTimerManager().SetTimer(NextPatternDelayHandle, NextPatternMethodDelegate, NextPatternDelayTime, false);
 		}
 		else

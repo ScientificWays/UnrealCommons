@@ -24,10 +24,10 @@ public:
 //~ Begin Initialize
 public:
 
-	UFUNCTION(Category = "Ability | Tasks", BlueprintCallable, meta = (DisplayName = "[ScW] WaitHit", HidePin = "InOwningAbility", DefaultToSelf = "InOwningAbility", BlueprintInternalUseOnly = "true"))
+	UFUNCTION(Category = "Ability | Tasks", BlueprintCallable, meta = (DisplayName = "[ScW] Wait for Hit", HidePin = "InOwningAbility", DefaultToSelf = "InOwningAbility", BlueprintInternalUseOnly = "true"))
 	static UScWAT_WaitHit* WaitHit(UGameplayAbility* InOwningAbility, UPrimitiveComponent* InCheckComponent, UClass* InHitClassFilter);
 
-	UFUNCTION(Category = "Ability | Tasks", BlueprintCallable, meta = (DisplayName = "[ScW] WaitHit", HidePin = "InOwningAbility", DefaultToSelf = "InOwningAbility", BlueprintInternalUseOnly = "true"))
+	UFUNCTION(Category = "Ability | Tasks", BlueprintCallable, meta = (DisplayName = "[ScW] Wait for Hit (Ignore Ground)", HidePin = "InOwningAbility", DefaultToSelf = "InOwningAbility", BlueprintInternalUseOnly = "true"))
 	static UScWAT_WaitHit* WaitHit_IgnoreGround(UGameplayAbility* InOwningAbility, UPrimitiveComponent* InCheckComponent, UClass* InHitClassFilter, UCharacterMovementComponent* InCharacterMovementComponent);
 
 protected:

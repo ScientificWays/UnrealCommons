@@ -15,7 +15,7 @@ UScWHandheldData_Melee::UScWHandheldData_Melee()
 	CapsuleRadiusHeight = FVector2D(14.0f, 45.0f);
 	CapsuleRelativeTransform = FTransform(FRotator::ZeroRotator, FVector(0.0f, 0.0f, -20.0f), FVector::OneVector);
 
-	bPushPlayerDuringSwing = false;
+	bPushOwnerDuringSwing = false;
 	SwingPushVector = FVector(400.0f, 0.0f, 0.0f);
 	SwingPushDuration = 0.2f;
 

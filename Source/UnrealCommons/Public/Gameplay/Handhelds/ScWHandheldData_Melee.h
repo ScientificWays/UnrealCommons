@@ -38,12 +38,12 @@ public:
 public:
 
 	UPROPERTY(Category = "Movement", EditDefaultsOnly, BlueprintReadOnly)
-	bool bPushPlayerDuringSwing;
+	bool bPushOwnerDuringSwing;
 
-	UPROPERTY(Category = "Movement", EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "bIsUsingCollisionComponent"))
+	UPROPERTY(Category = "Movement", EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "bPushOwnerDuringSwing"))
 	FVector SwingPushVector;
 
-	UPROPERTY(Category = "Movement", EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "bIsUsingCollisionComponent"))
+	UPROPERTY(Category = "Movement", EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "bPushOwnerDuringSwing"))
 	float SwingPushDuration;
 //~ End Movement
 	
