@@ -27,10 +27,12 @@ void UScWSaveGame::SaveCurrentSaveGameDataToCurrentSlot(const UObject* InWCO)
 	ensureReturn(GameInstance);
 
 	ensureReturn(GameInstance->CurrentSaveDataObject);
+	GameInstance->CurrentSaveDataObject->BP_PreSaveGameSave(InWCO);
+
 	UGameplayStatics::SaveGameToSlot(GameInstance->CurrentSaveDataObject, GameInstance->CurrentSaveDataSlot, GameInstance->CurrentSaveDataUserIndex);
 }
 
-void UScWSaveGame::LoadCurrentSaveGameDataFromSlot(const UObject* InWCO, const FString& InSlot, int32 InUserIndex)
+void UScWSaveGame::LoadCurrentSaveGameDataFromSlot(const UObject* InWCO, TSubclassOf<UScWSaveGame> InSaveGameClass, const FString& InSlot, int32 InUserIndex)
 {
 	ThisClass* LoadedData = nullptr;
 
@@ -40,9 +42,10 @@ void UScWSaveGame::LoadCurrentSaveGameDataFromSlot(const UObject* InWCO, const F
 	}
 	else
 	{
-		LoadedData = NewObject<ThisClass>(GetTransientPackage(), ThisClass::StaticClass());
+		LoadedData = NewObject<ThisClass>(GetTransientPackage(), InSaveGameClass);
 	}
 	ensureReturn(LoadedData);
+	ensureReturn(LoadedData->GetClass() == InSaveGameClass);
 
 	ensureReturn(InWCO);
 	UScWGameInstance* GameInstance = Cast<UScWGameInstance>(UGameplayStatics::GetGameInstance(InWCO));
@@ -50,6 +53,8 @@ void UScWSaveGame::LoadCurrentSaveGameDataFromSlot(const UObject* InWCO, const F
 	GameInstance->CurrentSaveDataSlot = InSlot;
 	GameInstance->CurrentSaveDataUserIndex = InUserIndex;
 	GameInstance->CurrentSaveDataObject = LoadedData;
+
+	GameInstance->CurrentSaveDataObject->BP_PostSaveGameLoad(InWCO);
 }
 
 void UScWSaveGame::ResetCurrentSaveGameData(const UObject* InWCO)
@@ -63,6 +68,8 @@ void UScWSaveGame::ResetCurrentSaveGameData(const UObject* InWCO)
 	GameInstance->CurrentSaveDataObject->FloatKeys.Empty();
 	GameInstance->CurrentSaveDataObject->VectorKeys.Empty();
 	GameInstance->CurrentSaveDataObject->StringKeys.Empty();
+
+	GameInstance->CurrentSaveDataObject->BP_ResetSaveGameData(InWCO);
 }
 
 #define DECLARE_GET_SET_CURRENT_SAVE_GAME_DATA(InType, InName) \

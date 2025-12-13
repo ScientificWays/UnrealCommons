@@ -29,7 +29,7 @@ public:
 	static void SaveCurrentSaveGameDataToCurrentSlot(const UObject* InWCO);
 
 	UFUNCTION(Category = "ScW SaveGame System", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InSlot"))
-	static void LoadCurrentSaveGameDataFromSlot(const UObject* InWCO, const FString& InSlot, int32 InUserIndex);
+	static void LoadCurrentSaveGameDataFromSlot(const UObject* InWCO, TSubclassOf<UScWSaveGame> InSaveGameClass, const FString& InSlot, int32 InUserIndex);
 
 	UFUNCTION(Category = "ScW SaveGame System", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InSlot"))
 	static void ResetCurrentSaveGameData(const UObject* InWCO);
@@ -66,6 +66,19 @@ public:
 	UFUNCTION(Category = "ScW SaveGame System", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InKey, InValue", KeyWords = "SaveStringKey, SetSaveDataString"))
 	static void SetCurrentSaveGameDataString(const UObject* InWCO, const FString& InKey, const FString& InValue);
 //~ End ScW SaveGame System
+
+//~ Begin Blueprints
+protected:
+
+	UFUNCTION(Category = "Blueprints", BlueprintImplementableEvent, BlueprintCallable, meta = (WorldContext = "InWCO", DisplayName = "Pre SaveGame Save"))
+	void BP_PreSaveGameSave(const UObject* InWCO) const;
+
+	UFUNCTION(Category = "Blueprints", BlueprintImplementableEvent, BlueprintCallable, meta = (WorldContext = "InWCO", DisplayName = "Post SaveGame Load"))
+	void BP_PostSaveGameLoad(const UObject* InWCO) const;
+
+	UFUNCTION(Category = "Blueprints", BlueprintImplementableEvent, BlueprintCallable, meta = (WorldContext = "InWCO", DisplayName = "Reset SaveGame Data"))
+	void BP_ResetSaveGameData(const UObject* InWCO) const;
+//~ End Blueprints
 
 //~ Begin Data
 protected:
