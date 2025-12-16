@@ -3,7 +3,7 @@
 #include "Gameplay/Tasks/ScWAT_WaitHit.h"
 
 //~ Begin Initialize
-UScWAT_WaitHit* UScWAT_WaitHit::WaitHit(UGameplayAbility* InOwningAbility, UPrimitiveComponent* InCheckComponent, UClass* InHitClassFilter)
+UScWAT_WaitHit* UScWAT_WaitHit::WaitHit(UGameplayAbility* InOwningAbility, UPrimitiveComponent* InCheckComponent, TSubclassOf<AActor> InHitClassFilter)
 {
 	UScWAT_WaitHit* OutTaskObject = NewAbilityTask<UScWAT_WaitHit>(InOwningAbility);
 
@@ -16,7 +16,7 @@ UScWAT_WaitHit* UScWAT_WaitHit::WaitHit(UGameplayAbility* InOwningAbility, UPrim
 	return OutTaskObject;
 }
 
-UScWAT_WaitHit* UScWAT_WaitHit::WaitHit_IgnoreGround(UGameplayAbility* InOwningAbility, UPrimitiveComponent* InCheckComponent, UClass* InHitClassFilter, UCharacterMovementComponent* InCharacterMovementComponent)
+UScWAT_WaitHit* UScWAT_WaitHit::WaitHit_IgnoreGround(UGameplayAbility* InOwningAbility, UPrimitiveComponent* InCheckComponent, TSubclassOf<AActor> InHitClassFilter, UCharacterMovementComponent* InCharacterMovementComponent)
 {
 	UScWAT_WaitHit* OutTaskObject = NewAbilityTask<UScWAT_WaitHit>(InOwningAbility);
 

@@ -40,12 +40,18 @@ void AScWHandheld_Melee::BP_UpdateFromDataAsset_Implementation() // AScWHandheld
 			CollisionComponent->SetCapsuleSize(MeleeDataAsset->CapsuleRadiusHeight.X, MeleeDataAsset->CapsuleRadiusHeight.Y);
 			CollisionComponent->SetRelativeTransform(MeleeDataAsset->CapsuleRelativeTransform);
 
-			CollisionComponent->SetAutoActivate(true);
+			if (!CollisionComponent->IsRegistered() || CollisionComponent->IsOwnerRunningUserConstructionScript())
+			{
+				CollisionComponent->SetAutoActivate(true);
+			}
 			CollisionComponent->SetActive(true);
 		}
 		else
 		{
-			CollisionComponent->SetAutoActivate(false);
+			if (!CollisionComponent->IsRegistered() || CollisionComponent->IsOwnerRunningUserConstructionScript())
+			{
+				CollisionComponent->SetAutoActivate(false);
+			}
 			CollisionComponent->SetActive(false);
 		}
 	}
@@ -270,7 +276,9 @@ void AScWHandheld_Melee::BP_UpdateCurrentSwingVariantData_Implementation()
 
 bool AScWHandheld_Melee::BP_HandleSwingHit_Implementation(AActor* InHitActor, const FHitResult& InHitResult)
 {
+	ensureReturn(CurrentSwingPhase == EScWSwingPhase::Swing, false);
 	ensureReturn(InHitActor, false);
+
 	if (SwingHitIgnoredActors.Contains(InHitActor) || LastSwingAffectedActorArray.Contains(InHitActor))
 	{
 		return false;

@@ -153,12 +153,18 @@ void AScWGameState::OnSlowdownTimelineUpdate(float InValue)
 
 	AWorldSettings* WorldSettings = World->GetWorldSettings();
 	ensureReturn(WorldSettings);
-
 	WorldSettings->SetTimeDilation(FMath::Lerp(WorldSettings->TimeDilation, SlowdownTargetTimeDilation, InValue));
 }
 
 void AScWGameState::OnSlowdownTimelineFinished()
 {
+	UWorld* World = GetWorld();
+	ensureReturn(World);
+
+	AWorldSettings* WorldSettings = World->GetWorldSettings();
+	ensureReturn(WorldSettings);
+	WorldSettings->SetTimeDilation(SlowdownTargetTimeDilation);
+
 	UGameInstance* GameInstance = GetGameInstance();
 	ensureReturn(GameInstance);
 

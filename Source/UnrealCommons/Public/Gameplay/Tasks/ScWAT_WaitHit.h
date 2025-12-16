@@ -25,10 +25,10 @@ public:
 public:
 
 	UFUNCTION(Category = "Ability | Tasks", BlueprintCallable, meta = (DisplayName = "[ScW] Wait for Hit", HidePin = "InOwningAbility", DefaultToSelf = "InOwningAbility", BlueprintInternalUseOnly = "true"))
-	static UScWAT_WaitHit* WaitHit(UGameplayAbility* InOwningAbility, UPrimitiveComponent* InCheckComponent, UClass* InHitClassFilter);
+	static UScWAT_WaitHit* WaitHit(UGameplayAbility* InOwningAbility, UPrimitiveComponent* InCheckComponent, TSubclassOf<AActor> InHitClassFilter);
 
 	UFUNCTION(Category = "Ability | Tasks", BlueprintCallable, meta = (DisplayName = "[ScW] Wait for Hit (Ignore Ground)", HidePin = "InOwningAbility", DefaultToSelf = "InOwningAbility", BlueprintInternalUseOnly = "true"))
-	static UScWAT_WaitHit* WaitHit_IgnoreGround(UGameplayAbility* InOwningAbility, UPrimitiveComponent* InCheckComponent, UClass* InHitClassFilter, UCharacterMovementComponent* InCharacterMovementComponent);
+	static UScWAT_WaitHit* WaitHit_IgnoreGround(UGameplayAbility* InOwningAbility, UPrimitiveComponent* InCheckComponent, TSubclassOf<AActor> InHitClassFilter, UCharacterMovementComponent* InCharacterMovementComponent);
 
 protected:
 	virtual void Activate() override; // UGameplayTask
@@ -47,7 +47,7 @@ protected:
 	TObjectPtr<UPrimitiveComponent> CheckComponent;
 
 	UPROPERTY()
-	TObjectPtr<UClass> HitClassFilter;
+	TSubclassOf<AActor> HitClassFilter;
 	
 	UPROPERTY()
 	TObjectPtr<UCharacterMovementComponent> CharacterMovementComponent;

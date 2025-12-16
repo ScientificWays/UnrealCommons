@@ -39,7 +39,7 @@ public:
 	UFUNCTION(Category = "Damage", BlueprintCallable, BlueprintPure, meta = (WorldContext = "InWCO"))
 	static TSubclassOf<UGameplayEffect> GetApplyDamageGameplayEffectClassForType(const UObject* InWCO, const UDamageType* InDamageType);
 
-	UFUNCTION(Category = "Damage", BlueprintCallable, BlueprintAuthorityOnly)
+	UFUNCTION(Category = "Damage", BlueprintCallable, BlueprintAuthorityOnly, meta = (DisplayName = "[ScW] Apply Point Damage"))
 	static float ApplyPointDamage(AActor* InSourceActor, AActor* InTargetActor, float InDamage, const FVector& InHitFromDirection, const FHitResult& InHitResult, AController* InInstigator, TSubclassOf<UDamageType> InDamageTypeClass);
 
 	UFUNCTION(Category = "Damage", BlueprintCallable, BlueprintPure, meta = (KeyWords = "GetHitResult, GetMinimalInfoHitResult, GetMinimalHitResult, MakeHitResult, MakeMinimalHitResult"))
