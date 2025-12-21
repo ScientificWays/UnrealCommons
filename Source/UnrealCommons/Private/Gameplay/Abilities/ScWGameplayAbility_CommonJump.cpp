@@ -24,7 +24,7 @@ UScWGameplayAbility_CommonJump::UScWGameplayAbility_CommonJump()
 }
 
 //~ Begin Ability
-void UScWGameplayAbility_CommonJump::NativeActivateAbility_Commited(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo, const FGameplayAbilityActivationInfo InActivationInfo, const FGameplayEventData* InTriggerEventData) // UGameplayAbility
+void UScWGameplayAbility_CommonJump::NativeActivateAbility_Committed(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo, const FGameplayAbilityActivationInfo InActivationInfo, const FGameplayEventData* InTriggerEventData) // UGameplayAbility
 {
 	ensureReturn(OwnerCharacter);
 	OwnerCharacter->Jump();

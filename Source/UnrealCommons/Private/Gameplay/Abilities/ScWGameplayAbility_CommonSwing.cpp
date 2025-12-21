@@ -33,7 +33,7 @@ UScWGameplayAbility_CommonSwing::UScWGameplayAbility_CommonSwing()
 }
 
 //~ Begin Ability
-void UScWGameplayAbility_CommonSwing::NativeActivateAbility_Commited(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo, const FGameplayAbilityActivationInfo InActivationInfo, const FGameplayEventData* InTriggerEventData) // UScWGameplayAbility
+void UScWGameplayAbility_CommonSwing::NativeActivateAbility_Committed(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo, const FGameplayAbilityActivationInfo InActivationInfo, const FGameplayEventData* InTriggerEventData) // UScWGameplayAbility
 {
 	ensureCancelAbilityReturn(OwnerCharacter);
 

@@ -33,6 +33,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FScWCharacterSignature, class AScWCh
 UDELEGATE()
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTeamNameSignature, const FName&, InTeamName);
 
+UDELEGATE()
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FScWWidgetClassSignature, TSubclassOf<UScWUserWidget>, InWidgetClass);
+
 USTRUCT(BlueprintType)
 struct FDelegateHandle_BlueprintWrapper
 {

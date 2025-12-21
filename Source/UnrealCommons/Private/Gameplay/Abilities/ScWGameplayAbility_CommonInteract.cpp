@@ -33,7 +33,7 @@ UScWGameplayAbility_CommonInteract::UScWGameplayAbility_CommonInteract()
 }
 
 //~ Begin Ability
-void UScWGameplayAbility_CommonInteract::NativeActivateAbility_Commited(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo, const FGameplayAbilityActivationInfo InActivationInfo, const FGameplayEventData* InTriggerEventData) // UGameplayAbility
+void UScWGameplayAbility_CommonInteract::NativeActivateAbility_Committed(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo, const FGameplayAbilityActivationInfo InActivationInfo, const FGameplayEventData* InTriggerEventData) // UGameplayAbility
 {
 	ensureCancelAbilityReturn(InActorInfo);
 	ensureCancelAbilityReturn(InActorInfo->AvatarActor.IsValid());

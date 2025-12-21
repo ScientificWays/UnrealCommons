@@ -14,12 +14,12 @@ UScWGameplayAbility_ComboSwing::UScWGameplayAbility_ComboSwing()
 }
 
 //~ Begin Ability
-void UScWGameplayAbility_ComboSwing::NativeActivateAbility_Commited(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo, const FGameplayAbilityActivationInfo InActivationInfo, const FGameplayEventData* InTriggerEventData) // UGameplayAbility
+void UScWGameplayAbility_ComboSwing::NativeActivateAbility_Committed(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo, const FGameplayAbilityActivationInfo InActivationInfo, const FGameplayEventData* InTriggerEventData) // UGameplayAbility
 {
 	ensureCancelAbilityReturn(OwnerASC);
 	OwnerASC->AcceptQueuedComboMove();
 
-	Super::NativeActivateAbility_Commited(InHandle, InActorInfo, InActivationInfo, InTriggerEventData);
+	Super::NativeActivateAbility_Committed(InHandle, InActorInfo, InActivationInfo, InTriggerEventData);
 }
 
 void UScWGameplayAbility_ComboSwing::OnPostSwingComboWindowFinished()

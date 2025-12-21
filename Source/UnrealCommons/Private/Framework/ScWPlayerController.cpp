@@ -251,38 +251,46 @@ bool AScWPlayerController::GetHitResultUnderScreenCenter(ETraceTypeQuery InTrace
 //~ End Viewport
 
 //~ Begin UI
-void AScWPlayerController::CreateLayoutWidget(TSubclassOf<UScWUserWidget> InWidgetClass, int32 InZOrder)
+bool AScWPlayerController::CreateLayoutWidget(TSubclassOf<UScWUserWidget> InWidgetClass, int32 InZOrder)
 {
-	ensureReturn(InWidgetClass);
+	ensureReturn(InWidgetClass, false);
 	if (IsLayoutWidgetActive(InWidgetClass))
 	{
 		RemoveLayoutWidget(InWidgetClass, true);
-		ensureReturn(!IsLayoutWidgetActive(InWidgetClass));
+		ensureReturn(!IsLayoutWidgetActive(InWidgetClass), false);
 	}
 	auto NewWidget = CreateWidget<UScWUserWidget>(this, InWidgetClass);
-	NewWidget->AddToPlayerScreen(InZOrder);
+	ensureReturn(NewWidget, false);
 
+	NewWidget->AddToPlayerScreen(InZOrder);
 	LayoutWidgetMap.Add(InWidgetClass, NewWidget);
+	OnLayoutWidgetToggleDelegate.Broadcast(InWidgetClass);
+	return true;
 }
 
-void AScWPlayerController::RemoveLayoutWidget(TSubclassOf<UScWUserWidget> InWidgetClass, const bool bInAnimated)
+bool AScWPlayerController::RemoveLayoutWidget(TSubclassOf<UScWUserWidget> InWidgetClass, const bool bInAnimated)
 {
-	ensureReturn(InWidgetClass);
-	ensureReturn(LayoutWidgetMap.Contains(InWidgetClass));
+	ensureReturn(InWidgetClass, false);
+	ensureReturn(LayoutWidgetMap.Contains(InWidgetClass), false);
 
 	auto TargetWidget = LayoutWidgetMap[InWidgetClass];
-	if (bInAnimated)
+	ensureIf(TargetWidget)
 	{
-		TargetWidget->BP_RemoveAnimated();
-	}
-	else
-	{
-		TargetWidget->RemoveFromParent();
+		if (bInAnimated)
+		{
+			TargetWidget->BP_RemoveAnimated();
+		}
+		else
+		{
+			TargetWidget->RemoveFromParent();
+		}
 	}
 	LayoutWidgetMap.Remove(InWidgetClass);
+	OnLayoutWidgetToggleDelegate.Broadcast(InWidgetClass);
+	return true;
 }
 
-void AScWPlayerController::ToggleLayoutWidget(TSubclassOf<UScWUserWidget> InWidgetClass, int32 InZOrder, const bool bInRemoveAnimated)
+bool AScWPlayerController::ToggleLayoutWidget(TSubclassOf<UScWUserWidget> InWidgetClass, int32 InZOrder, const bool bInRemoveAnimated)
 {
 	if (IsLayoutWidgetActive(InWidgetClass))
 	{
@@ -292,5 +300,6 @@ void AScWPlayerController::ToggleLayoutWidget(TSubclassOf<UScWUserWidget> InWidg
 	{
 		CreateLayoutWidget(InWidgetClass, InZOrder);
 	}
+	return IsLayoutWidgetActive(InWidgetClass);
 }
 //~ End UI

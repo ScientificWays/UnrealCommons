@@ -25,6 +25,12 @@ namespace FScWGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_CancelBy_SwingActivate);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_CancelBy_InteractActivate);
 
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Event_Activated);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Event_Commited);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Event_Failed);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Event_Ended);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Event_Cancelled);
+
 	// Collisions
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Collision);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Collision_None);

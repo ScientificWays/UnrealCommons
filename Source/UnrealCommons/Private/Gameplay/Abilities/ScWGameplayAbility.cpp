@@ -87,7 +87,7 @@ void UScWGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle InHan
 		if (CommitAbility(InHandle, InActorInfo, InActivationInfo))
 		{
 			BP_ApplyDefaultGameplayEffects();
-			NativeActivateAbility_Commited(InHandle, InActorInfo, InActivationInfo, InTriggerEventData);
+			NativeActivateAbility_Committed(InHandle, InActorInfo, InActivationInfo, InTriggerEventData);
 		}
 		else
 		{

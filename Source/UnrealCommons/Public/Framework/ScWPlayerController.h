@@ -176,14 +176,17 @@ public:
 	UFUNCTION(Category = "UI", BlueprintCallable, meta = (DeterminesOutputType = "InWidgetClass"))
 	UScWUserWidget* GetLayoutWidget(TSubclassOf<UScWUserWidget> InWidgetClass) const { return IsLayoutWidgetActive(InWidgetClass) ? LayoutWidgetMap[InWidgetClass] : nullptr; }
 
-	UFUNCTION(Category = "UI", BlueprintCallable, BlueprintCosmetic)
-	void CreateLayoutWidget(TSubclassOf<UScWUserWidget> InWidgetClass, int32 InZOrder);
+	UFUNCTION(Category = "UI", BlueprintCallable, BlueprintCosmetic, meta = (ReturnValue = "bOutCreated"))
+	bool CreateLayoutWidget(TSubclassOf<UScWUserWidget> InWidgetClass, int32 InZOrder);
 
-	UFUNCTION(Category = "UI", BlueprintCallable, BlueprintCosmetic)
-	void RemoveLayoutWidget(TSubclassOf<UScWUserWidget> InWidgetClass, const bool bInAnimated = true);
+	UFUNCTION(Category = "UI", BlueprintCallable, BlueprintCosmetic, meta = (ReturnValue = "bOutRemoved"))
+	bool RemoveLayoutWidget(TSubclassOf<UScWUserWidget> InWidgetClass, const bool bInAnimated = true);
 
-	UFUNCTION(Category = "UI", BlueprintCallable, BlueprintCosmetic)
-	void ToggleLayoutWidget(TSubclassOf<UScWUserWidget> InWidgetClass, int32 InZOrder, const bool bInRemoveAnimated = true);
+	UFUNCTION(Category = "UI", BlueprintCallable, BlueprintCosmetic, meta = (ReturnValue = "bOutIsNowActive"))
+	bool ToggleLayoutWidget(TSubclassOf<UScWUserWidget> InWidgetClass, int32 InZOrder, const bool bInRemoveAnimated = true);
+
+	UPROPERTY(Category = "Input", BlueprintAssignable)
+	FScWWidgetClassSignature OnLayoutWidgetToggleDelegate;
 
 protected:
 

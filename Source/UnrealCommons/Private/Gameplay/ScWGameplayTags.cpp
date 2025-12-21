@@ -30,6 +30,12 @@ namespace FScWGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_CancelBy_Captured, "Ability.CancelBy.Captured", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_CancelBy_Incapped, "Ability.CancelBy.Incapped", "[Native] TODO: Add description");*/
 
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Event_Activated, "Ability.Event.Activated", "[Native] Ability activation event.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Event_Commited, "Ability.Event.Commited", "[Native] Ability commit event.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Event_Failed, "Ability.Event.Failed", "[Native] Ability failure event.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Event_Ended, "Ability.Event.Ended", "[Native] Ability end event.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Event_Cancelled, "Ability.Event.Cancelled", "[Native] Ability cancel event.");
+
 	//UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_ActivateFail_OwnerDead, "Ability.ActivateFail.IsDead", "[Native] Ability failed to activate because its owner is dead.");
 	//UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_ActivateFail_Cooldown, "Ability.ActivateFail.Cooldown", "[Native] Ability failed to activate because it is on cool down.");
 	//UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_ActivateFail_Cost, "Ability.ActivateFail.Cost", "[Native] Ability failed to activate because it did not pass the cost checks.");
