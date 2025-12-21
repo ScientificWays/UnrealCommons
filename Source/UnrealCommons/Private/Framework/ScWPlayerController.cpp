@@ -249,3 +249,48 @@ bool AScWPlayerController::GetHitResultUnderScreenCenter(ETraceTypeQuery InTrace
 	return GetHitResultAtScreenPosition(ViewportSize * 0.5f, InTraceChannel, bInTraceComplex, OutHitResult);
 }
 //~ End Viewport
+
+//~ Begin UI
+void AScWPlayerController::CreateLayoutWidget(TSubclassOf<UScWUserWidget> InWidgetClass, int32 InZOrder)
+{
+	ensureReturn(InWidgetClass);
+	if (IsLayoutWidgetActive(InWidgetClass))
+	{
+		RemoveLayoutWidget(InWidgetClass, true);
+		ensureReturn(!IsLayoutWidgetActive(InWidgetClass));
+	}
+	auto NewWidget = CreateWidget<UScWUserWidget>(this, InWidgetClass);
+	NewWidget->AddToPlayerScreen(InZOrder);
+
+	LayoutWidgetMap.Add(InWidgetClass, NewWidget);
+}
+
+void AScWPlayerController::RemoveLayoutWidget(TSubclassOf<UScWUserWidget> InWidgetClass, const bool bInAnimated)
+{
+	ensureReturn(InWidgetClass);
+	ensureReturn(LayoutWidgetMap.Contains(InWidgetClass));
+
+	auto TargetWidget = LayoutWidgetMap[InWidgetClass];
+	if (bInAnimated)
+	{
+		TargetWidget->BP_RemoveAnimated();
+	}
+	else
+	{
+		TargetWidget->RemoveFromParent();
+	}
+	LayoutWidgetMap.Remove(InWidgetClass);
+}
+
+void AScWPlayerController::ToggleLayoutWidget(TSubclassOf<UScWUserWidget> InWidgetClass, int32 InZOrder, const bool bInRemoveAnimated)
+{
+	if (IsLayoutWidgetActive(InWidgetClass))
+	{
+		RemoveLayoutWidget(InWidgetClass, bInRemoveAnimated);
+	}
+	else
+	{
+		CreateLayoutWidget(InWidgetClass, InZOrder);
+	}
+}
+//~ End UI

@@ -95,4 +95,9 @@ void UScWUserWidget::NativeDestruct() // UUserWidget
 	}
 	Super::NativeDestruct();
 }
+
+void UScWUserWidget::BP_RemoveAnimated_Implementation()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 600.0f, FColor::Red, FString::Printf(TEXT("UScWUserWidget::BP_RemoveAnimated is not implemented on %s!"), *GetName()));
+}
 //~ End Initialize

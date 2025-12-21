@@ -20,9 +20,13 @@ public:
 	UScWUserWidget(const FObjectInitializer& InObjectInitializer);
 
 //~ Begin Initialize
-public:
+protected:
 	virtual void NativePreConstruct() override; // UUserWidget
 	virtual void NativeDestruct() override; // UUserWidget
+public:
+
+	UFUNCTION(Category = "Initialize", BlueprintCallable, BlueprintNativeEvent, meta = (DisplayName = "Remove Animated"))
+	void BP_RemoveAnimated();
 //~ End Initialize
 
 //~ Begin Owner

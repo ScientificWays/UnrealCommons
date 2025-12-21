@@ -6,6 +6,8 @@
 
 #include "ScWTypes_CommonDelegates.h"
 
+#include "UI/ScWUserWidget.h"
+
 #include "ScWPlayerController.generated.h"
 
 /**
@@ -164,4 +166,28 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Viewport")
 	bool GetHitResultUnderScreenCenter(ETraceTypeQuery InTraceChannel, bool bInTraceComplex, FHitResult& OutHitResult) const;
 //~ End Viewport
+
+//~ Begin UI
+public:
+
+	UFUNCTION(Category = "UI", BlueprintCallable)
+	bool IsLayoutWidgetActive(TSubclassOf<UScWUserWidget> InWidgetClass) const { return LayoutWidgetMap.Contains(InWidgetClass); }
+
+	UFUNCTION(Category = "UI", BlueprintCallable, meta = (DeterminesOutputType = "InWidgetClass"))
+	UScWUserWidget* GetLayoutWidget(TSubclassOf<UScWUserWidget> InWidgetClass) const { return IsLayoutWidgetActive(InWidgetClass) ? LayoutWidgetMap[InWidgetClass] : nullptr; }
+
+	UFUNCTION(Category = "UI", BlueprintCallable, BlueprintCosmetic)
+	void CreateLayoutWidget(TSubclassOf<UScWUserWidget> InWidgetClass, int32 InZOrder);
+
+	UFUNCTION(Category = "UI", BlueprintCallable, BlueprintCosmetic)
+	void RemoveLayoutWidget(TSubclassOf<UScWUserWidget> InWidgetClass, const bool bInAnimated = true);
+
+	UFUNCTION(Category = "UI", BlueprintCallable, BlueprintCosmetic)
+	void ToggleLayoutWidget(TSubclassOf<UScWUserWidget> InWidgetClass, int32 InZOrder, const bool bInRemoveAnimated = true);
+
+protected:
+
+	UPROPERTY(Category = "UI", BlueprintReadOnly, Transient)
+	TMap<TSubclassOf<UScWUserWidget>, TObjectPtr<UScWUserWidget>> LayoutWidgetMap;
+//~ End UI
 };
