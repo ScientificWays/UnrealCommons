@@ -88,6 +88,12 @@ void UScWCharacterMesh_ThirdPerson::UpdateFromHandheld(AScWHandheld* InHandheld)
 //~ End Updates
 
 //~ Begin Damage
+void UScWCharacterMesh_ThirdPerson::BP_ActivateRagdoll_Implementation()
+{
+	SetSimulatePhysics(true);
+	SetCollisionProfileName(RagdollCollisionProfileName);
+}
+
 void UScWCharacterMesh_ThirdPerson::HandleDamageApplied(float InDamage, const FReceivedDamageData& InData)
 {
 	if (IsSimulatingPhysics())
@@ -104,17 +110,21 @@ void UScWCharacterMesh_ThirdPerson::HandleDamageApplied(float InDamage, const FR
 
 void UScWCharacterMesh_ThirdPerson::HandleDied()
 {
-	const UScWCharacterData* InitCharacterData = GetInitCharacterData();
-	ensureReturn(InitCharacterData);
+	const UScWCharacterData* CharacterData = GetInitCharacterData();
+	ensureReturn(CharacterData);
 
-	if (InitCharacterData->bRagdollOnDeath)
+	switch (CharacterData->PostDeathBehavior)
 	{
-		SetSimulatePhysics(true);
-		SetCollisionProfileName(RagdollCollisionProfileName);
-	}
-	else if (InitCharacterData->TP_DiedAnimInstanceClass)
-	{
-		SetAnimInstanceClass(InitCharacterData->TP_DiedAnimInstanceClass);
+		case EScWCharacterPostDeathBehavior::Ragdoll:
+		{
+			BP_ActivateRagdoll();
+			break;
+		}
+		case EScWCharacterPostDeathBehavior::AnimationBlueprint:
+		{
+			SetAnimInstanceClass(CharacterData->TP_DiedAnimInstanceClass);
+			break;
+		}
 	}
 }
 //~ End Damage

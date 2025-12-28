@@ -10,6 +10,15 @@
 
 #include "ScWCharacterData.generated.h"
 
+UENUM(BlueprintType)
+enum class EScWCharacterPostDeathBehavior : uint8
+{
+	DestroyActor,
+	Ragdoll,
+	AnimationBlueprint,
+	Custom,
+};
+
 /**
  *
  */
@@ -70,9 +79,6 @@ public:
 
 	UPROPERTY(Category = "Mesh | ThirdPerson", EditDefaultsOnly, BlueprintReadOnly)
 	FTransform TP_SkeletalMeshRelativeTransform;
-
-	UPROPERTY(Category = "Mesh | ThirdPerson", EditDefaultsOnly, BlueprintReadOnly)
-	bool bRagdollOnDeath;
 //~ End Mesh
 
 //~ Begin Animations
@@ -112,6 +118,9 @@ public:
 
 	UPROPERTY(Category = "Gameplay", EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<class UScWHandheldData> DefaultHandheldData;
+
+	UPROPERTY(Category = "Gameplay", EditDefaultsOnly, BlueprintReadOnly)
+	EScWCharacterPostDeathBehavior PostDeathBehavior;
 //~ End Gameplay
 	
 //~ Begin FX

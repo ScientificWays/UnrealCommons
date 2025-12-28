@@ -37,6 +37,9 @@ protected:
 //~ Begin Damage
 public:
 
+	UFUNCTION(Category = "Damage", BlueprintNativeEvent, BlueprintCallable, BlueprintCosmetic, meta = (DisplayName = "Activate Ragdoll"))
+	void BP_ActivateRagdoll();
+
 	UPROPERTY(Category = "Damage", EditAnywhere, BlueprintReadWrite)
 	FName RagdollCollisionProfileName;
 

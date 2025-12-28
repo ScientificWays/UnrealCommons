@@ -45,6 +45,9 @@ protected:
 	virtual void BeginPlay() override; // AActor
 	virtual void EndPlay(const EEndPlayReason::Type InReason) override; // AActor
 
+	UFUNCTION(Category = "Initialize", BlueprintImplementableEvent, meta = (DisplayName = "Post Death Custom Behavior"))
+	void BP_PostDeathCustomBehavior();
+
 	UPROPERTY(Category = "Initialize", EditAnywhere, BlueprintReadOnly)
 	bool bIsPlayerCharacter;
 

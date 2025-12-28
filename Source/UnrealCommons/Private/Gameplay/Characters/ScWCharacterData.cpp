@@ -21,12 +21,12 @@ UScWCharacterData::UScWCharacterData()
 	DefaultTeamName = TEXT("NoTeam");
 
 	TP_SkeletalMeshRelativeTransform = FTransform(FRotator(0.0f, -90.0, 0.0f), FVector(0.0f, 0.0f, -90.0f), FVector::OneVector);
-	bRagdollOnDeath = true;
-
+	
 	CapsuleRadiusHeight = FVector2D(34.0f, 90.0f);
 
 	CONSTRUCTOR_TRY_LOAD_CLASS(UGameplayEffect, SpawnEffectClass, "/UnrealCommons/Blueprints/GameplayEffects/GE_CommonCharacterInit");
 	DefaultAbilitiesGiveData.Add(FScWGameplayGiveAbilityData(UScWGameplayAbility_CommonJump::StaticClass(), 0, true, EScWAbilityInputID::Jump));
+	PostDeathBehavior = EScWCharacterPostDeathBehavior::DestroyActor;
 
 	DamageImpactParticlesColor = FColor::Red;
 

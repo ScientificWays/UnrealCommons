@@ -2,6 +2,8 @@
 
 #include "Gameplay/Handhelds/ScWHandheld_Melee.h"
 
+#include "Animations/ScWAnimationsFunctionLibrary.h"
+
 #include "Gameplay/ScWASC_Character.h"
 #include "Gameplay/Combo/ScWComboData.h"
 #include "Gameplay/Characters/ScWCharacter.h"

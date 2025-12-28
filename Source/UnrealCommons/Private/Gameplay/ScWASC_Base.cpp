@@ -631,6 +631,7 @@ bool UScWASC_Base::TryApplyDamage(float InDamage, const FReceivedDamageData& InD
 	}
 	LastAppliedDamage = InDamage;
 	LastAppliedDamageData = InData;
+	LastAppliedDamagePrevHealth = GetHealth();
 
 	TSubclassOf<UGameplayEffect> ApplyDamageGameplayEffectClass = UScWGameplayFunctionLibrary::GetApplyDamageGameplayEffectClassForType(this, InData.DamageType);
 	ensureReturn(ApplyDamageGameplayEffectClass, false);
@@ -640,8 +641,6 @@ bool UScWASC_Base::TryApplyDamage(float InDamage, const FReceivedDamageData& InD
 	FGameplayEffectContextHandle DamageEffectContext = MakeEffectContext();
 	DamageEffectContext.AddSourceObject(this);
 	DamageEffectContext.AddInstigator(InData.Instigator, InData.Source);
-
-	float PrevHealth = GetHealth();
 
 	FGameplayEffectSpecHandle DamageEffectHandle = MakeOutgoingSpec(ApplyDamageGameplayEffectClass, 1.0f, DamageEffectContext);
 	DamageEffectHandle.Data->SetSetByCallerMagnitude(FScWGameplayTags::SetByCaller_Magnitude, -LastAppliedDamage);

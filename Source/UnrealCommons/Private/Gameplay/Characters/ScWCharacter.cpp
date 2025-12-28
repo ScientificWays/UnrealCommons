@@ -308,19 +308,6 @@ void AScWCharacter::OnDied()
 	{
 		DetachFromControllerPendingDestroy();
 	}
-	bool bDestroyActorNextTick = true;
-
-	if (DataAsset)
-	{
-		if (DataAsset->bRagdollOnDeath)
-		{
-			bDestroyActorNextTick = false;
-		}
-		else if (DataAsset->TP_DiedAnimInstanceClass)
-		{
-			bDestroyActorNextTick = false;
-		}
-	}
 	if (Handheld)
 	{
 		if (UScWHandheldData* HandheldDataAsset = Handheld->GetDataAsset())
@@ -341,9 +328,18 @@ void AScWCharacter::OnDied()
 	{
 		GameState->OnCharacterDied.Broadcast(this);
 	}
-	if (bDestroyActorNextTick)
+	switch (DataAsset->PostDeathBehavior)
 	{
-		GetWorldTimerManager().SetTimerForNextTick(this, &ThisClass::K2_DestroyActor);
+		case EScWCharacterPostDeathBehavior::DestroyActor:
+		{
+			GetWorldTimerManager().SetTimerForNextTick(this, &ThisClass::K2_DestroyActor);
+			break;
+		}
+		case EScWCharacterPostDeathBehavior::Custom:
+		{
+			BP_PostDeathCustomBehavior();
+			break;
+		}
 	}
 }
 //~ End Attributes

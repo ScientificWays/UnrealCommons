@@ -190,12 +190,9 @@ protected:
 
 //~ Begin Damage
 public:
-
-	UFUNCTION(Category = "Damage", BlueprintCallable)
 	float GetLastAppliedDamage() const { return LastAppliedDamage; }
-
-	UFUNCTION(Category = "Damage", BlueprintCallable)
 	const FReceivedDamageData& GetLastAppliedDamageData() const { return LastAppliedDamageData; }
+	float GetLastAppliedDamagePrevHealth() const { return LastAppliedDamagePrevHealth; }
 
 	UPROPERTY(Category = "Damage", BlueprintAssignable)
 	FDamageEventSignature OnDamageIgnored;
@@ -257,6 +254,9 @@ protected:
 
 	UPROPERTY(Category = "Damage", BlueprintReadOnly)
 	FReceivedDamageData LastAppliedDamageData;
+
+	UPROPERTY(Category = "Damage", BlueprintReadOnly)
+	float LastAppliedDamagePrevHealth;
 
 	UPROPERTY(Category = "Damage", BlueprintReadOnly, EditAnywhere)
 	float ExplosionStumbleMinDuration;
