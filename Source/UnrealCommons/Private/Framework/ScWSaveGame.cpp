@@ -34,6 +34,8 @@ void UScWSaveGame::SaveCurrentSaveGameDataToCurrentSlot(const UObject* InWCO)
 
 void UScWSaveGame::LoadCurrentSaveGameDataFromSlot(const UObject* InWCO, TSubclassOf<UScWSaveGame> InSaveGameClass, const FString& InSlot, int32 InUserIndex)
 {
+	ensureReturn(InSaveGameClass);
+
 	ThisClass* LoadedData = nullptr;
 
 	if (UGameplayStatics::DoesSaveGameExist(InSlot, InUserIndex))
@@ -42,7 +44,7 @@ void UScWSaveGame::LoadCurrentSaveGameDataFromSlot(const UObject* InWCO, TSubcla
 	}
 	else
 	{
-		LoadedData = NewObject<ThisClass>(GetTransientPackage(), InSaveGameClass);
+		LoadedData = Cast<ThisClass>(UGameplayStatics::CreateSaveGameObject(InSaveGameClass));
 	}
 	ensureReturn(LoadedData);
 	ensureReturn(LoadedData->GetClass() == InSaveGameClass);
