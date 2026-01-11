@@ -36,6 +36,17 @@ class UScWASC_Base* FReceivedDamageData::TryGetAttackerBaseASC() const
 	return OutASC;
 }
 
+FString FReceivedDamageData::ToAnalyticsString() const
+{
+	FString OutString;
+	OutString += FString::Printf(TEXT("DamageType:%s;"), DamageType ? *DamageType->AnalyticsName : TEXT("None"));
+	OutString += FString::Printf(TEXT("Source:%s;"), Source ? *Source->GetName() : TEXT("None"));
+	OutString += FString::Printf(TEXT("Instigator:%s;"), Instigator ? *Instigator->GetName() : TEXT("None"));
+	OutString += FString::Printf(TEXT("HitLocation:%s;"), *GET_ROUNDED_VECTOR_STRING(HitResult.ImpactPoint));
+	OutString += FString::Printf(TEXT("HitBone:%s;"), *HitResult.BoneName.ToString());
+	return OutString;
+}
+
 UScWASC_Base::UScWASC_Base()
 {
 	AttributeSetClass = UScWAS_Base::StaticClass();

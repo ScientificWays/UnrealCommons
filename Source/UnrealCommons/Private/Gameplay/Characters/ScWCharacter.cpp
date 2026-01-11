@@ -52,6 +52,8 @@ AScWCharacter::AScWCharacter(const FObjectInitializer& InObjectInitializer)
 	CONSTRUCTOR_TRY_LOAD_OBJECT(UInputAction, WalkAction, "/UnrealCommons/Blueprints/Input/IA_Walk.IA_Walk");
 	CONSTRUCTOR_TRY_LOAD_OBJECT(UInputAction, DropAction, "/UnrealCommons/Blueprints/Input/IA_Drop.IA_Drop");
 	CONSTRUCTOR_TRY_LOAD_OBJECT(UInputAction, FlashlightAction, "/UnrealCommons/Blueprints/Input/IA_Flashlight.IA_Flashlight");
+
+	bSendDiedDesignEvent = true;
 }
 
 //~ Begin Statics
@@ -300,6 +302,15 @@ void AScWCharacter::HandleSetInFirstPersonViewChanged(bool bInIsInFirstPersonVie
 //~ Begin Attributes
 void AScWCharacter::OnDied()
 {
+	if (bSendDiedDesignEvent)
+	{
+		ensureIf(CharacterASC)
+		{
+			auto AdditionalFields = FGACustomFields();
+			AdditionalFields.Set(TEXT("LastAppliedDamageData"), CharacterASC->GetLastAppliedDamageData().ToAnalyticsString());
+			BP_SendDefaultDesignAnalyticsEvent(TEXT("Died"), AdditionalFields);
+		}
+	}
 	if (APlayerController* OwnerPlayerController = GetController<APlayerController>())
 	{
 		UScWGameplayFunctionLibrary::RemoveEnhancedInputMappingContextFrom(OwnerPlayerController, DefaultInputMappingContext, DefaultInputMappingContextOptions);
@@ -723,3 +734,27 @@ void AScWCharacter::UpdateHandheldAttachment()
 	}
 }
 //~ End Handheld
+
+//~ Begin Analytics
+FString AScWCharacter::BP_GetDefaultAnalyticsCharacterName_Implementation() const
+{
+	ensureReturn(DataAsset, TEXT("InvalidCharacter"));
+	return DataAsset->AnalyticsName;
+}
+
+void AScWCharacter::BP_SendDefaultDesignAnalyticsEvent_Implementation(const FString& InEvent, const FGACustomFields InAdditionalFields) const
+{
+	UGameAnalytics* GameAnalytics = FGameAnalyticsModule::Get().GetInstance();
+	ensureReturn(GameAnalytics);
+
+	auto CustomFields = FGACustomFields();
+	CustomFields.Set(TEXT("CharacterName"), BP_GetDefaultAnalyticsCharacterName());
+	CustomFields.Set(TEXT("Event"), InEvent);
+
+	for (const auto& SampleFieldValue : InAdditionalFields.Values)
+	{
+		CustomFields.Values.Add(SampleFieldValue);
+	}
+	GameAnalytics->AddDesignEvent(TEXT("DefaultCharacterEvent"), CustomFields);
+}
+//~ End Analytics

@@ -10,7 +10,8 @@
 
 UScWDamageType::UScWDamageType()
 {
-	DisplayName = FText::FromString(TEXT("Unnamed DamageType"));
+	DisplayName = FText::FromString(TEXT("[Please set DisplayName]"));
+	AnalyticsName = TEXT("[Please set AnalyticsName]");
 
 	ApplyDamageGameplayEffectDuration = 0.05f;
 

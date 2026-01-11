@@ -44,8 +44,11 @@ public:
 //~ Begin UI
 public:
 
-	UPROPERTY(Category = "UI", EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(Category = "Info", EditDefaultsOnly, BlueprintReadOnly)
 	FText DisplayName;
+
+	UPROPERTY(Category = "Info", EditDefaultsOnly, BlueprintReadOnly)
+	FString AnalyticsName;
 //~ End UI
 
 //~ Begin Class

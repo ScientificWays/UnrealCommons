@@ -82,6 +82,8 @@
 
 DECLARE_LOG_CATEGORY_EXTERN(LogScWGameplay, Log, All);
 
+#define GET_ROUNDED_VECTOR_STRING(InV) FString::Printf(TEXT("X=%d,Y=%d,Z=%d"), FMath::RoundToInt(InV.Z), FMath::RoundToInt(InV.Y), FMath::RoundToInt(InV.Z))
+
 #define CONSTRUCTOR_TRY_LOAD_OBJECT(InClass, InProperty, InPath) \
 	{ \
 		static ConstructorHelpers::FObjectFinder<InClass> LoadedAsset(TEXT(InPath)); \

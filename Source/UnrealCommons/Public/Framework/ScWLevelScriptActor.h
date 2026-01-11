@@ -4,6 +4,9 @@
 
 #include "UnrealCommons.h"
 
+#include "GameAnalytics.h"
+#include "GameAnalyticsModule.h"
+
 #include "ScWLevelScriptActor.generated.h"
 
 /**
@@ -97,4 +100,29 @@ public:
 	UFUNCTION(Category = "Progression", BlueprintImplementableEvent, meta = (DisplayName = "OnPlayerCompletedProgressionTask"))
 	void BP_OnPlayerCompletedProgressionTask(class AScWPlayerState* InPlayerState, const class UScWProgressionTaskData* InTaskData);
 //~ End Progression
+
+//~ Begin Analytics
+public:
+
+	UFUNCTION(Category = "Analytics", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Get Default Analytics Chapter Name"))
+	FString BP_GetDefaultAnalyticsChapterName() const;
+
+	UFUNCTION(Category = "Analytics", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Get Default Analytics Map Name"))
+	FString BP_GetDefaultAnalyticsMapName() const;
+
+	UFUNCTION(Category = "Analytics", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Get Default Analytics Location Name"))
+	FString BP_GetDefaultAnalyticsLocationName(const FVector& InLocation) const;
+
+	UFUNCTION(Category = "Analytics", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Send Level Start Analytics Event", AutoCreateRefTerm = "InEventLocation"))
+	void BP_SendLevelProgressionAnalyticsEvent(EGAProgressionStatus InType, const FVector& InEventLocation, const bool bInSendEventLocation = false) const;
+
+	UFUNCTION(Category = "Analytics", BlueprintNativeEvent, BlueprintCallable)
+	void BP_SendDefaultDesignAnalyticsEvent(const FString& InEvent) const;
+
+	UPROPERTY(Category = "Analytics", EditAnywhere, BlueprintReadWrite)
+	bool bSendBeginPlayDesignEvent;
+
+	UPROPERTY(Category = "Analytics", EditAnywhere, BlueprintReadWrite)
+	bool bSendEndPlayDesignEvent;
+//~ End Analytics
 };

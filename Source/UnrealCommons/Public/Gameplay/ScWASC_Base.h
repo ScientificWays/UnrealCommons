@@ -42,6 +42,7 @@ struct FReceivedDamageData
 		: HitResult(InHitResult), DamageType(InDamageType), Source(InSource), Instigator(InInstigator) {}
 
 	class UScWASC_Base* TryGetAttackerBaseASC() const;
+	FString ToAnalyticsString() const;
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FDamageEventSignature, float, InDamage, const FReceivedDamageData&, InData);

@@ -3,12 +3,16 @@
 #include "Framework/ScWLevelScriptActor.h"
 
 #include "Framework/ScWSaveGame.h"
+#include "Framework/ScWGameInstance.h"
 
 #include "Gameplay/Characters/ScWCharacter.h"
 
 AScWLevelScriptActor::AScWLevelScriptActor()
 {
 	bTrySaveGameOnEndPlay = true;
+
+	bSendBeginPlayDesignEvent = true;
+	bSendEndPlayDesignEvent = true;
 }
 
 //~ Begin Statics
@@ -37,17 +41,23 @@ void AScWLevelScriptActor::BeginPlay() // AActor
 {
 	Super::BeginPlay();
 
-
+	if (bSendBeginPlayDesignEvent)
+	{
+		BP_SendDefaultDesignAnalyticsEvent(TEXT("BeginPlay"));
+	}
 }
 
 void AScWLevelScriptActor::EndPlay(const EEndPlayReason::Type InEndPlayReason) // AActor
 {
-	Super::EndPlay(InEndPlayReason);
-
+	if (bSendEndPlayDesignEvent)
+	{
+		BP_SendDefaultDesignAnalyticsEvent(TEXT("EndPlay"));
+	}
 	if (bTrySaveGameOnEndPlay && !UScWSaveGame::GetCurrentSaveGameDataSlot(this).IsEmpty())
 	{
 		UScWSaveGame::SaveCurrentSaveGameDataToCurrentSlot(this);
 	}
+	Super::EndPlay(InEndPlayReason);
 }
 //~ End Initialize
 
@@ -107,3 +117,45 @@ void AScWLevelScriptActor::UnLoadStreamLevelArraySync(const UObject* InWCO, cons
 	}
 }
 //~ End Levels
+
+//~ Begin Analytics
+FString AScWLevelScriptActor::BP_GetDefaultAnalyticsChapterName_Implementation() const
+{
+	return TEXT("Chapter1");
+}
+
+FString AScWLevelScriptActor::BP_GetDefaultAnalyticsMapName_Implementation() const
+{
+	return GetWorld() ? GetWorld()->GetMapName() : TEXT("UnknownMap");
+}
+
+FString AScWLevelScriptActor::BP_GetDefaultAnalyticsLocationName_Implementation(const FVector& InLocation) const
+{
+	return FString();
+}
+
+void AScWLevelScriptActor::BP_SendLevelProgressionAnalyticsEvent_Implementation(EGAProgressionStatus InType, const FVector& InEventLocation, const bool bInSendEventLocation) const
+{
+	UGameAnalytics* GameAnalytics = FGameAnalyticsModule::Get().GetInstance();
+	ensureReturn(GameAnalytics);
+
+	GameAnalytics->AddProgressionEvent(
+		InType,
+		BP_GetDefaultAnalyticsChapterName(),
+		BP_GetDefaultAnalyticsMapName(),
+		bInSendEventLocation ? BP_GetDefaultAnalyticsLocationName(InEventLocation) : FString()
+	);
+}
+
+void AScWLevelScriptActor::BP_SendDefaultDesignAnalyticsEvent_Implementation(const FString& InEvent) const
+{
+	UGameAnalytics* GameAnalytics = FGameAnalyticsModule::Get().GetInstance();
+	ensureReturn(GameAnalytics);
+
+	auto CustomFields = FGACustomFields();
+	CustomFields.Set(TEXT("ChapterName"), BP_GetDefaultAnalyticsChapterName());
+	CustomFields.Set(TEXT("MapName"), BP_GetDefaultAnalyticsMapName());
+	CustomFields.Set(TEXT("Event"), InEvent);
+	GameAnalytics->AddDesignEvent(TEXT("DefaultLevelEvent"), CustomFields);
+}
+//~ End Analytics

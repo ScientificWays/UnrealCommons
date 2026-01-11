@@ -25,29 +25,22 @@ public class UnrealCommons : ModuleRules
 			"GameplayAbilities",
 			"GameplayTags",
 			"GameplayTasks",
+            "Networking",
+
+            "Niagara",
 
             "InputCore",
             "EnhancedInput",
             "UMG",
             "SlateCore",
 
-            "Niagara",
-
-            "Networking",
-		});
+            "GameAnalytics",
+        });
 
 		PrivateDependencyModuleNames.AddRange(new string[]
 		{
 			"Engine",
 			"CoreUObject",
 		});
-
-		// Uncomment if you are using Slate UI
-		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
-
-		// Uncomment if you are using online features
-		// PrivateDependencyModuleNames.Add("OnlineSubsystem");
-
-		// To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
-	}
+    }
 }

@@ -16,7 +16,8 @@
 
 UScWCharacterData::UScWCharacterData()
 {
-	DisplayName = FText::FromString(TEXT("Unnamed Character"));
+	DisplayName = FText::FromString(TEXT("[Please set DisplayName]"));
+	AnalyticsName = TEXT("[Please set AnalyticsName]");
 
 	DefaultTeamName = TEXT("NoTeam");
 

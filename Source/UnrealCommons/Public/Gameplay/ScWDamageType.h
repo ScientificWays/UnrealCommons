@@ -18,13 +18,16 @@ public:
 
 	UScWDamageType();
 
-//~ Begin UI
+//~ Begin Info
 public:
 
-	UPROPERTY(Category = "UI", EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(Category = "Info", EditDefaultsOnly, BlueprintReadOnly)
 	FText DisplayName;
 
-	UPROPERTY(Category = "UI", EditDefaultsOnly, BlueprintReadOnly, meta = (AssetBundles = "Game"))
+	UPROPERTY(Category = "Info", EditDefaultsOnly, BlueprintReadOnly)
+	FString AnalyticsName;
+
+	UPROPERTY(Category = "Info", EditDefaultsOnly, BlueprintReadOnly, meta = (AssetBundles = "Game"))
 	TSoftObjectPtr<UTexture2D> Image;
 //~ End UI
 

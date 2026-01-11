@@ -6,6 +6,9 @@
 
 #include "ScWTypes_CommonDelegates.h"
 
+#include "GameAnalytics.h"
+#include "GameAnalyticsModule.h"
+
 #include "ScWCharacter.generated.h"
 
 UDELEGATE()
@@ -312,4 +315,17 @@ protected:
 	UPROPERTY(Category = "Handheld", BlueprintReadOnly, meta = (KeyWords = "WeaponAbilitiesHandleArray"))
 	TArray<FGameplayAbilitySpecHandle> HandheldAbilitiesHandleArray;
 //~ End Handheld
+
+//~ Begin Analytics
+public:
+
+	UFUNCTION(Category = "Analytics", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Get Default Analytics Character Name"))
+	FString BP_GetDefaultAnalyticsCharacterName() const;
+
+	UFUNCTION(Category = "Analytics", BlueprintNativeEvent, BlueprintCallable)
+	void BP_SendDefaultDesignAnalyticsEvent(const FString& InEvent, const FGACustomFields InAdditionalFields = FGACustomFields()) const;
+
+	UPROPERTY(Category = "Analytics", EditAnywhere, BlueprintReadWrite)
+	bool bSendDiedDesignEvent;
+//~ End Analytics
 };
