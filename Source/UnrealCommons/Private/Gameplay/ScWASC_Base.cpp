@@ -114,6 +114,7 @@ void UScWASC_Base::OnRegister() // UActorComponent
 	MaxHealthChangedDelegateHandle = GetGameplayAttributeValueChangeDelegate(BaseAS->GetMaxHealthAttribute()).AddUObject(this, &ThisClass::OnMaxHealthAttributeChanged);
 
 	RegisterGameplayTagEvent(FScWGameplayTags::State_Stunned, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ThisClass::OnStunnedTagNumChanged);
+	RegisterGameplayTagEvent(FScWGameplayTags::Input_Block, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ThisClass::OnInputBlockMovementTagNumChanged);
 }
 
 void UScWASC_Base::InitFromCharacterData(const UScWCharacterData* InInitCharacterData) // IScWCharacterData_InitInterface
@@ -367,6 +368,39 @@ void UScWASC_Base::OnStunnedTagNumChanged(const FGameplayTag InCallbackTag, int3
 	{
 		static const FGameplayTagContainer CancelByStunnedTagContainer = FGameplayTagContainer(FScWGameplayTags::Ability_CancelBy_Stunned);
 		CancelAbilities(&CancelByStunnedTagContainer);
+	}
+}
+
+void UScWASC_Base::OnInputBlockMovementTagNumChanged(const FGameplayTag InCallbackTag, int32 InNewNum)
+{
+	APawn* AvatarPawn = Cast<APawn>(GetAvatarActor_Direct());
+	ensureReturn(AvatarPawn);
+
+	/*if (AScWPlayerController* OwnerPlayerController = AvatarPawn->GetController<AScWPlayerController>())
+	{
+		if (InNewNum > 0) // HasMatchingGameplayTag(FScWGameplayTags::Input_Block_Movement)
+		{
+			OwnerPlayerController->AddMovementInputBlockSource(this);
+		}
+		else
+		{
+			OwnerPlayerController->RemoveMovementInputBlockSource(this);
+		}
+	}
+	else */if (AController* OwnerController = AvatarPawn->GetController())
+	{
+		if (InNewNum > 0) // HasMatchingGameplayTag(FScWGameplayTags::Input_Block_Movement)
+		{
+			OwnerController->SetIgnoreMoveInput(true); // Should be enough to use native stacked state storage feature
+		}
+		else
+		{
+			OwnerController->SetIgnoreMoveInput(false); // As long as EGameplayTagEventType::NewOrRemoved is used
+		}
+	}
+	else
+	{
+		ensure(false);
 	}
 }
 //~ End Tags
@@ -747,6 +781,10 @@ void UScWASC_Base::Server_SetInputReleasedFromWaitInputTask_Implementation(int32
 
 void UScWASC_Base::AbilityLocalInputPressed(int32 InInputID) // UAbilitySystemComponent
 {
+	if (HasMatchingGameplayTag(FScWGameplayTags::Input_Block_Abilities))
+	{
+		return;
+	}
 	ensure(!PressedInputIDSet.Contains(InInputID));
 	PressedInputIDSet.Add(InInputID);
 
@@ -756,6 +794,10 @@ void UScWASC_Base::AbilityLocalInputPressed(int32 InInputID) // UAbilitySystemCo
 
 void UScWASC_Base::AbilityLocalInputReleased(int32 InInputID) // UAbilitySystemComponent
 {
+	if (HasMatchingGameplayTag(FScWGameplayTags::Input_Block_Abilities))
+	{
+		return;
+	}
 	ensure(PressedInputIDSet.Contains(InInputID));
 	PressedInputIDSet.Remove(InInputID);
 

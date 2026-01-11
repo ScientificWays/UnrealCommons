@@ -187,6 +187,7 @@ public:
 //~ Begin Tags
 protected:
 	virtual void OnStunnedTagNumChanged(const FGameplayTag InCallbackTag, int32 InNewCount);
+	virtual void OnInputBlockMovementTagNumChanged(const FGameplayTag InCallbackTag, int32 InNewCount);
 //~ End Tags
 
 //~ Begin Damage

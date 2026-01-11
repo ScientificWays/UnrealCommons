@@ -157,6 +157,21 @@ void AScWPlayerController::BroadcastPawnDied()
 //~ End Pawn
 
 //~ Begin Input
+bool AScWPlayerController::ShouldShowMouseCursor() const // APlayerController
+{
+	return Super::ShouldShowMouseCursor() || !ShowMouseCursorSourceSet.IsEmpty();
+}
+
+bool AScWPlayerController::IsMoveInputIgnored() const // AController
+{
+	return Super::IsMoveInputIgnored() || !MovementInputBlockSourceSet.IsEmpty();
+}
+
+bool AScWPlayerController::IsLookInputIgnored() const // AController
+{
+	return Super::IsLookInputIgnored() || !LookInputBlockSourceSet.IsEmpty();
+}
+
 void AScWPlayerController::SetupInputComponent() // APlayerController
 {
 	Super::SetupInputComponent();

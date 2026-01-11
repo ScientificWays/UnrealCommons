@@ -110,11 +110,11 @@ public:
 	float MouseInputScale;
 
 protected:
+	virtual bool ShouldShowMouseCursor() const override; // APlayerController
+	virtual bool IsMoveInputIgnored() const override; // AController
+	virtual bool IsLookInputIgnored() const override; // AController
 	virtual void SetupInputComponent() override; // APlayerController
 	virtual bool InputKey(const FInputKeyEventArgs& InEventArgs) override; // APlayerController
-	virtual bool ShouldShowMouseCursor() const { return Super::ShouldShowMouseCursor() || !ShowMouseCursorSourceSet.IsEmpty(); } // APlayerController
-	virtual bool IsMoveInputIgnored() const { return Super::IsMoveInputIgnored() || !MovementInputBlockSourceSet.IsEmpty(); } // AController
-	virtual bool IsLookInputIgnored() const { return Super::IsLookInputIgnored() || !LookInputBlockSourceSet.IsEmpty(); } // AController
 	void InputMouseLook(const FInputActionInstance& InActionInstance);
 
 	UPROPERTY(Category = "Input", BlueprintReadOnly, EditDefaultsOnly)

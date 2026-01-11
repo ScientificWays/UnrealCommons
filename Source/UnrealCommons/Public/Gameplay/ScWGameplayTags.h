@@ -31,6 +31,11 @@ namespace FScWGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Event_Ended);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Event_Cancelled);
 
+	// Input
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Input_Block);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Input_Block_Movement);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Input_Block_Abilities);
+
 	// Collisions
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Collision);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Collision_None);

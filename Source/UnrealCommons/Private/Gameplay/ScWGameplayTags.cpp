@@ -46,7 +46,12 @@ namespace FScWGameplayTags
 	//UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_ActivateFail_ActivationGroup, "Ability.ActivateFail.ActivationGroup", "[Native] Ability failed to activate because of its activation group.");
 
 	//UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Behavior_SurvivesDeath, "Ability.Behavior.SurvivesDeath", "[Native] An ability with this type tag should not be canceled due to death.");
-	
+
+	// Input
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Input_Block, "Input.Block", "[Native] TODO: Add description");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Input_Block_Movement, "Input.Block.Movement", "[Native] TODO: Add description");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Input_Block_Abilities, "Input.Block.Abilities", "[Native] TODO: Add description");
+
 	// Collisions
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Collision, "Collision", "[Native] TODO: Add description");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Collision_None, "Collision.None", "[Native] TODO: Add description");
