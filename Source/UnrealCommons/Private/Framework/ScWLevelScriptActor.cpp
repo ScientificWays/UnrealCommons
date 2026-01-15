@@ -118,6 +118,77 @@ void AScWLevelScriptActor::UnLoadStreamLevelArraySync(const UObject* InWCO, cons
 }
 //~ End Levels
 
+//~ Begin Audio
+UAudioComponent* AScWLevelScriptActor::PlaySound2D_AtLayer(const FName& InLayer, USoundBase* InSoundAsset, float InFadeInDuration, float InVolumeMultiplier, float InPitchMultiplier, float InStartTime, USoundConcurrency* InConcurrencySettings, bool bInAutoDestroy)
+{
+	ensureReturn(InSoundAsset, nullptr);
+
+	StopSound2D_AtLayer(InLayer, InFadeInDuration);
+	ensureReturn(!AudioLayerMap.Contains(InLayer), nullptr);
+	
+	UAudioComponent* NewAudioComponent = UGameplayStatics::SpawnSound2D(this, InSoundAsset, InVolumeMultiplier, InPitchMultiplier, InStartTime, InConcurrencySettings, false, bInAutoDestroy);
+	ensureReturn(NewAudioComponent, nullptr);
+
+	AudioLayerMap.Add(InLayer, NewAudioComponent);
+
+	if (bInAutoDestroy)
+	{
+		NewAudioComponent->OnAudioFinishedNative.AddUObject(this, &ThisClass::OnAudioComponentFinished);
+	}
+	if (InFadeInDuration > 0.0f)
+	{
+		NewAudioComponent->FadeIn(InFadeInDuration, InVolumeMultiplier, InStartTime);
+	}
+	return NewAudioComponent;
+}
+
+bool AScWLevelScriptActor::StopSound2D_AtLayer(const FName& InLayer, float InFadeOutDuration)
+{
+	if (AudioLayerMap.Contains(InLayer))
+	{
+		UAudioComponent* AudioComponent = AudioLayerMap[InLayer];
+		AudioLayerMap.Remove(InLayer);
+
+		if (AudioComponent)
+		{
+			if (InFadeOutDuration > 0.0f)
+			{
+				AudioComponent->FadeOut(InFadeOutDuration, 0.0f);
+
+				FTimerHandle Handle;
+				GetWorldTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([AudioComponent]()
+				{
+					if (AudioComponent)
+					{
+						AudioComponent->Stop();
+						AudioComponent->DestroyComponent();
+					}
+				}), InFadeOutDuration, false);
+			}
+			else
+			{
+				AudioComponent->Stop();
+				AudioComponent->DestroyComponent();
+			}
+			return true;
+		}
+	}
+	return false;
+}
+
+void AScWLevelScriptActor::OnAudioComponentFinished(UAudioComponent* InAudioComponent)
+{
+	if (auto* SampleLayer = AudioLayerMap.FindKey(InAudioComponent))
+	{
+		AudioLayerMap.Remove(*SampleLayer);
+	}
+	if (InAudioComponent)
+	{
+		InAudioComponent->DestroyComponent();
+	}
+}
+//~ End Audio
+
 //~ Begin Analytics
 FString AScWLevelScriptActor::BP_GetDefaultAnalyticsChapterName_Implementation() const
 {

@@ -87,6 +87,25 @@ public:
 	UFUNCTION(Category = "Levels", BlueprintCallable, meta = (WorldContext = "InWCO", DisplayName = "UnLoadStreamLevelArraySync (by Object Reference)"))
 	void UnLoadStreamLevelArraySync(const UObject* InWCO, const TArray<TSoftObjectPtr<UWorld>>& InLevelArray);
 //~ End Levels
+
+//~ Begin Audio
+public:
+
+	UFUNCTION(Category = "Audio", BlueprintCallable, meta = (AutoCreateRefTerm = "InLayer", InLayer = "Default"))
+	UAudioComponent* GetSound2D_AtLayer(const FName& InLayer) const { return AudioLayerMap.Contains(InLayer) ? AudioLayerMap[InLayer] : nullptr; }
+
+	UFUNCTION(Category = "Audio", BlueprintCallable, meta = (AutoCreateRefTerm = "InLayer", InLayer = "Default", AdvancedDisplay = "InPitchMultiplier, InStartTime, InConcurrencySettings, bInAutoDestroy"))
+	UAudioComponent* PlaySound2D_AtLayer(const FName& InLayer, USoundBase* InSoundAsset, float InFadeInDuration = 0.0f, float InVolumeMultiplier = 1.0f, float InPitchMultiplier = 1.0f, float InStartTime = 0.0f, USoundConcurrency* InConcurrencySettings = nullptr, bool bInAutoDestroy = true);
+
+	UFUNCTION(Category = "Audio", BlueprintCallable, meta = (AutoCreateRefTerm = "InLayer", InLayer = "Default"))
+	bool StopSound2D_AtLayer(const FName& InLayer, float InFadeOutDuration = 1.0);
+
+protected:
+	void OnAudioComponentFinished(UAudioComponent* InAudioComponent);
+
+	UPROPERTY(Category = "Audio", VisibleAnywhere, BlueprintReadOnly)
+	TMap<FName, TObjectPtr<UAudioComponent>> AudioLayerMap;
+//~ End Audio
 	
 //~ Begin Progression
 public:

@@ -13,6 +13,8 @@
 #include "Misc/UObjectToken.h"
 #include "UObject/SparseDelegate.h"
 
+#include "Components/AudioComponent.h"
+
 #include "Blueprint/UserWidget.h"
 #include "Camera/CameraComponent.h"
 #include "Camera/PlayerCameraManager.h"

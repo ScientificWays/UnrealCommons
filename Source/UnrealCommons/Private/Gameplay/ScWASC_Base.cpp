@@ -353,6 +353,7 @@ void UScWASC_Base::ApplySpawnEffect()
 	if (SpawnEffectClass)
 	{
 		TryApplyGameplayEffectByClass(SpawnEffectClass);
+		OnSpawnEffectApplied.Broadcast();
 	}
 	else
 	{
