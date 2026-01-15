@@ -46,6 +46,15 @@ void UScWCharacterMovement::InitFromASC(UScWASC_Base* InInitASC, AActor* InOwner
 //~ End Initialize
 
 //~ Begin Rotation
+void UScWCharacterMovement::ApplyRootMotionToVelocity(float InDeltaTime) // UCharacterMovementComponent
+{
+	//FVector OldVelocity = Velocity;
+
+	Super::ApplyRootMotionToVelocity(InDeltaTime);
+
+	LastRootMotionVelocity = Velocity/*- OldVelocity*/;
+}
+
 void UScWCharacterMovement::PhysicsRotation(float InDeltaTime) // UCharacterMovementComponent
 {
 	/*if (PhysicsRotationBlockSourceSet.IsEmpty())
@@ -57,6 +66,19 @@ void UScWCharacterMovement::PhysicsRotation(float InDeltaTime) // UCharacterMove
 		return;
 	}*/
 	Super::PhysicsRotation(InDeltaTime);
+}
+
+FRotator UScWCharacterMovement::ComputeOrientToMovementRotation(const FRotator& InCurrentRotation, float InDeltaTime, FRotator& InDeltaRotation) const
+{
+	if (bOrientRotationToRootMotionMovement && CurrentRootMotion.HasVelocity())
+	{
+		if (LastRootMotionVelocity.SizeSquared() > UE_KINDA_SMALL_NUMBER)
+		{
+			return LastRootMotionVelocity.GetSafeNormal().Rotation();
+		}
+	}
+	// Default behavior if there is no root motion velocity.
+	return Super::ComputeOrientToMovementRotation(InCurrentRotation, InDeltaTime, InDeltaRotation);
 }
 //~ End Rotation
 

@@ -12,21 +12,25 @@ UScWAT_WaitLanded* UScWAT_WaitLanded::WaitLanded(UGameplayAbility* InOwningAbili
 
 void UScWAT_WaitLanded::Activate()
 {
-	ACharacter* Character = Cast<ACharacter>(AbilitySystemComponent->GetAvatarActor());
-	check(Character);
+	ensureIf(TargetCharacter)
+	{
+		LandedScriptDelegate.BindUFunction(this, TEXT("OnPlayerLandedCallback"));
+		TargetCharacter->LandedDelegate.Add(LandedScriptDelegate);
 
-	LandedScriptDelegate.BindUFunction(this, TEXT("OnPlayerLandedCallback"));
-	Character->LandedDelegate.Add(LandedScriptDelegate);
-
-	Super::Activate();
+		Super::Activate();
+	}
+	else
+	{
+		EndTask();
+	}
 }
 
 void UScWAT_WaitLanded::OnDestroy(bool bInAbilityIsEnding)
 {
-	ACharacter* Character = Cast<ACharacter>(AbilitySystemComponent->GetAvatarActor());
-	check(Character);
-
-	Character->LandedDelegate.Remove(LandedScriptDelegate);
+	if (TargetCharacter)
+	{
+		TargetCharacter->LandedDelegate.Remove(LandedScriptDelegate);
+	}
 	Super::OnDestroy(bInAbilityIsEnding);
 }
 //~ End Initialize

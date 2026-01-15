@@ -106,13 +106,13 @@ public:
 	UPROPERTY(Category = "Teams", EditAnywhere)
 	TSubclassOf<AActor> TargetTeamFilterActorClass;
 
-	UPROPERTY(Category = "Teams", EditAnywhere, meta = (EditCondition = "!TargetTeamSet.IsEmpty()"))
+	UPROPERTY(Category = "Teams", EditAnywhere)
 	bool bCheckForAllTeamMembers;
 
-	UPROPERTY(Category = "Teams", EditAnywhere, meta = (EditCondition = "!TargetTeamSet.IsEmpty()"))
+	UPROPERTY(Category = "Teams", EditAnywhere)
 	bool bDestroyAfterTeamMemberBeginOverlap;
 
-	UPROPERTY(Category = "Teams", EditAnywhere, meta = (EditCondition = "!TargetTeamSet.IsEmpty()"))
+	UPROPERTY(Category = "Teams", EditAnywhere)
 	bool bDestroyAfterTeamMemberEndOverlap;
 
 	UPROPERTY(Category = "Teams", BlueprintAssignable)

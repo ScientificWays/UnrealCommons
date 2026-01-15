@@ -34,7 +34,7 @@ void AScWTriggerCollision::PostInitializeComponents() // AActor
 {
 	Super::PostInitializeComponents();
 
-
+	//HandleIsEnabledChanged();
 }
 
 void AScWTriggerCollision::OnConstruction(const FTransform& InTransform) // AActor
@@ -46,9 +46,9 @@ void AScWTriggerCollision::OnConstruction(const FTransform& InTransform) // AAct
 
 void AScWTriggerCollision::BeginPlay() // AActor
 {
-	Super::BeginPlay();
-
 	HandleIsEnabledChanged();
+
+	Super::BeginPlay();
 }
 //~ End Initialize
 
@@ -83,7 +83,7 @@ bool AScWTriggerCollision::IsAnyActorOverlapsTrigger(TArray<AActor*> InActorArra
 
 void AScWTriggerCollision::NotifyActorBeginOverlap(AActor* InOtherActor) // AActor
 {
-	if (IsOnCooldown())
+	if (IsOnCooldown()/*|| !bIsEnabled*/)
 	{
 		return;
 	}
@@ -128,6 +128,10 @@ void AScWTriggerCollision::NotifyActorBeginOverlap(AActor* InOtherActor) // AAct
 
 void AScWTriggerCollision::NotifyActorEndOverlap(AActor* InOtherActor) // AActor
 {
+	/*if (!bIsEnabled)
+	{
+		return;
+	}*/
 	Super::NotifyActorEndOverlap(InOtherActor);
 
 	if (!TargetTeamSet.IsEmpty())

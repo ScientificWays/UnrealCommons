@@ -40,10 +40,19 @@ public:
 	//void RemovePhysicsRotationBlockSource(UObject* InSource) { PhysicsRotationBlockSourceSet.Remove(InSource); }
 
 protected:
+	virtual void ApplyRootMotionToVelocity(float InDeltaTime) override; // UCharacterMovementComponent
 	virtual void PhysicsRotation(float InDeltaTime) override; // UCharacterMovementComponent
+
+	virtual FRotator ComputeOrientToMovementRotation(const FRotator& InCurrentRotation, float InDeltaTime, FRotator& InDeltaRotation) const;
 
 	//UPROPERTY(Transient)
 	//TSet<TObjectPtr<UObject>> PhysicsRotationBlockSourceSet;
+
+	UPROPERTY(Category = "Character Movement (Rotation Settings)", EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "bOrientRotationToMovement"))
+	uint8 bOrientRotationToRootMotionMovement : 1;
+	
+	UPROPERTY(Transient)
+	FVector LastRootMotionVelocity;
 //~ End Rotation
 
 //~ Begin Attributes
