@@ -9,6 +9,7 @@
 #include "Gameplay/ScWDamageType.h"
 #include "Gameplay/Handhelds/ScWHandheld.h"
 #include "Gameplay/Handhelds/ScWHandheldData.h"
+#include "Gameplay/Attributes/ScWAS_Character.h"
 #include "Gameplay/Characters/ScWCharacterData.h"
 
 UScWCharacterMesh_ThirdPerson::UScWCharacterMesh_ThirdPerson()
@@ -49,6 +50,11 @@ void UScWCharacterMesh_ThirdPerson::InitFromASC(UScWASC_Base* InInitASC, AActor*
 	//ensureReturn(InOwnerActor);
 	//ensureReturn(InAvatarActor);
 
+	const UScWAS_Character* CharacterAS = InInitASC->GetAttributeSet<UScWAS_Character>();
+	ensureReturn(CharacterAS);
+
+	MassChangedDelegateHandle = InInitASC->GetGameplayAttributeValueChangeDelegate(CharacterAS->GetMassAttribute()).AddUObject(this, &ThisClass::OnMassAttributeChanged);
+
 	InInitASC->OnDamageApplied.AddDynamic(this, &ThisClass::HandleDamageApplied);
 	InInitASC->OnDied.AddDynamic(this, &ThisClass::HandleDied);
 }
@@ -86,6 +92,14 @@ void UScWCharacterMesh_ThirdPerson::UpdateFromHandheld(AScWHandheld* InHandheld)
 	}
 }
 //~ End Updates
+
+//~ Begin Attributes
+void UScWCharacterMesh_ThirdPerson::OnMassAttributeChanged(const FOnAttributeChangeData& InData)
+{
+	SetAllMassScale(1.0f);
+	SetAllMassScale(InData.NewValue / GetMass());
+}
+//~ End Attributes
 
 //~ Begin Damage
 void UScWCharacterMesh_ThirdPerson::BP_ActivateRagdoll_Implementation()

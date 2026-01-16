@@ -36,8 +36,6 @@ AScWCharacter::AScWCharacter(const FObjectInitializer& InObjectInitializer)
 	CharacterASC->SetIsReplicated(true);
 	CharacterASC->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
-	bHorizontalMovementAbsolute = false;
-
 	CONSTRUCTOR_TRY_LOAD_OBJECT(UInputMappingContext, DefaultInputMappingContext, "/UnrealCommons/Blueprints/Input/IMC_CommonPlayerCharacter.IMC_CommonPlayerCharacter");
 	CONSTRUCTOR_TRY_LOAD_OBJECT(UInputAction, HorizontalMovementAction, "/UnrealCommons/Blueprints/Input/IA_HorizontalMovement.IA_HorizontalMovement");
 	CONSTRUCTOR_TRY_LOAD_OBJECT(UInputAction, UsePrimaryAction, "/UnrealCommons/Blueprints/Input/IA_UsePrimary.IA_UsePrimary");
@@ -356,6 +354,11 @@ void AScWCharacter::OnDied()
 //~ End Attributes
 
 //~ Begin Input
+FVector AScWCharacter::BP_ModifyHorizontalMovementInput_Implementation(float InForwardValue, float InRightValue) const
+{
+	return GetActorForwardVector() * InForwardValue + GetActorRightVector() * InRightValue;
+}
+
 void AScWCharacter::SetupPlayerInputComponent(UInputComponent* InInputComponent) // APawn
 {
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InInputComponent);
@@ -366,9 +369,8 @@ void AScWCharacter::SetupPlayerInputComponent(UInputComponent* InInputComponent)
 	}
 	ensureIf(HorizontalMovementAction)
 	{
-		auto HorizontalMovementMethodPtr = bHorizontalMovementAbsolute ? &AScWCharacter::InputHorizontalMovement_Absolute : &AScWCharacter::InputHorizontalMovement;
-		EnhancedInputComponent->BindAction(HorizontalMovementAction, ETriggerEvent::Triggered, this, HorizontalMovementMethodPtr);
-		EnhancedInputComponent->BindAction(HorizontalMovementAction, ETriggerEvent::Completed, this, HorizontalMovementMethodPtr);
+		EnhancedInputComponent->BindAction(HorizontalMovementAction, ETriggerEvent::Triggered, this, &AScWCharacter::InputHorizontalMovement);
+		EnhancedInputComponent->BindAction(HorizontalMovementAction, ETriggerEvent::Completed, this, &AScWCharacter::InputHorizontalMovement);
 	}
 	if (UsePrimaryAction)
 	{
@@ -439,35 +441,8 @@ void AScWCharacter::InputHorizontalMovement(const FInputActionInstance& InAction
 	float MoveForwardValue = InputValue.Y;
 	float MoveRightValue = InputValue.X;
 
-	AddMovementInput(GetActorForwardVector() * MoveForwardValue + GetActorRightVector() * MoveRightValue);
+	AddMovementInput(BP_ModifyHorizontalMovementInput(MoveForwardValue, MoveRightValue));
 	
-	if (MoveForwardValue > 0.0f)
-	{
-		OnForwardInputTriggeredDelegate.Broadcast();
-	}
-	else if (MoveForwardValue < 0.0f)
-	{
-		OnBackwardInputTriggeredDelegate.Broadcast();
-	}
-	if (MoveRightValue > 0.0f)
-	{
-		OnRightInputTriggeredDelegate.Broadcast();
-	}
-	else if (MoveRightValue < 0.0f)
-	{
-		OnLeftInputTriggeredDelegate.Broadcast();
-	}
-}
-
-void AScWCharacter::InputHorizontalMovement_Absolute(const FInputActionInstance& InActionInstance)
-{
-	FVector2D InputValue = InActionInstance.GetValue().Get<FVector2D>();
-
-	float MoveForwardValue = InputValue.Y;
-	float MoveRightValue = InputValue.X;
-
-	AddMovementInput(FVector(MoveForwardValue, MoveRightValue, 0.0f));
-
 	if (MoveForwardValue > 0.0f)
 	{
 		OnForwardInputTriggeredDelegate.Broadcast();

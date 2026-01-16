@@ -401,7 +401,7 @@ void UScWASC_Base::OnInputBlockMovementTagNumChanged(const FGameplayTag InCallba
 	}
 	else
 	{
-		ensure(false);
+		//ensure(false);
 	}
 }
 //~ End Tags

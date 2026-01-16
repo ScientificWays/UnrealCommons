@@ -135,7 +135,7 @@ public:
 	UFUNCTION(Category = "Analytics", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Send Level Start Analytics Event", AutoCreateRefTerm = "InEventLocation"))
 	void BP_SendLevelProgressionAnalyticsEvent(EGAProgressionStatus InType, const FVector& InEventLocation, const bool bInSendEventLocation = false) const;
 
-	UFUNCTION(Category = "Analytics", BlueprintNativeEvent, BlueprintCallable)
+	UFUNCTION(Category = "Analytics", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Send Default Design Analytics Event"))
 	void BP_SendDefaultDesignAnalyticsEvent(const FString& InEvent) const;
 
 	UPROPERTY(Category = "Analytics", EditAnywhere, BlueprintReadWrite)

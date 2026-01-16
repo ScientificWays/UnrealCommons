@@ -33,6 +33,15 @@ protected:
 	virtual void UpdateFromIsInFirstPersonView(bool bInIsInFirstPersonView) override; // UScWCharacterMesh_Base
 	virtual void UpdateFromHandheld(class AScWHandheld* InHandheld) override; // UScWCharacterMesh_Base
 //~ End Updates
+	
+//~ Begin Attributes
+public:
+
+protected:
+	void OnMassAttributeChanged(const FOnAttributeChangeData& InData);
+
+	FDelegateHandle MassChangedDelegateHandle;
+//~ End Attributes
 
 //~ Begin Damage
 public:

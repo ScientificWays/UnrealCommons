@@ -158,6 +158,9 @@ protected:
 //~ Begin Input
 public:
 
+	UFUNCTION(Category = "Input", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Modify Horizontal Movement Input"))
+	FVector BP_ModifyHorizontalMovementInput(float InForwardValue, float InRightValue) const;
+
 	UPROPERTY(Category = "Input", BlueprintAssignable)
 	FDefaultEventSignature OnForwardInputTriggeredDelegate;
 	
@@ -212,9 +215,6 @@ protected:
 
 	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UInputAction> HorizontalMovementAction;
-
-	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
-	bool bHorizontalMovementAbsolute;
 
 	UPROPERTY(Category = "Input", EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UInputAction> UsePrimaryAction;
@@ -322,7 +322,7 @@ public:
 	UFUNCTION(Category = "Analytics", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Get Default Analytics Character Name"))
 	FString BP_GetDefaultAnalyticsCharacterName() const;
 
-	UFUNCTION(Category = "Analytics", BlueprintNativeEvent, BlueprintCallable)
+	UFUNCTION(Category = "Analytics", BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Send Default Design Analytics Event"))
 	void BP_SendDefaultDesignAnalyticsEvent(const FString& InEvent, const FGACustomFields InAdditionalFields = FGACustomFields()) const;
 
 	UPROPERTY(Category = "Analytics", EditAnywhere, BlueprintReadWrite)
