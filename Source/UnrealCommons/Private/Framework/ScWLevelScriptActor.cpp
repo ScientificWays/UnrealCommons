@@ -82,6 +82,9 @@ const UScWCharacterData* AScWLevelScriptActor::BP_GetDataAssetForNewCharacter_Im
 //~ Begin Pawns
 //~ End Pawns
 
+//~ Begin Players
+//~ End Players
+
 //~ Begin Levels
 void AScWLevelScriptActor::LoadStreamLevelArraySync(const UObject* InWCO, const TArray<TSoftObjectPtr<UWorld>>& InLevelArray, bool bInMakeVisibleAfterLoad)
 {

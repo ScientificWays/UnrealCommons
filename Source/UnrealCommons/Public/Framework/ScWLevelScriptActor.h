@@ -57,6 +57,13 @@ public:
 	void BP_OnPawnControllerChanged(APawn* InPawn, AController* InController);
 //~ End Pawns
 
+//~ Begin Players
+public:
+
+	UFUNCTION(Category = "Players", BlueprintImplementableEvent, BlueprintCallable, meta = (DisplayName = "Choose Player Start"))
+	AActor* BP_ChoosePlayerStart(AController* InPlayer) const;
+//~ End Players
+
 //~ Begin Data Assets
 public:
 
@@ -103,7 +110,7 @@ public:
 protected:
 	void OnAudioComponentFinished(UAudioComponent* InAudioComponent);
 
-	UPROPERTY(Category = "Audio", VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(Category = "Audio", VisibleInstanceOnly, BlueprintReadOnly)
 	TMap<FName, TObjectPtr<UAudioComponent>> AudioLayerMap;
 //~ End Audio
 	
