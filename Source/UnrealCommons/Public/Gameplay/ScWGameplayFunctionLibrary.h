@@ -166,10 +166,17 @@ public:
 	static FVector VectorSnappedToGridCenter(const FVector& InVector, const FVector& InGridSize);
 //~ End Transforms
 
-//~ Begin Utils
+//~ Begin Objects
 public:
 
-	UFUNCTION(Category = "Utils", BlueprintCallable, BlueprintPure, meta = (DeterminesOutputType = "InObjectClass"))
+	UFUNCTION(Category = "Objects", BlueprintCallable, BlueprintPure, meta = (DeterminesOutputType = "InObjectClass"))
 	static UObject* GetObjectDefault(TSubclassOf<UObject> InObjectClass, const bool bInChecked = true);
-//~ End Utils
+//~ End Objects
+	
+//~ Begin Actor Components
+public:
+
+	UFUNCTION(Category = "Actor Components", BlueprintCallable, BlueprintPure, meta = (DeterminesOutputType = "InComponents"))
+	static UActorComponent* GetFirstComponentWithTag(const TArray<UActorComponent*>& InComponents, const FName& InTag, int32 InReturnIndexIfNotFound = 0);
+//~ End Actor Components
 };

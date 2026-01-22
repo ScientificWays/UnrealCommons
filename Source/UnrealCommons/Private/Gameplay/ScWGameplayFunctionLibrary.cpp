@@ -396,11 +396,24 @@ FVector UScWGameplayFunctionLibrary::VectorSnappedToGridCenter(const FVector& In
 }
 //~ End Transforms
 
-
-//~ Begin Utils
+//~ Begin Objects
 UObject* UScWGameplayFunctionLibrary::GetObjectDefault(TSubclassOf<UObject> InObjectClass, const bool bInChecked)
 {
 	ensureReturn(!bInChecked || InObjectClass, nullptr);
 	return InObjectClass ? InObjectClass->GetDefaultObject() : nullptr;
 }
-//~ End Utils
+//~ End Objects
+	
+//~ Begin Actor Components
+UActorComponent* UScWGameplayFunctionLibrary::GetFirstComponentWithTag(const TArray<UActorComponent*>& InComponents, const FName& InTag, int32 InReturnIndexIfNotFound)
+{
+	for (UActorComponent* SampleComponent : InComponents)
+	{
+		if (SampleComponent->ComponentHasTag(InTag))
+		{
+			return SampleComponent;
+		}
+	}
+	return InComponents.IsValidIndex(InReturnIndexIfNotFound) ? InComponents[InReturnIndexIfNotFound] : nullptr;
+}
+//~ End Actor Components
