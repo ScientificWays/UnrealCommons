@@ -4,6 +4,7 @@
 
 #include "Gameplay/ScWDamageType.h"
 #include "Gameplay/Handhelds/ScWHandheld_Melee.h"
+#include "Gameplay/Handhelds/ScWHandheldFragment.h"
 
 const FScWMeleeSwingVariantData FScWMeleeSwingVariantData::Invalid = FScWMeleeSwingVariantData();
 
@@ -33,6 +34,44 @@ UScWHandheldData_Melee::UScWHandheldData_Melee()
 	SwingParticlesRelativeTransform = FTransform(FRotator::ZeroRotator, FVector(0.0f, 0.0f, 0.0f), FVector::OneVector);
 }
 
+//~ Begin Swing
+float UScWHandheldData_Melee::BP_GetSwingBaseDamageForHandheld_Implementation(const AScWHandheld_Melee* InHandheld) const
+{
+	float OutDamage = SwingBaseDamage;
+
+	for (const UScWHandheldFragment* SampleFragment : Fragments)
+	{
+		OutDamage = SampleFragment->BP_ModifySwingBaseDamage(InHandheld, OutDamage);
+	}
+	return OutDamage;
+}
+
+TSubclassOf<UScWDamageType> UScWHandheldData_Melee::BP_GetSwingBaseDamageTypeClassForHandheld_Implementation(const AScWHandheld_Melee* InHandheld) const
+{
+	TSubclassOf<UScWDamageType> OutDamageTypeClass = SwingBaseDamageTypeClass;
+
+	for (const UScWHandheldFragment* SampleFragment : Fragments)
+	{
+		OutDamageTypeClass = SampleFragment->BP_ModifySwingBaseDamageTypeClass(InHandheld, OutDamageTypeClass);
+	}
+	return OutDamageTypeClass;
+}
+//~ End Swing
+
+//~ Begin Swing Variants
+void UScWHandheldData_Melee::BP_GetSwingVariantsForHandheld_Implementation(const AScWHandheld_Melee* InHandheld, TArray<FScWMeleeSwingVariantData>& InOutVariants) const
+{
+	InOutVariants = SwingVariants;
+	ensureReturn(InHandheld);
+
+	for (const UScWHandheldFragment* SampleFragment : Fragments)
+	{
+		SampleFragment->BP_ModifySwingVariants(InHandheld, InOutVariants);
+	}
+}
+//~ End Swing Variants
+
+//~ Begin Swing FX
 UNiagaraComponent* UScWHandheldData_Melee::BP_InitializeSwingParticles_Implementation(AScWHandheld_Melee* InMeleeHandheld) const
 {
 	if (DefaultSwingParticles)
@@ -65,3 +104,4 @@ UNiagaraComponent* UScWHandheldData_Melee::BP_InitializeSwingParticles_Implement
 	}
 	return nullptr;
 }
+//~ End Swing FX

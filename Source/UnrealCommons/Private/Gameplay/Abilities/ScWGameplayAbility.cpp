@@ -65,6 +65,7 @@ void UScWGameplayAbility::SetCurrentActorInfo(const FGameplayAbilitySpecHandle I
 void UScWGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle InHandle, const FGameplayAbilityActorInfo* InActorInfo, const FGameplayAbilityActivationInfo InActivationInfo, const FGameplayEventData* InTriggerEventData) // UGameplayAbility
 {
 	// Based on UGameplayAbility::ActivateAbility() implementation in UE 5.6.0
+
 	if (InTriggerEventData && bHasBlueprintActivateFromEvent)
 	{
 		// A Blueprinted ActivateAbility function must call CommitAbility somewhere in its execution chain.

@@ -20,6 +20,13 @@ class UNREALCOMMONS_API UScWHandheldData_Melee : public UScWHandheldData
 public:	
 
 	UScWHandheldData_Melee();
+
+//~ Begin Fragments
+public:
+
+	UPROPERTY(Category = "Fragments", EditDefaultsOnly, BlueprintReadOnly, Instanced)
+	TArray<TObjectPtr<class UScWHandheldFragment>> Fragments;
+//~ End Fragments
 	
 //~ Begin Physics
 public:
@@ -50,8 +57,14 @@ public:
 //~ Begin Swing
 public:
 
+	UFUNCTION(Category = "Swing", BlueprintCallable, BlueprintNativeEvent)
+	float BP_GetSwingBaseDamageForHandheld(const class AScWHandheld_Melee* InHandheld) const;
+
 	UPROPERTY(Category = "Swing", EditDefaultsOnly, BlueprintReadOnly)
 	float SwingBaseDamage;
+
+	UFUNCTION(Category = "Swing", BlueprintCallable, BlueprintNativeEvent)
+	TSubclassOf<class UScWDamageType> BP_GetSwingBaseDamageTypeClassForHandheld(const class AScWHandheld_Melee* InHandheld) const;
 
 	UPROPERTY(Category = "Swing", EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<class UScWDamageType> SwingBaseDamageTypeClass;
@@ -74,6 +87,9 @@ public:
 
 //~ Begin Swing Variants
 public:
+
+	UFUNCTION(Category = "Swing", BlueprintCallable, BlueprintNativeEvent)
+	void BP_GetSwingVariantsForHandheld(const class AScWHandheld_Melee* InHandheld, TArray<FScWMeleeSwingVariantData>& InOutVariants) const;
 
 	UPROPERTY(Category = "Swing Variants", EditDefaultsOnly, BlueprintReadOnly)
 	TArray<FScWMeleeSwingVariantData> SwingVariants;

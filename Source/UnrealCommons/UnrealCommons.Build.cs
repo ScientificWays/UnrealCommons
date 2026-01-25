@@ -13,8 +13,8 @@ public class UnrealCommons : ModuleRules
 			
 		});
 
-		PublicDependencyModuleNames.AddRange(new string[] {
-
+		PublicDependencyModuleNames.AddRange(new string[]
+		{
 			"Core",
 			"EngineSettings",
 
@@ -25,22 +25,22 @@ public class UnrealCommons : ModuleRules
 			"GameplayAbilities",
 			"GameplayTags",
 			"GameplayTasks",
-            "Networking",
+			"Networking",
 
-            "Niagara",
+			"Niagara",
 
-            "InputCore",
-            "EnhancedInput",
-            "UMG",
-            "SlateCore",
+			"InputCore",
+			"EnhancedInput",
+			"UMG",
+			"SlateCore",
 
-            "GameAnalytics",
-        });
+			"GameAnalytics",
+		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]
 		{
 			"Engine",
 			"CoreUObject",
 		});
-    }
+	}
 }

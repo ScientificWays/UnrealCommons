@@ -3,7 +3,7 @@
 #include "Gameplay/ScWDamageType.h"
 
 #include "Gameplay/ScWASC_Base.h"
-#include "Gameplay/Combo/ScWComboData.h"
+//#include "Gameplay/Combos/ScWComboData.h"
 #include "Gameplay/ScWASC_InitInterface.h"
 #include "Gameplay/Characters/ScWCharacter.h"
 #include "Gameplay/Characters/ScWCharacterMovement.h"
@@ -43,14 +43,14 @@ FVector UScWDamageType::BP_GetImpactImpulseForHit_Implementation(const UActorCom
 		{
 			OutImpulse = TargetASC->GetLastAppliedDamage() * ImpactImpulsePerDamagePoint;
 
-			const FReceivedDamageData& LastAppliedDamageData = TargetASC->GetLastAppliedDamageData();
+			/*const FReceivedDamageData& LastAppliedDamageData = TargetASC->GetLastAppliedDamageData();
 			if (const UScWASC_Base* AttackerASC = LastAppliedDamageData.TryGetAttackerBaseASC())
 			{
 				if (const UScWComboData* AttackerRelevantCombo = AttackerASC->GetRelevantCombo())
 				{
 					OutImpulse *= AttackerRelevantCombo->DamageImpactImpulseMul;
 				}
-			}
+			}*/
 		}
 	}
 	if (const UCharacterMovementComponent* TargetCharacterMovement = Cast<UCharacterMovementComponent>(InTargetComponent))

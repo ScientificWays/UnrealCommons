@@ -98,6 +98,17 @@ public:
 	UFUNCTION(Category = "Gameplay Abilities", BlueprintCallable)
 	static FGameplayAbilitySpecHandle& InvalidateAbilitySpecHandle(UPARAM(Ref) FGameplayAbilitySpecHandle& InHandle) { InHandle = FGameplayAbilitySpecHandle(); return InHandle; }
 
+
+	/**
+	 * Sends a Gameplay Event to the Ability System Component.
+	 *
+	 * @param InTargetASC		Ability Component receiving the event.
+	 * @param InEventTag		Gameplay Tag identifying the Gameplay Event.
+	 * @param InEventData		Payload for the Gameplay Event.
+	 * @return					The number of successful ability activations triggered by the event.
+	 */
+	UFUNCTION(Category = "Gameplay Abilities", BlueprintCallable, meta = (ReturnDisplayName = "Out Activations"))
+	static int32 SendGameplayEventToComponent(UAbilitySystemComponent* InTargetASC, const FGameplayTag& InEventTag, const FGameplayEventData& InEventData);
 //~ End Gameplay Abilities
 
 //~ Begin Input
@@ -177,6 +188,6 @@ public:
 public:
 
 	UFUNCTION(Category = "Actor Components", BlueprintCallable, BlueprintPure, meta = (DeterminesOutputType = "InComponents"))
-	static UActorComponent* GetFirstComponentWithTag(const TArray<UActorComponent*>& InComponents, const FName& InTag, int32 InReturnIndexIfNotFound = 0);
+	static UActorComponent* GetFirstComponentWithTag(const TArray<UActorComponent*>& InComponents, const FName& InTag, int32 InFallbackIndex = 0);
 //~ End Actor Components
 };

@@ -130,6 +130,17 @@ void UScWGameplayFunctionLibrary::UnRegisterGameplayTagEvent(UAbilitySystemCompo
 }
 //~ End Gameplay Tags
 
+//~ Begin Gameplay Abilities
+int32 UScWGameplayFunctionLibrary::SendGameplayEventToComponent(UAbilitySystemComponent* InTargetASC, const FGameplayTag& InEventTag, const FGameplayEventData& InEventData)
+{
+	if (!InEventTag.IsValid() || !IsValid(InTargetASC))
+	{
+		return 0;
+	}
+	return InTargetASC->HandleGameplayEvent(InEventTag, &InEventData);
+}
+//~ End Gameplay Abilities
+
 //~ Begin Input
 bool UScWGameplayFunctionLibrary::AddEnhancedInputMappingContextTo(APlayerController* InPlayerController, const UInputMappingContext* InMappingContext, int32 InPriority, const FModifyContextOptions& InOptions)
 {
@@ -405,15 +416,17 @@ UObject* UScWGameplayFunctionLibrary::GetObjectDefault(TSubclassOf<UObject> InOb
 //~ End Objects
 	
 //~ Begin Actor Components
-UActorComponent* UScWGameplayFunctionLibrary::GetFirstComponentWithTag(const TArray<UActorComponent*>& InComponents, const FName& InTag, int32 InReturnIndexIfNotFound)
+UActorComponent* UScWGameplayFunctionLibrary::GetFirstComponentWithTag(const TArray<UActorComponent*>& InComponents, const FName& InTag, int32 InFallbackIndex)
 {
 	for (UActorComponent* SampleComponent : InComponents)
 	{
+		ensureContinue(SampleComponent);
 		if (SampleComponent->ComponentHasTag(InTag))
 		{
 			return SampleComponent;
 		}
 	}
-	return InComponents.IsValidIndex(InReturnIndexIfNotFound) ? InComponents[InReturnIndexIfNotFound] : nullptr;
+	ensureReturn(InComponents.IsValidIndex(InFallbackIndex), nullptr);
+	return InComponents[InFallbackIndex];
 }
 //~ End Actor Components

@@ -5,7 +5,6 @@
 #include "Animations/ScWAnimationsFunctionLibrary.h"
 
 #include "Gameplay/ScWASC_Character.h"
-#include "Gameplay/Combo/ScWComboData.h"
 #include "Gameplay/Characters/ScWCharacter.h"
 #include "Gameplay/ScWGameplayFunctionLibrary.h"
 #include "Gameplay/Handhelds/ScWHandheldData_Melee.h"
@@ -136,36 +135,14 @@ float AScWHandheld_Melee::BP_GetSwingDamage_Implementation() const
 {
 	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
 	ensureReturn(MeleeDataAsset, 0.0f);
-
-	float OutDamage = MeleeDataAsset->SwingBaseDamage;
-
-	ensureReturn(OwnerCharacter, OutDamage);
-	UScWASC_Character* OwnerASC = OwnerCharacter->GetCharacterASC();
-
-	ensureReturn(OwnerASC, OutDamage);
-	if (const UScWComboData* RelevantCombo = OwnerASC->GetRelevantCombo())
-	{
-		OutDamage = RelevantCombo->BP_ModifyHandheldDamage(MeleeDataAsset, OutDamage);
-	}
-	return OutDamage;
+	return MeleeDataAsset->BP_GetSwingBaseDamageForHandheld(this);
 }
 
 TSubclassOf<UScWDamageType> AScWHandheld_Melee::BP_GetSwingDamageTypeClass_Implementation() const
 {
 	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
 	ensureReturn(MeleeDataAsset, UScWDamageType::StaticClass());
-
-	TSubclassOf<UScWDamageType> OutDamageTypeClass = MeleeDataAsset->SwingBaseDamageTypeClass;
-
-	ensureReturn(OwnerCharacter, OutDamageTypeClass);
-	UScWASC_Character* OwnerASC = OwnerCharacter->GetCharacterASC();
-
-	ensureReturn(OwnerASC, OutDamageTypeClass);
-	if (const UScWComboData* RelevantCombo = OwnerASC->GetRelevantCombo())
-	{
-		OutDamageTypeClass = RelevantCombo->BP_ModifyHandheldDamageTypeClass(MeleeDataAsset, OutDamageTypeClass);
-	}
-	return OutDamageTypeClass;
+	return MeleeDataAsset->BP_GetSwingBaseDamageTypeClassForHandheld(this);
 }
 
 float AScWHandheld_Melee::BP_PreSwing_Implementation()
@@ -250,30 +227,14 @@ void AScWHandheld_Melee::BP_ResetSwingComponents_Implementation()
 
 void AScWHandheld_Melee::BP_UpdateCurrentSwingVariantData_Implementation()
 {
-	const TArray<FScWMeleeSwingVariantData>* FinalVariantsArrayPtr = nullptr;
+	UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
+	ensureReturn(MeleeDataAsset);
 
-	ensureReturn(OwnerCharacter);
-	UScWASC_Character* OwnerASC = OwnerCharacter->GetCharacterASC();
-	ensureReturn(OwnerASC);
+	TArray<FScWMeleeSwingVariantData> VariantsArray;
+	MeleeDataAsset->BP_GetSwingVariantsForHandheld(this, VariantsArray);
 
-	const UScWComboData* OwnerRelevantCombo = OwnerASC->GetRelevantCombo();
-
-	if (OwnerRelevantCombo && !OwnerRelevantCombo->OverrideSwingVariants.IsEmpty())
-	{
-		FinalVariantsArrayPtr = &OwnerRelevantCombo->OverrideSwingVariants;
-	}
-	else
-	{
-		UScWHandheldData_Melee* MeleeDataAsset = GetMeleeDataAsset();
-		ensureReturn(MeleeDataAsset);
-
-		FinalVariantsArrayPtr = &MeleeDataAsset->SwingVariants;
-	}
-	ensureReturn(FinalVariantsArrayPtr);
-	const TArray<FScWMeleeSwingVariantData>& FinalVariantsArray = *FinalVariantsArrayPtr;
-
-	ensureReturn(!FinalVariantsArray.IsEmpty());
-	CurrentSwingVariantData = FinalVariantsArray[SwingCounter % FinalVariantsArray.Num()];
+	ensureReturn(!VariantsArray.IsEmpty());
+	CurrentSwingVariantData = VariantsArray[SwingCounter % VariantsArray.Num()];
 }
 
 bool AScWHandheld_Melee::BP_HandleSwingHit_Implementation(AActor* InHitActor, const FHitResult& InHitResult)
