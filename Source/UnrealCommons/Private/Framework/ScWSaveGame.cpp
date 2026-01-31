@@ -59,7 +59,7 @@ void UScWSaveGame::LoadCurrentSaveGameDataFromSlot(const UObject* InWCO, TSubcla
 	GameInstance->CurrentSaveDataObject->BP_PostSaveGameLoad(InWCO);
 }
 
-void UScWSaveGame::ResetCurrentSaveGameData(const UObject* InWCO)
+void UScWSaveGame::ResetCurrentSaveGameData(const UObject* InWCO, const bool bInSaveEmptySlot)
 {
 	ensureReturn(InWCO);
 	UScWGameInstance* GameInstance = Cast<UScWGameInstance>(UGameplayStatics::GetGameInstance(InWCO));
@@ -72,6 +72,11 @@ void UScWSaveGame::ResetCurrentSaveGameData(const UObject* InWCO)
 	GameInstance->CurrentSaveDataObject->StringKeys.Empty();
 
 	GameInstance->CurrentSaveDataObject->BP_ResetSaveGameData(InWCO);
+
+	if (bInSaveEmptySlot)
+	{
+		SaveCurrentSaveGameDataToCurrentSlot(InWCO);
+	}
 }
 
 #define DECLARE_GET_SET_CURRENT_SAVE_GAME_DATA(InType, InName) \

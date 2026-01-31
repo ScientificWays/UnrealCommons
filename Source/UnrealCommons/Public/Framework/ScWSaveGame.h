@@ -32,7 +32,7 @@ public:
 	static void LoadCurrentSaveGameDataFromSlot(const UObject* InWCO, TSubclassOf<UScWSaveGame> InSaveGameClass, const FString& InSlot, int32 InUserIndex);
 
 	UFUNCTION(Category = "ScW SaveGame System", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InSlot"))
-	static void ResetCurrentSaveGameData(const UObject* InWCO);
+	static void ResetCurrentSaveGameData(const UObject* InWCO, const bool bInSaveEmptySlot = true);
 
 public:
 
