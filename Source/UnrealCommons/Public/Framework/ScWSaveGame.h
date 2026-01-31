@@ -65,6 +65,9 @@ public:
 
 	UFUNCTION(Category = "ScW SaveGame System", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InKey, InValue", KeyWords = "SaveStringKey, SetSaveDataString"))
 	static void SetCurrentSaveGameDataString(const UObject* InWCO, const FString& InKey, const FString& InValue);
+
+	UFUNCTION(Category = "ScW SaveGame System", BlueprintCallable, meta = (WorldContext = "InWCO", AutoCreateRefTerm = "InKey, bInDefaultValue", KeyWords = "GetBoolSave, GetSaveDataBool", ExpandBoolAsExecs = "ReturnValue"))
+	static bool SwitchCurrentSaveGameDataBool(const UObject* InWCO, const FString& InKey, const bool& bInDefaultValue) { return GetCurrentSaveGameDataBool(InWCO, InKey, bInDefaultValue); }
 //~ End ScW SaveGame System
 
 //~ Begin Blueprints

@@ -12,6 +12,8 @@
 
 #include "Gameplay/Characters/ScWCharacter.h"
 
+#include "Engine/PlayerStartPIE.h"
+
 AScWGameMode::AScWGameMode()
 {
 	GameStateClass = AScWGameState::StaticClass();
@@ -59,14 +61,20 @@ void AScWGameMode::InitGame(const FString& InMapName, const FString& InOptions, 
 //~ Begin Players
 AActor* AScWGameMode::ChoosePlayerStart_Implementation(AController* InPlayer)
 {
-	if (UWorld* World = GetWorld())
+	UWorld* World = GetWorld();
+	ensureReturn(World, nullptr);
+
+	for (TActorIterator<APlayerStartPIE> It(World); It; ++It)
 	{
-		if (AScWLevelScriptActor* LevelScriptActor = Cast<AScWLevelScriptActor>(World->GetLevelScriptActor()))
+		APlayerStartPIE* PlayFromHereStart = *It;
+		ensureContinue(PlayFromHereStart);
+		return PlayFromHereStart; // Always prefer the first "Play from Here" PlayerStart, if we find one while in PIE mode
+	}
+	if (AScWLevelScriptActor* LevelScriptActor = Cast<AScWLevelScriptActor>(World->GetLevelScriptActor()))
+	{
+		if (AActor* LevelPlayerStart = LevelScriptActor->BP_ChoosePlayerStart(InPlayer))
 		{
-			if (AActor* LevelPlayerStart = LevelScriptActor->BP_ChoosePlayerStart(InPlayer))
-			{
-				return LevelPlayerStart;
-			}
+			return LevelPlayerStart;
 		}
 	}
 	return Super::ChoosePlayerStart_Implementation(InPlayer);

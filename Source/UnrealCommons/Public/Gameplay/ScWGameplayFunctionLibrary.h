@@ -190,4 +190,11 @@ public:
 	UFUNCTION(Category = "Actor Components", BlueprintCallable, BlueprintPure, meta = (DeterminesOutputType = "InComponents"))
 	static UActorComponent* GetFirstComponentWithTag(const TArray<UActorComponent*>& InComponents, const FName& InTag, int32 InFallbackIndex = 0);
 //~ End Actor Components
+
+//~ Begin Session
+public:
+
+	UFUNCTION(Category = "Session", BlueprintCallable, meta = (WorldContext = "InWCO", ExpandBoolAsExecs = "ReturnValue"))
+	static bool IsPlayFromHereEditorSession(const UObject* InWCO);
+//~ End Session
 };

@@ -7,6 +7,8 @@
 #include "Gameplay/ScWDamageType.h"
 #include "Gameplay/Interact/ScWInteractComponent.h"
 
+#include "Engine/PlayerStartPIE.h"
+
 //~ Begin Health
 TSubclassOf<UGameplayEffect> UScWGameplayFunctionLibrary::GetSetHealthGameplayEffectClass(const UObject* InWCO)
 {
@@ -430,3 +432,18 @@ UActorComponent* UScWGameplayFunctionLibrary::GetFirstComponentWithTag(const TAr
 	return InComponents[InFallbackIndex];
 }
 //~ End Actor Components
+
+//~ Begin Session
+bool UScWGameplayFunctionLibrary::IsPlayFromHereEditorSession(const UObject* InWCO)
+{
+	ensureReturn(InWCO, false);
+
+	for (TActorIterator<APlayerStartPIE> It(InWCO->GetWorld()); It; ++It)
+	{
+		APlayerStartPIE* PlayFromHereStart = *It;
+		ensureContinue(PlayFromHereStart);
+		return true;
+	}
+	return false;
+}
+//~ End Session
